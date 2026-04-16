@@ -1,9 +1,11 @@
 # Emidens
+
 ## Product Requirements Document
 
 > **TRA460: Digital Health Implementation** | Chalmers University of Technology
 
 > **v1.0 Section Guide:**
+>
 > - **[Required]** — Must be substantive for this submission to pass.
 > - **[Recommended]** — Optional for v1.0, but strengthens your foundation.
 > - **[Expand Later]** — Scaffolding for future iterations. Initial thoughts welcome.
@@ -39,7 +41,7 @@
            that reduces time-to-treatment for recurrent events."
 -->
 
-> **A way to** prevent knowledge-based errors at the point of care - including those from unrecognized knowledge gaps - 
+> **A way to** prevent knowledge-based errors at the point of care - including those from unrecognized knowledge gaps -
 > **for** clinicians making direct patient care decisions
 > **that** reduces serious adverse events and preventable deaths.
 
@@ -57,6 +59,13 @@ From Spezi tool:
   - How significant is this problem? (incidence, prevalence, burden)
   - Why does it matter — clinically, economically, or humanly?
 -->
+Knowledge-based errors in direct patient care — moments where a clinician acts on information that is incorrect, incomplete, or absent. This includes both retrieval failures (the right knowledge exists but isn't recalled in time) and metacognitive failures (the clinician does not know their information is wrong). The gap is most dangerous in time-critical situations where there is no opportunity to pause and verify.
+
+In Sweden, the national health system mandates reporting of all adverse events caused by medical staff — and knowledge-based errors represent a significant and documented share of those reports. Unlike equipment failures or system failures, knowledge-based errors are particularly insidious because they often go undetected: the clinician acts confidently and incorrectly, leaving no visible signal that something went wrong.
+
+- Clinically: Serious complications and preventable deaths that should not occur given the state of medical knowledge
+- Economically: Repeated visits, extended hospital stays, and corrective treatments consume significant resources in an already strained public health system
+- Humanly: Patients and families bear irreversible consequences; clinicians carry the moral injury of preventable harm
 
 ### 1.2 Key Clinical Insights [Required]
 
@@ -176,18 +185,22 @@ Students: A secondary stakeholder group, particularly in the context of medical 
 -->
 
 **Must Have** — *Non-negotiable for a functioning MVP*
+
 - [e.g., Patient can log daily symptom entries via a mobile interface]
 -
 
 **Should Have** — *High value, but the MVP could technically function without these*
+
 - [e.g., Clinician receives a weekly summary report of patient-logged data]
 -
 
 **Could Have** — *Nice-to-have if time and resources allow*
+
 - [e.g., Push notification reminders for symptom logging]
 -
 
 **Won't Have** — *Explicitly out of scope for this project*
+
 - [e.g., Integration with national EHR systems]
 -
 
@@ -247,3 +260,4 @@ Students: A secondary stakeholder group, particularly in the context of medical 
 |---------|------------|-----------------------------------------------------|
 | 1.0     | 2026-04-15 | Initial draft after first clinical mentor meeting   |
 |         |            |                                                     |
+
