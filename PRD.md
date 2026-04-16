@@ -1,4 +1,4 @@
-# [Project Name] [Required]
+# Emidens
 ## Product Requirements Document
 
 > **TRA460: Digital Health Implementation** | Chalmers University of Technology
@@ -14,11 +14,11 @@
 
 | Field               | Value                                      |
 |---------------------|--------------------------------------------|
-| **Group**           | TRA460_Group_X                             |
+| **Group**           | TRA460_Group_4                             |
 | **Version**         | 1.0                                        |
-| **Date**            | YYYY-MM-DD                                 |
-| **Clinical Mentor** | [Name, Title, Affiliation]                 |
-| **Group Members**   | [Name (Program), Name (Program), ...]      |
+| **Date**            | 2026-04-15                                 |
+| **Clinical Mentor** | [Araz Rawshani, Dr. , University of Gothenburg/ Sahlgrenska]|
+| **Group Members**   | [Andrej Kocijan (MPALG), Viggo Trobäck (MPCAS), Ida Thorburn (MPQOM), Victor Zexi He (MD)]      |
 
 ---
 
@@ -39,10 +39,12 @@
            that reduces time-to-treatment for recurrent events."
 -->
 
-> **A way to** [verb/action]
-> **for** [specific population and/or clinical setting]
-> **that** [desired outcome or value delivered].
+> **A way to** prevent knowledge-based errors at the point of care - including those from unrecognized knowledge gaps - 
+> **for** clinicians making direct patient care decisions
+> **that** reduces serious adverse events and preventable deaths.
 
+From Spezi tool:
+"A way to prevent knowledge-based errors at the point of care - including those from unrecognized knowledge gaps - in clinicians making direct patient care decisions, especially in time-critical situations, in order to reduce serious adverse events and preventable deaths."
 ---
 
 ### 1.1 Clinical Context & Background [Required]
@@ -83,6 +85,14 @@
   - What gap remains that your project could fill?
 -->
 
+Existing AI-powered solutions already exist, and this project is a direct offshoot of a Swedish effort to address this specific issue. Major actors in this field include companies such as OpenEvidence, which use knowledge-based RAG systems and general large language models (LLMs) such as Claude or Gemini.
+
+The issues with LLMs are that they lack robust reasoning capabilities, rely on any available information, and may hallucinate—both due to these factors and inherent limitations of attention-based architectures. OpenEvidence addresses many of these issues through its custom RAG system, which enhances both knowledge retrieval and reasoning capabilities.
+
+A major limitation, however, is that these systems are not run locally and are not native to Swedish regulations, which is a requirement for use in a Swedish medical context.
+
+Beyond model capabilities, the Konsult project also focuses on model–clinician interaction. Here, there is a significant gap in deployment readiness: the standard web interface for interaction may not be optimal for clinical use, particularly in time-constrained situations.
+
 ### 1.4 Success Metrics [Recommended]
 
 <!--
@@ -93,9 +103,9 @@
   how would you measure or observe that outcome?
 -->
 
-- [e.g., Time-to-intervention reduced by X%]
-- [e.g., Nurse documentation burden reduced from Y to Z minutes/day]
--
+Depending on design choices, alternative success metrics may be considered. One such metric is the volume of prompts processed, which can serve as a proxy for usability and adoption.
+
+Another key metric is the frequency of corrections relative to clinicians’ recommendations. This provides a direct measure of alignment with medical judgment and may indicate the system’s potential to reduce erroneous clinical decisions and their associated consequences.
 
 ---
 
@@ -110,6 +120,8 @@
   Be specific: "Cardiac nurses in outpatient clinics" not just "nurses."
 -->
 
+The ultimate target group comprises all medical professionals in decision-making roles. However, for the purposes of project scoping, the user population is restricted to those accessible to the project and for whom the existing model has been optimized. Specifically, this includes on-call cardiologists within specialized healthcare settings.
+
 ### 2.2 Other Stakeholders [Required]
 
 <!--
@@ -119,6 +131,9 @@
   Consider: patients, caregivers, administrators, IT departments,
   payers/insurers, regulators, clinical champions, etc.
 -->
+
+Patients: Arguably the primary stakeholder, as they are the ultimate beneficiaries or subjects of clinical decision-making.
+Students: A secondary stakeholder group, particularly in the context of medical education and training, where such systems may support learning and clinical reasoning development.
 
 ### 2.3 User Journey — Current State [Recommended]
 
@@ -230,5 +245,5 @@
 
 | Version | Date       | Summary of Changes                                  |
 |---------|------------|-----------------------------------------------------|
-| 1.0     | YYYY-MM-DD | Initial draft after first clinical mentor meeting   |
+| 1.0     | 2026-04-15 | Initial draft after first clinical mentor meeting   |
 |         |            |                                                     |
