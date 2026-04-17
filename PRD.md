@@ -59,13 +59,14 @@ From Spezi tool:
   - How significant is this problem? (incidence, prevalence, burden)
   - Why does it matter — clinically, economically, or humanly?
 -->
-Knowledge-based errors in direct patient care — moments where a clinician acts on information that is incorrect, incomplete, or absent. This includes both retrieval failures (the right knowledge exists but isn't recalled in time) and metacognitive failures (the clinician does not know their information is wrong). The gap is most dangerous in time-critical situations where there is no opportunity to pause and verify.
+Knowledge-based errors in direct patient care are moments where a clinician acts on information that is incorrect, incomplete, or absent. This includes both retrieval failures (the right knowledge exists but isn't recalled in time) and metacognitive failures (the clinician does not know their information is wrong). This type of errors is preventable if information is readily and efficiently available to health care professionals. While knowledge-based errors are allways a danger to the patient, the gap is most dangerous in time-critical situations where there is no opportunity to pause and verify.
 
-In Sweden, the national health system mandates reporting of all adverse events caused by medical staff — and knowledge-based errors represent a significant and documented share of those reports. Unlike equipment failures or system failures, knowledge-based errors are particularly insidious because they often go undetected: the clinician acts confidently and incorrectly, leaving no visible signal that something went wrong.
+In Sweden, the national health system mandates reporting of all adverse events caused by medical staff — and knowledge-based errors represent a significant and documented share of those reports. Unlike equipment failures or system failures, knowledge-based errors are particularly insidious because they are harder to detect at the point of failure. The clinician might act confidently but incorrectly, and the effects are often delayed. Many times there isn't a clossed loop in clinics since patients get moved around in departments and therefore doctors can't follow what their decisions have led to. This makes it hard to messure the errors that doctors are making unconsciously.
 
-- Clinically: Serious complications and preventable deaths that should not occur given the state of medical knowledge
-- Economically: Repeated visits, extended hospital stays, and corrective treatments consume significant resources in an already strained public health system
-- Humanly: Patients and families bear irreversible consequences; clinicians carry the moral injury of preventable harm
+The effect of knowledge based errors are trifold. 
+- Clinically: Serious complications and preventable deaths that should not occur given the state of medical knowledge.
+- Economically: Repeated visits, extended hospital stays, and corrective treatments consume significant resources in an already strained public health system.
+- Humanly: Patients and families bear irreversible consequences; clinicians carry the moral injury of preventable harm.
 
 ### 1.2 Key Clinical Insights [Required]
 
@@ -82,6 +83,10 @@ In Sweden, the national health system mandates reporting of all adverse events c
   Ground this in specifics. Quotes, scenarios, and concrete
   examples are more valuable than generalizations.
 -->
+
+One big take away from our mentor meetings is that the amount of knowledge you are expected to know as a health care professional. From what we can observe and what our clinical mentor has obsereved, it is clear that nobody knows everything so consults and checking information is an integral part of the work. What somewhat surprised us is how this information is currently collected using non specialized language models in addition to traditional sources as they might be to inconvinient or a human consult is unavailable at that given moment. This is both insufficient as supporting medical information and introduces uneccesary risks.
+
+The current workflow as described by our mentor involves some kind of problem (could be a medecin that needs to be administrered but the dose is not given), a query (how much of medicine x should be administrerd to treat condition y) and finaly an action (Administring dose). The query part is the point of friction today and might even be rushed if the conditions don't allow the necessary searching for information. Leading to incorrect decision or the use of non-ideal information systems. 
 
 ### 1.3 Existing Solutions & Gaps [Required]
 
@@ -114,7 +119,7 @@ Beyond model capabilities, the Konsult project also focuses on model–clinician
 
 Depending on design choices, alternative success metrics may be considered. One such metric is the volume of prompts processed, which can serve as a proxy for usability and adoption.
 
-Another key metric is the frequency of corrections relative to clinicians’ recommendations. This provides a direct measure of alignment with medical judgment and may indicate the system’s potential to reduce erroneous clinical decisions and their associated consequences.
+Another key metric is the frequency of corrections relative to clinicians’ recommendations. This provides a direct measure of alignment with medical judgment and may indicate the system’s potential to reduce erroneous clinical decisions and their associated consequences. Another metric can be how well the Konsult tool corrects unnecessary ordering of redundant tests, referrals, consults and treatment making the hospital run more efficiently.
 
 ---
 
