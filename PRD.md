@@ -194,22 +194,25 @@ Success would be a system that aids the clinician and improves the care for the 
 
 **Must Have** — *Non-negotiable for a functioning MVP*
 
-- [e.g., Patient can log daily symptom entries via a mobile interface]
--
+- An easy to use interface that doesn't require additional training to use and understand. (SBAR framework should work)
+- Visible reasoning ability behind generated answer. 
+- Anonymity.
+
 
 **Should Have** — *High value, but the MVP could technically function without these*
 
-- [e.g., Clinician receives a weekly summary report of patient-logged data]
--
+- Fast or instant display of original source material where it on its own answers the prompted question.
+- Ability to process documents. 
 
 **Could Have** — *Nice-to-have if time and resources allow*
 
-- [e.g., Push notification reminders for symptom logging]
--
+- Google glasses interface or text to voice/voice to text.
+- Feedback loops for efficient guidline writing of future material. 
+- Feedback for ongoing system improvement.
 
 **Won't Have** — *Explicitly out of scope for this project*
 
-- [e.g., Integration with national EHR systems]
+- A name. (Like "Svea")
 -
 
 ### 4.2 Non-Functional Requirements & Constraints [Recommended]
@@ -225,6 +228,7 @@ Success would be a system that aids the clinician and improves the care for the 
   - Performance, offline capability
 -->
 
+There are alot of privacy aspects that need to be considered. We will expand upon these when we get further into what our intended solution requires.
 ---
 
 ## 5. Technical Direction [Expand Later]
