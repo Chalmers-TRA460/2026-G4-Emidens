@@ -63,7 +63,8 @@ Knowledge-based errors in direct patient care are moments where a clinician acts
 
 In Sweden, the national health system mandates reporting of all adverse events caused by medical staff — and knowledge-based errors represent a significant and documented share of those reports. Unlike equipment failures or system failures, knowledge-based errors are particularly insidious because they are harder to detect at the point of failure. The clinician might act confidently but incorrectly, and the effects are often delayed. Many times there isn't a clossed loop in clinics since patients get moved around in departments and therefore doctors can't follow what their decisions have led to. This makes it hard to messure the errors that doctors are making unconsciously.
 
-The effect of knowledge based errors are trifold. 
+The effect of knowledge based errors are trifold.
+
 - Clinically: Serious complications and preventable deaths that should not occur given the state of medical knowledge.
 - Economically: Repeated visits, extended hospital stays, and corrective treatments consume significant resources in an already strained public health system.
 - Humanly: Patients and families bear irreversible consequences; clinicians carry the moral injury of preventable harm.
@@ -86,7 +87,7 @@ The effect of knowledge based errors are trifold.
 
 One big take away from our mentor meetings is that the amount of knowledge you are expected to know as a health care professional. From what we can observe and what our clinical mentor has obsereved, it is clear that nobody knows everything so consults and checking information is an integral part of the work. What somewhat surprised us is how this information is currently collected using non specialized language models in addition to traditional sources as they might be to inconvinient or a human consult is unavailable at that given moment. This is both insufficient as supporting medical information and introduces uneccesary risks.
 
-The current workflow as described by our mentor involves some kind of problem (could be a medecin that needs to be administrered but the dose is not given), a query (how much of medicine x should be administrerd to treat condition y) and finaly an action (Administring dose). The query part is the point of friction today and might even be rushed if the conditions don't allow the necessary searching for information. Leading to incorrect decision or the use of non-ideal information systems. 
+The current workflow as described by our mentor involves some kind of problem (could be a medecin that needs to be administrered but the dose is not given), a query (how much of medicine x should be administrerd to treat condition y) and finaly an action (Administring dose). The query part is the point of friction today and might even be rushed if the conditions don't allow the necessary searching for information. Leading to incorrect decision or the use of non-ideal information systems.
 
 ### 1.3 Existing Solutions & Gaps [Required]
 
@@ -253,9 +254,9 @@ Students: A secondary stakeholder group, particularly in the context of medical 
   - What do you need to ask your clinical mentor next?
 -->
 
-- **[Question/Risk]:** [Your plan to resolve it, and by when]
-- **[Question/Risk]:** [Your plan to resolve it, and by when]
--
+- **Which part of medical staff should this be for exactly?:** We plan to clarify this by visiting our mentor and shadowing him for a day, capturing which groups of medical staff struggle with the issue the most. Additionally we will attempt to clarify this by talking to as many mambers of the medical staff as possible.
+- **How do we avoid threthening the medical professionals' agency? We do not want to make them feel as if they are being challenged / questioned about their professional ability.:** A big part of resolving this issue will be better understanding our users, which will be easier once the above issue is resolved and we know our exact user group. Additionally the above mentioned shadowing and interviews will help us gain deeper understanding of our user group. Finally, to minimize this issue iterative development will be required, constantly adapting the solution to the feedback.
+- **We are assuming, that in time critical scenarios where standard protocols such as a consult are not an option, there is time and resources to use a technical solution.** We are unlikely to completely resolve this issue and have to instead work around it. It will be a major consideration when designing our UI/UX and planning exactly how users interact with our solution.
 
 ---
 
@@ -265,4 +266,3 @@ Students: A secondary stakeholder group, particularly in the context of medical 
 |---------|------------|-----------------------------------------------------|
 | 1.0     | 2026-04-15 | Initial draft after first clinical mentor meeting   |
 |         |            |                                                     |
-
