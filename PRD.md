@@ -174,7 +174,9 @@ Students: A secondary stakeholder group, particularly in the context of medical 
 
   Keep it directional. You will refine this throughout the course.
 -->
+A solution for clinicians to seamlessly access knowledge that are lacking at that specific moment without disrupting their workflow. This would help prevent knowledge-based erros at the point of care.
 
+Success would be a system that aids the clinician and improves the care for the patient. Thus without decreasing patient trust in their doctor, impairing the doctors own ability or introducing aditional friction points in the treatment process. 
 ---
 
 ## 4. Requirements
