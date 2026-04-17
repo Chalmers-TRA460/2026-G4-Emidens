@@ -61,7 +61,7 @@ From Spezi tool:
 -->
 Knowledge-based errors in direct patient care are moments where a clinician acts on information that is incorrect, incomplete, or absent. This includes both retrieval failures (the right knowledge exists but isn't recalled in time) and metacognitive failures (the clinician does not know their information is wrong). This type of errors is preventable if information is readily and efficiently available to health care professionals. While knowledge-based errors are allways a danger to the patient, the gap is most dangerous in time-critical situations where there is no opportunity to pause and verify.
 
-In Sweden, the national health system mandates reporting of all adverse events caused by medical staff — and knowledge-based errors represent a significant and documented share of those reports. Unlike equipment failures or system failures, knowledge-based errors are particularly insidious because they are harder to detect at the point of failure. The clinician might act confidently but incorrectly, and the effects are often delayed. Many times there isn't a clossed loop in clinics since patients get moved around in departments and therefore doctors can't follow what their decisions have led to. This makes it hard to messure the errors that doctors are making unconsciously.
+In Sweden, the national health system mandates reporting of all adverse events caused by medical staff — and knowledge-based errors represent a significant and documented share of those reports. Unlike equipment failures or system failures, knowledge-based errors are particularly insidious because they are harder to detect at the point of failure. The clinician might act confidently but incorrectly, and the effects are often delayed. Many times there isn't a closed loop in clinics since patients get moved around in departments and therefore doctors can't follow what their decisions have led to. This makes it hard to messure the errors that doctors are making unconsciously.
 
 The effect of knowledge based errors are trifold.
 
@@ -149,6 +149,7 @@ The ultimate target group comprises all medical professionals in decision-making
 
 Patients: Arguably the primary stakeholder, as they are the ultimate beneficiaries or subjects of clinical decision-making.
 Students: A secondary stakeholder group, particularly in the context of medical education and training, where such systems may support learning and clinical reasoning development.
+Clinical Leadership (e.g., verksamhetschef or ledningsläkare): A key stakeholder responsible for governance, approval, and implementation decisions. This group determines whether clinicians are permitted to use the tool, ensures alignment with organizational policies, patient safety standards, and regulatory requirements, and evaluates its impact on workflow, quality of care, and resource allocation.
 
 ### 2.3 User Journey — Current State [Recommended]
 
