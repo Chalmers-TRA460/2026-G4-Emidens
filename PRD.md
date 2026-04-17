@@ -85,9 +85,9 @@ The effect of knowledge based errors are trifold.
   examples are more valuable than generalizations.
 -->
 
-One big take away from our mentor meetings is that the amount of knowledge you are expected to know as a health care professional. From what we can observe and what our clinical mentor has obsereved, it is clear that nobody knows everything so consults and checking information is an integral part of the work. What somewhat surprised us is how this information is currently collected using non specialized language models in addition to traditional sources as they might be to inconvinient or a human consult is unavailable at that given moment. This is both insufficient as supporting medical information and introduces uneccesary risks.
+One big take away from our mentor meetings is that the amount of knowledge you are expected to know as a health care professional. From what we can observe and what our clinical mentor has obsereved, it is clear that nobody knows everything so consults and checking information is an integral part of the work. What somewhat surprised us is how this information is currently collected using non specialized language models in addition to traditional sources as they might be to inconvinient or a human consult is unavailable at that given moment. This is both insufficient as supporting medical information and introduces unnecessary risks.
 
-The current workflow as described by our mentor involves some kind of problem (could be a medecin that needs to be administrered but the dose is not given), a query (how much of medicine x should be administrerd to treat condition y) and finaly an action (Administring dose). The query part is the point of friction today and might even be rushed if the conditions don't allow the necessary searching for information. Leading to incorrect decision or the use of non-ideal information systems.
+The current workflow as described by our mentor involves some kind of problem (could be a medicine that needs to be administered but the dose is not given), a query (how much of medicine x should be administrerd to treat condition y) and finally an action (Administring dose). The query part is the point of friction today and might even be rushed if the conditions don't allow the necessary searching for information. Leading to incorrect decisions or the use of non-ideal information systems.
 
 ### 1.3 Existing Solutions & Gaps [Required]
 
@@ -177,7 +177,7 @@ Clinical Leadership (e.g., verksamhetschef or ledningsläkare): A key stakeholde
 -->
 A solution for clinicians to seamlessly access knowledge that are lacking at that specific moment without disrupting their workflow. This would help prevent knowledge-based erros at the point of care.
 
-Success would be a system that aids the clinician and improves the care for the patient. Thus without decreasing patient trust in their doctor, impairing the doctors own ability or introducing aditional friction points in the treatment process. 
+Success would be a system that aids the clinician and improves the care for the patient. Thus without decreasing patient trust in their doctor, impairing the doctors own ability or introducing additional friction points in the treatment process. 
 ---
 
 ## 4. Requirements
@@ -214,7 +214,7 @@ Success would be a system that aids the clinician and improves the care for the 
 **Won't Have** — *Explicitly out of scope for this project*
 
 - A name. (Like "Svea")
--
+- An ending with ly. (Like Oatly. Grammarly.)
 
 ### 4.2 Non-Functional Requirements & Constraints [Recommended]
 
@@ -261,7 +261,7 @@ There are alot of privacy aspects that need to be considered. We will expand upo
   - What do you need to ask your clinical mentor next?
 -->
 
-- **Which part of medical staff should this be for exactly?:** We plan to clarify this by visiting our mentor and shadowing him for a day, capturing which groups of medical staff struggle with the issue the most. Additionally we will attempt to clarify this by talking to as many mambers of the medical staff as possible.
+- **Which part of medical staff should this be for exactly?:** We plan to clarify this by visiting our mentor and shadowing him for a day, capturing which groups of medical staff struggle with the issue the most. Additionally we will attempt to clarify this by talking to as many members of the medical staff as possible.
 - **How do we avoid threthening the medical professionals' agency? We do not want to make them feel as if they are being challenged / questioned about their professional ability.:** A big part of resolving this issue will be better understanding our users, which will be easier once the above issue is resolved and we know our exact user group. Additionally the above mentioned shadowing and interviews will help us gain deeper understanding of our user group. Finally, to minimize this issue iterative development will be required, constantly adapting the solution to the feedback.
 - **We are assuming, that in time critical scenarios where standard protocols such as a consult are not an option, there is time and resources to use a technical solution.** We are unlikely to completely resolve this issue and have to instead work around it. It will be a major consideration when designing our UI/UX and planning exactly how users interact with our solution.
 
