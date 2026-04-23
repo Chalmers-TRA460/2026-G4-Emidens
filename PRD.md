@@ -61,7 +61,7 @@ From Spezi tool:
 -->
 Knowledge-based errors in direct patient care are moments where a clinician acts on information that is incorrect, incomplete, or absent. This includes both retrieval failures (the right knowledge exists but isn't recalled in time) and metacognitive failures (the clinician does not know their information is wrong). This type of errors is preventable if information is readily and efficiently available to health care professionals. While knowledge-based errors are allways a danger to the patient, the gap is most dangerous in time-critical situations where there is no opportunity to pause and verify.
 
-In Sweden, the national health system mandates reporting of all adverse events caused by medical staff — and knowledge-based errors represent a significant and documented share of those reports. Unlike equipment failures or system failures, knowledge-based errors are particularly insidious because they are harder to detect at the point of failure. The clinician might act confidently but incorrectly, and the effects are often delayed. Many times there isn't a clossed loop in clinics since patients get moved around in departments and therefore doctors can't follow what their decisions have led to. This makes it hard to messure the errors that doctors are making unconsciously.
+In Sweden, the national health system mandates reporting of all adverse events caused by medical staff — and knowledge-based errors represent a significant and documented share of those reports. Unlike equipment failures or system failures, knowledge-based errors are particularly insidious because they are harder to detect at the point of failure. The clinician might act confidently but incorrectly, and the effects are often delayed. Many times there isn't a closed loop in clinics since patients get moved around in departments and therefore doctors can't follow what their decisions have led to. This makes it hard to messure the errors that doctors are making unconsciously.
 
 The effect of knowledge based errors are trifold.
 
@@ -85,9 +85,9 @@ The effect of knowledge based errors are trifold.
   examples are more valuable than generalizations.
 -->
 
-One big take away from our mentor meetings is that the amount of knowledge you are expected to know as a health care professional. From what we can observe and what our clinical mentor has obsereved, it is clear that nobody knows everything so consults and checking information is an integral part of the work. What somewhat surprised us is how this information is currently collected using non specialized language models in addition to traditional sources as they might be to inconvinient or a human consult is unavailable at that given moment. This is both insufficient as supporting medical information and introduces uneccesary risks.
+One big take away from our mentor meetings is that the amount of knowledge you are expected to know as a health care professional. From what we can observe and what our clinical mentor has obsereved, it is clear that nobody knows everything so consults and checking information is an integral part of the work. What somewhat surprised us is how this information is currently collected using non specialized language models in addition to traditional sources as they might be to inconvinient or a human consult is unavailable at that given moment. This is both insufficient as supporting medical information and introduces unnecessary risks.
 
-The current workflow as described by our mentor involves some kind of problem (could be a medecin that needs to be administrered but the dose is not given), a query (how much of medicine x should be administrerd to treat condition y) and finaly an action (Administring dose). The query part is the point of friction today and might even be rushed if the conditions don't allow the necessary searching for information. Leading to incorrect decision or the use of non-ideal information systems.
+The current workflow as described by our mentor involves some kind of problem (could be a medicine that needs to be administered but the dose is not given), a query (how much of medicine x should be administrerd to treat condition y) and finally an action (Administring dose). The query part is the point of friction today and might even be rushed if the conditions don't allow the necessary searching for information. Leading to incorrect decisions or the use of non-ideal information systems.
 
 ### 1.3 Existing Solutions & Gaps [Required]
 
@@ -149,6 +149,7 @@ The ultimate target group comprises all medical professionals in decision-making
 
 Patients: Arguably the primary stakeholder, as they are the ultimate beneficiaries or subjects of clinical decision-making.
 Students: A secondary stakeholder group, particularly in the context of medical education and training, where such systems may support learning and clinical reasoning development.
+Clinical Leadership (e.g., verksamhetschef or ledningsläkare): A key stakeholder responsible for governance, approval, and implementation decisions. This group determines whether clinicians are permitted to use the tool, ensures alignment with organizational policies, patient safety standards, and regulatory requirements, and evaluates its impact on workflow, quality of care, and resource allocation.
 
 ### 2.3 User Journey — Current State [Recommended]
 
@@ -174,7 +175,9 @@ Students: A secondary stakeholder group, particularly in the context of medical 
 
   Keep it directional. You will refine this throughout the course.
 -->
+A solution for clinicians to seamlessly access knowledge that are lacking at that specific moment without disrupting their workflow. This would help prevent knowledge-based erros at the point of care.
 
+Success would be a system that aids the clinician and improves the care for the patient. Thus without decreasing patient trust in their doctor, impairing the doctors own ability or introducing additional friction points in the treatment process. 
 ---
 
 ## 4. Requirements
@@ -192,23 +195,26 @@ Students: A secondary stakeholder group, particularly in the context of medical 
 
 **Must Have** — *Non-negotiable for a functioning MVP*
 
-- [e.g., Patient can log daily symptom entries via a mobile interface]
--
+- An easy to use interface that doesn't require additional training to use and understand. (SBAR framework should work)
+- Visible reasoning ability behind generated answer. 
+- Anonymity.
+
 
 **Should Have** — *High value, but the MVP could technically function without these*
 
-- [e.g., Clinician receives a weekly summary report of patient-logged data]
--
+- Fast or instant display of original source material where it on its own answers the prompted question.
+- Ability to process documents. 
 
 **Could Have** — *Nice-to-have if time and resources allow*
 
-- [e.g., Push notification reminders for symptom logging]
--
+- Google glasses interface or text to voice/voice to text.
+- Feedback loops for efficient guidline writing of future material. 
+- Feedback for ongoing system improvement.
 
 **Won't Have** — *Explicitly out of scope for this project*
 
-- [e.g., Integration with national EHR systems]
--
+- A name. (Like "Svea")
+- An ending with ly. (Like Oatly. Grammarly.)
 
 ### 4.2 Non-Functional Requirements & Constraints [Recommended]
 
@@ -223,6 +229,7 @@ Students: A secondary stakeholder group, particularly in the context of medical 
   - Performance, offline capability
 -->
 
+There are alot of privacy aspects that need to be considered. We will expand upon these when we get further into what our intended solution requires.
 ---
 
 ## 5. Technical Direction [Expand Later]
@@ -254,7 +261,7 @@ Students: A secondary stakeholder group, particularly in the context of medical 
   - What do you need to ask your clinical mentor next?
 -->
 
-- **Which part of medical staff should this be for exactly?:** We plan to clarify this by visiting our mentor and shadowing him for a day, capturing which groups of medical staff struggle with the issue the most. Additionally we will attempt to clarify this by talking to as many mambers of the medical staff as possible.
+- **Which part of medical staff should this be for exactly?:** We plan to clarify this by visiting our mentor and shadowing him for a day, capturing which groups of medical staff struggle with the issue the most. Additionally we will attempt to clarify this by talking to as many members of the medical staff as possible.
 - **How do we avoid threthening the medical professionals' agency? We do not want to make them feel as if they are being challenged / questioned about their professional ability.:** A big part of resolving this issue will be better understanding our users, which will be easier once the above issue is resolved and we know our exact user group. Additionally the above mentioned shadowing and interviews will help us gain deeper understanding of our user group. Finally, to minimize this issue iterative development will be required, constantly adapting the solution to the feedback.
 - **We are assuming, that in time critical scenarios where standard protocols such as a consult are not an option, there is time and resources to use a technical solution.** We are unlikely to completely resolve this issue and have to instead work around it. It will be a major consideration when designing our UI/UX and planning exactly how users interact with our solution.
 
