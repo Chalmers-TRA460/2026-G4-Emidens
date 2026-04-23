@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from .base import Agent, AgentCapability, AgentRequest, AgentResponse
+from .base import Agent, AgentCapability, AgentRequest, AgentResponse, TraceStep
 
 
 def make_stub_agent(capability: AgentCapability) -> Agent:
@@ -9,7 +9,7 @@ def make_stub_agent(capability: AgentCapability) -> Agent:
             answer=f"[{capability.value.upper()} STUB] Received query: '{request.query}'",
             citations=[],
             confidence=0.5,
-            reasoning_trace=["Stub: no real reasoning performed"],
+            reasoning_trace=[TraceStep(agent=capability.value, message="Stub: no real reasoning performed")],
             escalate=False,
             capability=capability,
         )

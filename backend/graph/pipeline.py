@@ -1,39 +1,78 @@
 from __future__ import annotations
 
-from langgraph.graph import END, START, StateGraph
+from typing import Any
 
-from agents.orchestrator import Orchestrator
+from langgraph.graph import END, START, StateGraph
+from langgraph.graph.state import CompiledStateGraph
+from langgraph.types import Send
+
+from agents.base import Agent, AgentCapability
+from agents.orchestrator import MAX_ITERATIONS, EvaluationAction, Orchestrator
 
 from .state import GraphState
 
-
-def _route_after_orchestrator(state: GraphState) -> str:
-    if state["response"] and state["response"].escalate:
-        return "human_review"
-    return END
+_NODE_ORCHESTRATOR = "orchestrator"
+_NODE_HUMAN_REVIEW = "human_review"
 
 
-async def _human_review_node(state: GraphState) -> dict:
-    # stub — future: pause graph, surface to clinician, resume with override
-    return {}
+def _dispatch_or_end(state: GraphState) -> list[Send] | str:
+    if state["final_response"] is not None:
+        if state["final_response"].escalate:
+            return _NODE_HUMAN_REVIEW
+        return END
+    if not state["pending_dispatch"]:
+        return END
+    return [Send(cap.value, state) for cap in state["pending_dispatch"]]
 
 
-def build_graph(orchestrator: Orchestrator):
-    async def orchestrator_node(state: GraphState) -> dict:
-        response = await orchestrator.run(state["request"])
-        return {"response": response}
+def build_graph(
+    orchestrator: Orchestrator,
+    experts: dict[AgentCapability, Agent],
+) -> CompiledStateGraph:
+
+    async def human_review_node(_state: GraphState) -> dict[str, Any]:
+        return {}
+
+    async def orchestrator_node(state: GraphState) -> dict[str, Any]:
+        request = state["request"]
+        responses = state["responses"]
+
+        if not responses:
+            decision = await orchestrator.route(request)
+            return {"routing": decision, "pending_dispatch": decision.experts}
+
+        async def _synthesize() -> dict[str, Any]:
+            assert state["routing"] is not None
+            final = await orchestrator.synthesize(request, responses, state["routing"])
+            return {"final_response": final, "pending_dispatch": []}
+
+        if state["iteration"] >= MAX_ITERATIONS:
+            return await _synthesize()
+
+        evaluation = await orchestrator.evaluate(request, responses)
+        if evaluation.action == EvaluationAction.SYNTHESIZE:
+            return await _synthesize()
+
+        return {
+            "pending_dispatch": evaluation.re_prompt_caps,
+            "iteration": state["iteration"] + 1,
+        }
 
     graph = StateGraph(GraphState)
+    graph.add_node(_NODE_ORCHESTRATOR, orchestrator_node)
+    graph.add_node(_NODE_HUMAN_REVIEW, human_review_node)
 
-    graph.add_node("orchestrator", orchestrator_node)
-    graph.add_node("human_review", _human_review_node)
+    graph.add_edge(START, _NODE_ORCHESTRATOR)
+    graph.add_conditional_edges(_NODE_ORCHESTRATOR, _dispatch_or_end)
+    graph.add_edge(_NODE_HUMAN_REVIEW, END)
 
-    graph.add_edge(START, "orchestrator")
-    graph.add_conditional_edges(
-        "orchestrator",
-        _route_after_orchestrator,
-        {"human_review": "human_review", END: END},
-    )
-    graph.add_edge("human_review", END)
+    for cap, agent in experts.items():
+
+        async def expert_node(state: GraphState, _agent=agent) -> dict[str, Any]:
+            response = await _agent(state["request"])
+            return {"responses": [response]}
+
+        graph.add_node(cap.value, expert_node)
+        graph.add_edge(cap.value, _NODE_ORCHESTRATOR)
 
     return graph.compile()
