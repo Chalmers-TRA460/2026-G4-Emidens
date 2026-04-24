@@ -18,7 +18,8 @@ _EXPERTS_TEXT = "\n".join(
 )
 
 ROUTING_PROMPT = """\
-You are a clinical query router. Given a clinical question, select the minimum set of expert agents needed to answer it accurately.
+You are a clinical query router. Assign the minimum set of expert agents needed to answer the query. \
+For each expert, provide a specific task describing exactly what aspect they should address.
 
 Available experts:
 {experts}
@@ -27,7 +28,8 @@ Query: {query}
 Clinical context: {context}
 Constraints: {constraints}
 
-Prefer fewer experts unless multiple domains are clearly required. Explain your routing decision.
+Prefer fewer experts unless multiple domains are clearly required. \
+Be specific in each task — the expert will only see their own task, not the others'.
 """
 
 EVALUATE_PROMPT = """\
@@ -38,9 +40,11 @@ Original query: {query}
 Expert responses:
 {responses}
 
-Decide whether the responses are sufficient to produce a complete, safe clinical answer, or whether specific experts need to be re-prompted due to critical gaps, low confidence, or contradictions.
+Decide whether the responses are sufficient to produce a complete, safe clinical answer, \
+or whether specific experts need re-prompting with refined tasks.
 
-Only re-prompt if genuinely necessary — unnecessary iterations add latency in a time-critical setting.
+Only re-prompt if genuinely necessary — unnecessary iterations add latency in a time-critical setting. \
+For any expert that needs re-prompting, provide a specific refined task addressing the gap.
 """
 
 SYNTHESIS_PROMPT = """\
@@ -65,15 +69,20 @@ class EvaluationAction(str, Enum):
     RE_PROMPT  = "re_prompt"
 
 
+class ExpertAssignment(BaseModel):
+    capability: AgentCapability
+    task:       str
+
+
 class RoutingDecision(BaseModel):
-    experts:   list[AgentCapability] = Field(min_length=1)
-    reasoning: str
+    assignments: list[ExpertAssignment] = Field(min_length=1)
+    reasoning:   str
 
 
 class EvaluationDecision(BaseModel):
-    action:         EvaluationAction
-    re_prompt_caps: list[AgentCapability] = Field(default_factory=list)
-    reasoning:      str
+    action:              EvaluationAction
+    re_prompt_assignments: list[ExpertAssignment] = Field(default_factory=list)
+    reasoning:           str
 
 
 class _SynthesisOutput(BaseModel):
@@ -84,11 +93,15 @@ class _SynthesisOutput(BaseModel):
     escalate:        bool = False
 
 
-def _format_responses(responses: list[AgentResponse]) -> str:
-    return "\n\n".join(
-        f"[{r.capability.value}] confidence={r.confidence:.2f}\n{r.answer}"
-        for r in responses
-    )
+def _format_responses(
+    responses: list[AgentResponse],
+    tasks: dict[AgentCapability, str] | None = None,
+) -> str:
+    parts = []
+    for r in responses:
+        task_line = f"\nTask: {tasks[r.capability]}" if tasks and r.capability in tasks else ""
+        parts.append(f"[{r.capability.value}] confidence={r.confidence:.2f}{task_line}\n{r.answer}")
+    return "\n\n".join(parts)
 
 
 class Orchestrator:
@@ -121,21 +134,25 @@ class Orchestrator:
         responses: list[AgentResponse],
         routing:   RoutingDecision,
     ) -> AgentResponse:
+        tasks = {a.capability: a.task for a in routing.assignments}
         prompt = SYNTHESIS_PROMPT.format(
             query=request.query,
-            responses=_format_responses(responses),
+            responses=_format_responses(responses, tasks),
             threshold=ESCALATE_CONFIDENCE_THRESHOLD,
         )
         result = cast(_SynthesisOutput, await self.llm.with_structured_output(_SynthesisOutput).ainvoke(prompt))
 
+        assignment_summary = ", ".join(
+            f"{a.capability.value}({a.task!r})" for a in routing.assignments
+        )
         full_trace: list[TraceStep] = [
-            TraceStep(agent=_ORCHESTRATOR_AGENT, message=f"Routing: {[e.value for e in routing.experts]} — {routing.reasoning}"),
+            TraceStep(agent=_ORCHESTRATOR_AGENT, message=f"Routing: {assignment_summary} — {routing.reasoning}"),
             *chain.from_iterable(r.reasoning_trace for r in responses),
             *TraceStep.from_messages(_ORCHESTRATOR_AGENT, result.reasoning_trace),
         ]
 
         expert_escalated = any(r.escalate for r in responses)
-        fallback_cap = routing.experts[0] if routing.experts else AgentCapability.CARDIOLOGY
+        fallback_cap = routing.assignments[0].capability if routing.assignments else AgentCapability.CARDIOLOGY
         primary_cap = max(responses, key=lambda r: r.confidence).capability if responses else fallback_cap
 
         return AgentResponse(

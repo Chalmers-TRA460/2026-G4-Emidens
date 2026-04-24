@@ -22,7 +22,10 @@ def _dispatch_or_end(state: GraphState) -> list[Send] | str:
         return END
     if not state["pending_dispatch"]:
         return END
-    return [Send(cap.value, state) for cap in state["pending_dispatch"]]
+    return [
+        Send(a.capability.value, {**state, "current_task": a.task})
+        for a in state["pending_dispatch"]
+    ]
 
 
 def build_graph(
@@ -39,7 +42,7 @@ def build_graph(
 
         if not responses:
             decision = await orchestrator.route(request)
-            return {"routing": decision, "pending_dispatch": decision.experts}
+            return {"routing": decision, "pending_dispatch": decision.assignments}
 
         async def _synthesize() -> dict[str, Any]:
             assert state["routing"] is not None
@@ -54,7 +57,7 @@ def build_graph(
             return await _synthesize()
 
         return {
-            "pending_dispatch": evaluation.re_prompt_caps,
+            "pending_dispatch": evaluation.re_prompt_assignments,
             "iteration": state["iteration"] + 1,
         }
 
@@ -69,7 +72,8 @@ def build_graph(
     for cap, agent in experts.items():
 
         async def expert_node(state: GraphState, _agent=agent) -> dict[str, Any]:
-            response = await _agent(state["request"])
+            request = state["request"].model_copy(update={"task": state["current_task"]})
+            response = await _agent(request)
             return {"responses": [response]}
 
         graph.add_node(cap.value, expert_node)

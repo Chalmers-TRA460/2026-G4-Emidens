@@ -7,7 +7,7 @@ from .base import (
     AgentResponse,
     TraceStep,
 )
-from .orchestrator import EvaluationAction, EvaluationDecision, Orchestrator, RoutingDecision
+from .orchestrator import EvaluationAction, EvaluationDecision, ExpertAssignment, Orchestrator, RoutingDecision
 from ._stub import make_stub_agent
 from .cardio_expert import cardio_expert
 from .drug_dosing_expert import drug_dosing_expert
@@ -25,6 +25,7 @@ __all__ = [
     "TraceStep",
     "EvaluationAction",
     "EvaluationDecision",
+    "ExpertAssignment",
     "Orchestrator",
     "RoutingDecision",
     "cardio_expert",

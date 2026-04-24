@@ -54,6 +54,7 @@ class TraceStep(BaseModel):
 
 class AgentRequest(BaseModel):
     query:            str
+    task:             str | None      = None
     clinical_context: ClinicalContext = Field(default_factory=ClinicalContext)
     constraints:      list[str]       = Field(default_factory=list)
 

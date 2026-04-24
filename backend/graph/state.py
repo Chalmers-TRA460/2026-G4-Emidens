@@ -5,8 +5,8 @@ from typing import Annotated
 
 from typing_extensions import TypedDict
 
-from agents.base import AgentCapability, AgentRequest, AgentResponse
-from agents.orchestrator import RoutingDecision
+from agents.base import AgentRequest, AgentResponse
+from agents.orchestrator import ExpertAssignment, RoutingDecision
 
 
 class GraphState(TypedDict):
@@ -15,7 +15,8 @@ class GraphState(TypedDict):
     routing:          RoutingDecision | None
     final_response:   AgentResponse | None
     iteration:        int
-    pending_dispatch: list[AgentCapability]
+    pending_dispatch: list[ExpertAssignment]
+    current_task:     str | None
 
 
 def initial_state(request: AgentRequest) -> GraphState:
@@ -26,4 +27,5 @@ def initial_state(request: AgentRequest) -> GraphState:
         "final_response":   None,
         "iteration":        0,
         "pending_dispatch": [],
+        "current_task":     None,
     }
