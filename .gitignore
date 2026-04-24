@@ -9,3 +9,17 @@ __pycache__/
 # data
 backend/data/raw/
 backend/data/vectorstore/
+
+# os
+.DS_Store
+
+# editor / tooling
+.claude/
+.vscode/
+.idea/
+
+# node / frontend
+node_modules/
+dist/
+.vite/
+*.log
