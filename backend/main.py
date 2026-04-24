@@ -2,11 +2,9 @@ import asyncio
 
 from langchain_ollama import ChatOllama
 
-from agents import AgentCapability, AgentRequest, Orchestrator, make_stub_agent
+from agents import AgentCapability, AgentRequest, Orchestrator, make_stub_agent, make_research_expert
 from graph import build_graph, initial_state
 from settings import settings
-
-EXPERTS = {cap: make_stub_agent(cap) for cap in AgentCapability}
 
 
 async def main() -> None:
@@ -15,11 +13,18 @@ async def main() -> None:
         base_url=settings.ollama_base_url,
     )
 
+    experts = {
+        AgentCapability.CARDIOLOGY:  make_stub_agent(AgentCapability.CARDIOLOGY),
+        AgentCapability.RESEARCH:    make_research_expert(llm),
+        AgentCapability.REGULATORY:  make_stub_agent(AgentCapability.REGULATORY),
+        AgentCapability.DRUG_DOSING: make_stub_agent(AgentCapability.DRUG_DOSING),
+    }
+
     orchestrator = Orchestrator(llm=llm)
-    graph = build_graph(orchestrator, EXPERTS)
+    graph = build_graph(orchestrator, experts)
 
     request = AgentRequest(
-        query="What is the correct metoprolol dose for a patient with heart failure and renal impairment?"
+        query="What does the latest clinical evidence say about metoprolol in heart failure patients with renal impairment? Are there recent RCTs or guidelines?"
     )
 
     result = await graph.ainvoke(initial_state(request))
