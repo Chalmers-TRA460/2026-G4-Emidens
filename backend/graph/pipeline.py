@@ -33,7 +33,7 @@ def build_graph(
     experts: dict[AgentCapability, Agent],
 ) -> CompiledStateGraph:
 
-    async def human_review_node(_state: GraphState) -> dict[str, Any]:
+    async def human_review_node(state: GraphState) -> dict[str, Any]:  # noqa: ARG001
         return {}
 
     async def orchestrator_node(state: GraphState) -> dict[str, Any]:
