@@ -1,3 +1,4 @@
+from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -6,7 +7,9 @@ class Settings(BaseSettings):
         env_file=".env", env_file_encoding="utf-8", extra="ignore"
     )
 
-    model: str = "gemma4:e4b"
+    model: str = "gpt-5.4-mini"
+    openai_api_key: SecretStr = SecretStr("")
+    ncbi_api_key: SecretStr = SecretStr("")
     ollama_base_url: str = "http://localhost:11434"
     api_host: str = "127.0.0.1"
     api_port: int = 8080

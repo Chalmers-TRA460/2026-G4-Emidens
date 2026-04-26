@@ -1,13 +1,23 @@
 from __future__ import annotations
 
+import xmltodict
 from langchain_community.tools.pubmed.tool import PubmedQueryRun
 from langchain_community.utilities.pubmed import PubMedAPIWrapper
 from langchain_core.tools import tool
 
-_TOP_K_RESULTS      = 5     # balance between coverage and latency
-_MAX_CONTENT_CHARS  = 2000  # enough for a full abstract
+from settings import settings
 
-_pubmed_run = PubmedQueryRun(api_wrapper=PubMedAPIWrapper(top_k_results=_TOP_K_RESULTS, doc_content_chars_max=_MAX_CONTENT_CHARS))
+_TOP_K_RESULTS = 5  # balance between coverage and latency
+_MAX_CONTENT_CHARS = 2000  # enough for a full abstract
+
+_pubmed_run = PubmedQueryRun(
+    api_wrapper=PubMedAPIWrapper(
+        parse=xmltodict.parse,
+        api_key=settings.ncbi_api_key.get_secret_value(),
+        top_k_results=_TOP_K_RESULTS,
+        doc_content_chars_max=_MAX_CONTENT_CHARS,
+    )
+)
 
 # TODO: parse individual PMIDs from result text for per-article citations
 
