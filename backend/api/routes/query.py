@@ -26,12 +26,12 @@ _EXPERT_NODES = {cap.value for cap in AgentCapability}
 
 
 class SSEEvent(StrEnum):
-    ROUTING         = "routing"
+    ROUTING = "routing"
     EXPERT_RESPONSE = "expert_response"
-    FINAL           = "final"
-    DONE            = "done"
-    TOOL_CALL       = "tool_call"
-    TOOL_RESULT     = "tool_result"
+    FINAL = "final"
+    DONE = "done"
+    TOOL_CALL = "tool_call"
+    TOOL_RESULT = "tool_result"
 
 
 class QueryRequest(BaseModel):
@@ -39,16 +39,17 @@ class QueryRequest(BaseModel):
 
 
 def _emit(event: SSEEvent, data: Any) -> dict[str, str]:
+    # print("Emitting:", event, "with data:", data)
     return {"event": event, "data": json.dumps(data)}
 
 
 def _serialize_response(r: AgentResponse) -> dict[str, Any]:
     return {
         "capability": r.capability.value,
-        "answer":     r.answer,
+        "answer": r.answer,
         "confidence": r.confidence,
-        "escalate":   r.escalate,
-        "citations":  [c.model_dump() for c in r.citations],
+        "escalate": r.escalate,
+        "citations": [c.model_dump() for c in r.citations],
         "trace": [
             {"agent": s.agent, "message": s.message, "time": s.formatted_time}
             for s in r.reasoning_trace
@@ -56,7 +57,9 @@ def _serialize_response(r: AgentResponse) -> dict[str, Any]:
     }
 
 
-async def _stream(graph: CompiledStateGraph, request: AgentRequest) -> AsyncIterator[dict[str, str]]:
+async def _stream(
+    graph: CompiledStateGraph, request: AgentRequest
+) -> AsyncIterator[dict[str, str]]:
     ev: StreamEvent
     async for ev in graph.astream_events(initial_state(request), version="v2"):
         kind = ev["event"]
@@ -81,13 +84,16 @@ async def _stream(graph: CompiledStateGraph, request: AgentRequest) -> AsyncIter
         if name == NODE_ORCHESTRATOR:
             if KEY_ROUTING in output:
                 routing = output[KEY_ROUTING]
-                yield _emit(SSEEvent.ROUTING, {
-                    "assignments": [
-                        {"capability": a.capability.value, "task": a.task}
-                        for a in routing.assignments
-                    ],
-                    "reasoning": routing.reasoning,
-                })
+                yield _emit(
+                    SSEEvent.ROUTING,
+                    {
+                        "assignments": [
+                            {"capability": a.capability.value, "task": a.task}
+                            for a in routing.assignments
+                        ],
+                        "reasoning": routing.reasoning,
+                    },
+                )
 
             elif (final := output.get(KEY_FINAL_RESPONSE)) is not None:
                 yield _emit(SSEEvent.FINAL, _serialize_response(final))
