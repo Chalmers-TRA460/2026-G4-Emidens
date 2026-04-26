@@ -9,6 +9,11 @@ from agents.base import AgentRequest, AgentResponse
 from agents.orchestrator import ExpertAssignment, RoutingDecision
 
 
+KEY_ROUTING        = "routing"
+KEY_FINAL_RESPONSE = "final_response"
+KEY_RESPONSES      = "responses"
+
+
 class GraphState(TypedDict):
     request:          AgentRequest
     responses:        Annotated[list[AgentResponse], operator.add]
