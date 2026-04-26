@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useQueryStream } from "../../hooks/useQueryStream";
 import { SSE_EVENTS, type StreamEvent } from "../../api/events";
 import { QueryInput } from "../components/live/QueryInput";
@@ -21,6 +22,11 @@ const STATUS_COLOR: Record<string, string> = {
 
 export function NewRunPage() {
   const { events, status, error, submit, reset } = useQueryStream();
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [events.length]);
 
   return (
     <div className="flex-1 flex flex-col min-w-0">
@@ -56,6 +62,7 @@ export function NewRunPage() {
               <EventView event={ev} />
             </div>
           ))}
+          <div ref={bottomRef} />
         </div>
       </div>
     </div>
