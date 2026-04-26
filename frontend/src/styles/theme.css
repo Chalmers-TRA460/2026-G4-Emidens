@@ -119,6 +119,15 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fade-up 220ms ease-out both;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
