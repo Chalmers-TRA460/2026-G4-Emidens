@@ -13,6 +13,7 @@ from .research import make_research_expert, research_expert
 from .cardio_expert import cardio_expert
 from .drug_dosing_expert import drug_dosing_expert
 from .regulatory_expert import regulatory_expert
+from ._factory import make_experts
 
 __all__ = [
     "Agent",
@@ -29,6 +30,7 @@ __all__ = [
     "ExpertAssignment",
     "Orchestrator",
     "RoutingDecision",
+    "make_experts",
     "cardio_expert",
     "drug_dosing_expert",
     "regulatory_expert",

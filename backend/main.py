@@ -2,7 +2,7 @@ import asyncio
 
 from langchain_ollama import ChatOllama
 
-from agents import AgentCapability, AgentRequest, Orchestrator, make_stub_agent, make_research_expert
+from agents import AgentRequest, Orchestrator, make_experts
 from graph import build_graph, initial_state
 from settings import settings
 
@@ -13,12 +13,7 @@ async def main() -> None:
         base_url=settings.ollama_base_url,
     )
 
-    experts = {
-        AgentCapability.CARDIOLOGY:  make_stub_agent(AgentCapability.CARDIOLOGY),
-        AgentCapability.RESEARCH:    make_research_expert(llm),
-        AgentCapability.REGULATORY:  make_stub_agent(AgentCapability.REGULATORY),
-        AgentCapability.DRUG_DOSING: make_stub_agent(AgentCapability.DRUG_DOSING),
-    }
+    experts = make_experts(llm)
 
     orchestrator = Orchestrator(llm=llm)
     graph = build_graph(orchestrator, experts)

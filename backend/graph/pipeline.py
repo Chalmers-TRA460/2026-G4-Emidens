@@ -11,7 +11,7 @@ from agents.orchestrator import MAX_ITERATIONS, EvaluationAction, Orchestrator
 
 from .state import GraphState
 
-_NODE_ORCHESTRATOR = "orchestrator"
+NODE_ORCHESTRATOR = "orchestrator"
 _NODE_HUMAN_REVIEW = "human_review"
 
 
@@ -62,11 +62,11 @@ def build_graph(
         }
 
     graph = StateGraph(GraphState)
-    graph.add_node(_NODE_ORCHESTRATOR, orchestrator_node)
+    graph.add_node(NODE_ORCHESTRATOR, orchestrator_node)
     graph.add_node(_NODE_HUMAN_REVIEW, human_review_node)
 
-    graph.add_edge(START, _NODE_ORCHESTRATOR)
-    graph.add_conditional_edges(_NODE_ORCHESTRATOR, _dispatch_or_end)
+    graph.add_edge(START, NODE_ORCHESTRATOR)
+    graph.add_conditional_edges(NODE_ORCHESTRATOR, _dispatch_or_end)
     graph.add_edge(_NODE_HUMAN_REVIEW, END)
 
     for cap, agent in experts.items():
@@ -77,6 +77,6 @@ def build_graph(
             return {"responses": [response]}
 
         graph.add_node(cap.value, expert_node)
-        graph.add_edge(cap.value, _NODE_ORCHESTRATOR)
+        graph.add_edge(cap.value, NODE_ORCHESTRATOR)
 
     return graph.compile()
