@@ -8,6 +8,8 @@ class Settings(BaseSettings):
 
     model: str = "gemma4:e4b"
     ollama_base_url: str = "http://localhost:11434"
+    api_host: str = "127.0.0.1"
+    api_port: int = 8080
 
 
 settings = Settings()
