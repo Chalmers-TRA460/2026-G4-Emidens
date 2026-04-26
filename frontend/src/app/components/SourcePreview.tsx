@@ -46,7 +46,7 @@ export function SourcePreview({ data }: SourcePreviewProps) {
                         <thead className="bg-gray-50 border-b border-gray-300">
                           <tr>
                             {t.headers.map((h, j) => (
-                              <th key={j} className={`px-3 py-2 font-medium ${j === 0 ? 'text-left' : 'text-center'}`}>{h}</th>
+                              <th key={h} className={`px-3 py-2 font-medium ${j === 0 ? 'text-left' : 'text-center'}`}>{h}</th>
                             ))}
                           </tr>
                         </thead>
@@ -72,7 +72,7 @@ export function SourcePreview({ data }: SourcePreviewProps) {
       </div>
 
       <div className="px-4 py-3 border-t border-gray-200">
-        <button className="w-full py-2.5 bg-[#3b82f6] hover:bg-[#2563eb] text-white rounded-md text-sm font-medium transition-colors">
+        <button className="w-full py-2.5 bg-blue-500 hover:bg-blue-600 text-white rounded-md text-sm font-medium transition-colors">
           Show exact place in text
         </button>
       </div>

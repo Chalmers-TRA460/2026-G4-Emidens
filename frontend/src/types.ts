@@ -1,3 +1,7 @@
+export type RunStatus = 'running' | 'completed' | 'failed';
+
+export type AgentColor = 'blue' | 'green' | 'yellow' | 'purple';
+
 export interface TimelineStep {
   label: string;
   time: string;
@@ -15,7 +19,7 @@ export interface RunOverviewData {
 export interface AgentCardData {
   agentName: string;
   timestamp: string;
-  color: string;
+  color: AgentColor;
   content: React.ReactNode;
 }
 
@@ -49,8 +53,7 @@ export interface SourceTableRow {
 export interface SessionRun {
   id: string;
   query: string;
-  status: "running" | "completed" | "failed";
-  statusLabel: string;
+  status: RunStatus;
   finishedAgo: string;
   overview: RunOverviewData;
   source: SourceData | null;

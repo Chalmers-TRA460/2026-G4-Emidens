@@ -5,7 +5,6 @@ export const mockRun: SessionRun = {
   query:
     "What is the current evidence for SGLT2 inhibitors in reducing cardiovascular mortality in patients with HFrEF, and how do the benefits compare across different subgroups including diabetic vs non-diabetic patients?",
   status: "completed",
-  statusLabel: "Completed",
   finishedAgo: "12 minutes ago",
   overview: {
     runId: "run_47_card_2024",
@@ -85,6 +84,11 @@ export const mockRun: SessionRun = {
     ],
   },
 };
+
+// TODO: replace with sessions fetched from the backend
+export const sessions: { id: string; label: string; run: SessionRun }[] = [
+  { id: "mock-run", label: "Mock Run", run: mockRun },
+];
 
 export const mockAgentCards: AgentCardData[] = [
   {

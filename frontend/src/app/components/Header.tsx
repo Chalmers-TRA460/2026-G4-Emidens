@@ -1,6 +1,7 @@
 import { ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { statusStyles } from '../../statusStyles';
+import { StatusBadge } from './StatusBadge';
+import type { RunStatus } from '../../types';
 
 interface Breadcrumb {
   label: string;
@@ -10,12 +11,11 @@ interface Breadcrumb {
 interface HeaderProps {
   breadcrumbs: Breadcrumb[];
   query: string;
-  status: 'running' | 'completed' | 'failed';
-  statusLabel: string;
+  status: RunStatus;
   finishedAgo: string;
 }
 
-export function Header({ breadcrumbs, query, status, statusLabel, finishedAgo }: HeaderProps) {
+export function Header({ breadcrumbs, query, status, finishedAgo }: HeaderProps) {
   return (
     <div className="border-b border-gray-200 bg-white">
       <div className="px-6 py-3.5">
@@ -36,9 +36,7 @@ export function Header({ breadcrumbs, query, status, statusLabel, finishedAgo }:
 
         <h1 className="text-base text-gray-900 mb-2">{query}</h1>
         <div className="flex items-center gap-3">
-          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs border ${statusStyles[status]}`}>
-            {statusLabel}
-          </span>
+          <StatusBadge status={status} />
           <span className="text-xs text-gray-500">Finished {finishedAgo}</span>
         </div>
       </div>

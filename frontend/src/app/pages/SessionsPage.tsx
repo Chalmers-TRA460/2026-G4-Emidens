@@ -1,13 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Clock } from 'lucide-react';
-import { mockRun } from '../../mockData';
-import { statusStyles } from '../../statusStyles';
-import type { SessionRun } from '../../types';
-
-// TODO: replace with data fetched from the backend
-export const sessions: { id: string; label: string; run: SessionRun }[] = [
-  { id: 'mock-run', label: 'Mock Run', run: mockRun },
-];
+import { sessions } from '../../mockData';
+import { StatusBadge } from '../components/StatusBadge';
 
 export function SessionsPage() {
   return (
@@ -22,7 +16,7 @@ export function SessionsPage() {
             <Link
               key={session.id}
               to={`/sessions/${session.id}`}
-              className="block bg-white rounded-lg border border-gray-200 p-4 hover:border-[#3b82f6] hover:shadow-sm transition-all"
+              className="block bg-white rounded-lg border border-gray-200 p-4 hover:border-blue-500 hover:shadow-sm transition-all"
             >
               <div className="flex items-center gap-3">
                 <Clock className="w-4 h-4 text-gray-400 flex-shrink-0" />
@@ -30,9 +24,7 @@ export function SessionsPage() {
                   <div className="font-medium text-sm text-gray-900">{session.label}</div>
                   <div className="text-xs text-gray-500 truncate mt-0.5">{session.run.query}</div>
                 </div>
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs border ${statusStyles[session.run.status]}`}>
-                  {session.run.statusLabel}
-                </span>
+                <StatusBadge status={session.run.status} />
               </div>
             </Link>
           ))}

@@ -4,12 +4,18 @@ import { Header } from '../components/Header';
 import { RunOverview } from '../components/RunOverview';
 import { SourcePreview } from '../components/SourcePreview';
 import { AgentResponses } from '../components/AgentResponses';
-import { mockAgentCards } from '../../mockData';
-import { sessions } from './SessionsPage';
+import { mockAgentCards, sessions } from '../../mockData';
+
+type TabId = 'responses' | 'conversation';
+
+const tabs: { id: TabId; label: string }[] = [
+  { id: 'responses', label: 'Agent Responses' },
+  { id: 'conversation', label: 'Conversation' },
+];
 
 export function SessionDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const [activeTab, setActiveTab] = useState<'responses' | 'conversation'>('responses');
+  const [activeTab, setActiveTab] = useState<TabId>('responses');
 
   const session = sessions.find((s) => s.id === id);
 
@@ -18,7 +24,6 @@ export function SessionDetailPage() {
   }
 
   const run = session.run;
-  const agents = mockAgentCards;
 
   return (
     <div className="flex-1 flex flex-col min-w-0">
@@ -29,7 +34,6 @@ export function SessionDetailPage() {
         ]}
         query={run.query}
         status={run.status}
-        statusLabel={run.statusLabel}
         finishedAgo={run.finishedAgo}
       />
 
@@ -42,32 +46,28 @@ export function SessionDetailPage() {
           <div className="bg-white rounded-lg border border-gray-200 flex flex-col flex-1 overflow-hidden">
             <div className="border-b border-gray-200 px-4">
               <div className="flex gap-6">
-                <button
-                  onClick={() => setActiveTab('responses')}
-                  className={`py-3 px-1 border-b-2 transition-colors text-sm ${
-                    activeTab === 'responses'
-                      ? 'border-[#3b82f6] text-[#3b82f6] font-medium'
-                      : 'border-transparent text-gray-500 hover:text-gray-700'
-                  }`}
-                >
-                  Agent Responses
-                </button>
-                <button
-                  onClick={() => setActiveTab('conversation')}
-                  className={`py-3 px-1 border-b-2 transition-colors text-sm ${
-                    activeTab === 'conversation'
-                      ? 'border-[#3b82f6] text-[#3b82f6] font-medium'
-                      : 'border-transparent text-gray-500 hover:text-gray-700'
-                  }`}
-                >
-                  Conversation
-                </button>
+                {tabs.map((tab) => {
+                  const isActive = activeTab === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`py-3 px-1 border-b-2 transition-colors text-sm ${
+                        isActive
+                          ? 'border-blue-500 text-blue-500 font-medium'
+                          : 'border-transparent text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
             <div className="flex-1 overflow-y-auto p-4">
               {activeTab === 'responses' ? (
-                <AgentResponses agents={agents} />
+                <AgentResponses agents={mockAgentCards} />
               ) : (
                 <div className="py-8 text-center text-gray-500 text-sm">
                   Conversation view coming soon
