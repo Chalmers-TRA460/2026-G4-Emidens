@@ -4,9 +4,10 @@ import { Send } from "lucide-react";
 interface QueryInputProps {
   onSubmit: (query: string) => void;
   disabled: boolean;
+  placeholder?: string;
 }
 
-export function QueryInput({ onSubmit, disabled }: QueryInputProps) {
+export function QueryInput({ onSubmit, disabled, placeholder = "Ask a clinical question…" }: QueryInputProps) {
   const [value, setValue] = useState("");
 
   const handleSubmit = (e: FormEvent) => {
@@ -21,7 +22,7 @@ export function QueryInput({ onSubmit, disabled }: QueryInputProps) {
       <textarea
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder="Ask a clinical question…"
+        placeholder={placeholder}
         disabled={disabled}
         rows={3}
         className="flex-1 resize-none bg-transparent text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none disabled:text-gray-400"

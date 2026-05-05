@@ -12,8 +12,9 @@ function getBaseUrl(): string {
 export async function* streamQuery(
   query: string,
   signal?: AbortSignal,
+  path: string = "/query/stream",
 ): AsyncGenerator<StreamEvent> {
-  const res = await fetch(`${getBaseUrl()}/query/stream`, {
+  const res = await fetch(`${getBaseUrl()}${path}`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "text/event-stream" },
     body: JSON.stringify({ query }),

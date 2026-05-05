@@ -2,6 +2,7 @@ export const SSE_EVENTS = {
   ROUTING:         "routing",
   EXPERT_RESPONSE: "expert_response",
   FINAL:           "final",
+  REASONING:       "reasoning",
   TOOL_CALL:       "tool_call",
   TOOL_RESULT:     "tool_result",
   DONE:            "done",
@@ -41,6 +42,10 @@ export interface RoutingPayload {
   reasoning: string;
 }
 
+export interface ReasoningPayload {
+  text: string;
+}
+
 export interface ToolCallPayload {
   tool: string;
   input: unknown;
@@ -55,6 +60,7 @@ export type StreamEvent =
   | { type: typeof SSE_EVENTS.ROUTING;         data: RoutingPayload }
   | { type: typeof SSE_EVENTS.EXPERT_RESPONSE; data: ResponsePayload }
   | { type: typeof SSE_EVENTS.FINAL;           data: ResponsePayload }
+  | { type: typeof SSE_EVENTS.REASONING;       data: ReasoningPayload }
   | { type: typeof SSE_EVENTS.TOOL_CALL;       data: ToolCallPayload }
   | { type: typeof SSE_EVENTS.TOOL_RESULT;     data: ToolResultPayload }
   | { type: typeof SSE_EVENTS.DONE;            data: Record<string, never> };

@@ -31,9 +31,16 @@ def _load_skills() -> str:
     return "\n\n---\n\n".join(parts)
 
 
-def make_research_expert(llm: BaseChatModel) -> Agent:
+def build_research_graph(llm: BaseChatModel):
+    """Returns the raw ReAct graph used by the expert. Exposed so the dev
+    backdoor route in `api/routes/dev.py` can stream tool events live;
+    the orchestrator path uses `make_research_expert` instead."""
     system_prompt = _SYSTEM_HEADER + _load_skills()
-    react_graph = create_agent(model=llm, tools=[pubmed_tool], system_prompt=system_prompt)
+    return create_agent(model=llm, tools=[pubmed_tool], system_prompt=system_prompt)
+
+
+def make_research_expert(llm: BaseChatModel) -> Agent:
+    react_graph = build_research_graph(llm)
 
     async def _call(request: AgentRequest) -> AgentResponse:
         result: dict[str, Any] = await react_graph.ainvoke(

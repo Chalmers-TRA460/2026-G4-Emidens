@@ -3,10 +3,9 @@ import type { ResponsePayload } from "../../../api/events";
 import type { AgentColor } from "../../../types";
 
 const COLOR_BY_CAPABILITY: Record<string, AgentColor> = {
-  cardiology:  "blue",
-  research:    "green",
-  regulatory:  "yellow",
-  drug_dosing: "purple",
+  cardiology:     "blue",
+  research:       "green",
+  pharmaceutical: "purple",
 };
 
 interface ExpertResponseCardProps {

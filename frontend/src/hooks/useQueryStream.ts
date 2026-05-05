@@ -12,7 +12,7 @@ interface UseQueryStream {
   reset: () => void;
 }
 
-export function useQueryStream(): UseQueryStream {
+export function useQueryStream(path: string = "/query/stream"): UseQueryStream {
   const [events, setEvents] = useState<StreamEvent[]>([]);
   const [status, setStatus] = useState<StreamStatus>("idle");
   const [error, setError] = useState<Error | null>(null);
@@ -37,7 +37,7 @@ export function useQueryStream(): UseQueryStream {
 
     (async () => {
       try {
-        for await (const ev of streamQuery(query, controller.signal)) {
+        for await (const ev of streamQuery(query, controller.signal, path)) {
           setEvents((prev) => [...prev, ev]);
           if (ev.type === SSE_EVENTS.DONE) break;
         }
@@ -48,7 +48,7 @@ export function useQueryStream(): UseQueryStream {
         setStatus("error");
       }
     })();
-  }, []);
+  }, [path]);
 
   useEffect(() => () => controllerRef.current?.abort(), []);
 

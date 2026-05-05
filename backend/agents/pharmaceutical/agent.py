@@ -21,8 +21,7 @@ from .tools import drug_label
 _AGENT_NAME = "pharmaceutical"
 _SKILLS_DIR = Path(__file__).parent / "skills"
 
-# TODO: switch to AgentCapability.PHARMACEUTICAL when that enum value is added.
-_CAPABILITY = AgentCapability.DRUG_DOSING
+_CAPABILITY = AgentCapability.PHARMACEUTICAL
 
 _SYSTEM_HEADER = """\
 You are a pharmaceutical expert supporting a clinician at the point of care.
@@ -44,9 +43,16 @@ def _load_skills() -> str:
     return "\n\n---\n\n".join(parts)
 
 
-def make_pharmaceutical_expert(llm: BaseChatModel) -> Agent:
+def build_pharmaceutical_graph(llm: BaseChatModel):
+    """Returns the raw ReAct graph used by the expert. Exposed so the dev
+    backdoor route in `api/routes/dev.py` can stream tool events live;
+    the orchestrator path uses `make_pharmaceutical_expert` instead."""
     system_prompt = _SYSTEM_HEADER + _load_skills()
-    react_graph = create_agent(model=llm, tools=[drug_label], system_prompt=system_prompt)
+    return create_agent(model=llm, tools=[drug_label], system_prompt=system_prompt)
+
+
+def make_pharmaceutical_expert(llm: BaseChatModel) -> Agent:
+    react_graph = build_pharmaceutical_graph(llm)
 
     async def _call(request: AgentRequest) -> AgentResponse:
         result: dict[str, Any] = await react_graph.ainvoke(

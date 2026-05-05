@@ -10,18 +10,23 @@ warnings.filterwarnings("ignore", message="Pydantic serializer warnings")
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 
 from agents import Orchestrator, make_experts
+from agents.pharmaceutical import build_pharmaceutical_graph
+from agents.research import build_research_graph
 from graph import build_graph
 from settings import settings
-from .routes import query_router
+from .routes import dev_router, query_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
-    llm = ChatOpenAI(model=settings.model, api_key=settings.openai_api_key)
+    #llm = ChatOpenAI(model=settings.model, api_key=settings.openai_api_key)
+    llm = ChatOllama(model=settings.model, base_url=settings.ollama_base_url)
     app.state.graph = build_graph(Orchestrator(llm=llm), make_experts(llm))
+    app.state.pharmaceutical_graph = build_pharmaceutical_graph(llm)
+    app.state.research_graph = build_research_graph(llm)
     yield
 
 
@@ -35,3 +40,4 @@ app.add_middleware(
 )
 
 app.include_router(query_router)
+app.include_router(dev_router, prefix="/dev")

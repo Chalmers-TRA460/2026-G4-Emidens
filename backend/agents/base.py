@@ -6,18 +6,16 @@ from pydantic import BaseModel, Field
 
 
 class AgentCapability(str, Enum):
-    CARDIOLOGY  = "cardiology"
-    RESEARCH    = "research"
-    REGULATORY  = "regulatory"
-    DRUG_DOSING = "drug_dosing"
+    CARDIOLOGY     = "cardiology"
+    RESEARCH       = "research"
+    PHARMACEUTICAL = "pharmaceutical"
 
     @property
     def description(self) -> str:
         return {
-            AgentCapability.CARDIOLOGY:  "Cardiac conditions, ECG interpretation, cardiology-specific drug use",
-            AgentCapability.RESEARCH:    "Evidence grading, clinical studies, treatment guidelines",
-            AgentCapability.REGULATORY:  "Swedish regulations, FASS, contraindications, legal constraints",
-            AgentCapability.DRUG_DOSING: "Precise dosing calculations, renal/hepatic adjustments",
+            AgentCapability.CARDIOLOGY:     "Cardiac conditions, ECG interpretation, cardiology-specific drug use",
+            AgentCapability.RESEARCH:       "Evidence grading, clinical studies, treatment guidelines",
+            AgentCapability.PHARMACEUTICAL: "Drug dosing, adverse effects, drug-drug interactions, and contraindications",
         }[self]
 
 
