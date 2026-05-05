@@ -1,12 +1,7 @@
 ---
 name: dose-calculation
 description: Identifies the inputs required to choose a dose, the formula or rule that maps inputs to a dose, and how to surface missing inputs to the clinician. Apply whenever a query concerns starting, adjusting, or verifying a dose. Integrates Swedish healthcare sources (FASS, Janusmed, Strama, Kloka listan) and handles vague dosing ranges with clinical decision support.
-license: MIT
-metadata:
-  author: Healthcare Workflow Optimization
-  version: 2.0.0
-  category: healthcare
-  tags: [dosing, dose-calculation, swedish-healthcare, clinical-decision-support]
+
 ---
 
 # Dose Calculation Skill
