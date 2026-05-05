@@ -46,7 +46,8 @@ def drug_label(drug_name: str) -> str:
     Use the generic name for best results (e.g. "metoprolol", not "Lopressor").
     Returns "no label found" if the drug is not indexed by the source.
     """
-    params = {"search": f"openfda.generic_name:{drug_name}", "limit": _LABEL_LIMIT}
+    safe_name = drug_name.replace("/", " ")
+    params = {"search": f"openfda.generic_name:{safe_name}", "limit": _LABEL_LIMIT}
     with httpx.Client(timeout=_TIMEOUT_S) as client:
         response = client.get(_BASE_URL, params=params)
     if response.status_code == 404:

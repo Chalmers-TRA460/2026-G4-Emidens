@@ -7,7 +7,7 @@ class Settings(BaseSettings):
         env_file=".env", env_file_encoding="utf-8", extra="ignore"
     )
 
-    model: str = "claude-sonnet-4-6"
+    model: str = "claude-haiku-4-5"
     anthropic_api_key: SecretStr = SecretStr("")
     ncbi_api_key: SecretStr = SecretStr("")
     ollama_base_url: str = "http://localhost:11434"
