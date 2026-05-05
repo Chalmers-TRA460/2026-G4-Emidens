@@ -10,7 +10,7 @@ from settings import settings
 async def main() -> None:
     llm = ChatAnthropic(
         model_name=settings.model,
-        base_url=settings.ollama_base_url,
+        api_key=settings.anthropic_api_key,
         temperature=0.0,
         stop=None,
         timeout=None,
