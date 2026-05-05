@@ -95,106 +95,41 @@ export const mockAgentCards: AgentCardData[] = [
     agentName: "Planner Agent",
     timestamp: "2:34:12 PM",
     color: "blue",
-    content: (
-      <div className="text-sm text-gray-700 space-y-2">
-        <div className="font-medium">Research Plan:</div>
-        <ol className="space-y-1.5 list-decimal list-inside text-sm">
-          <li>
-            Search for systematic reviews and meta-analyses on SGLT2 inhibitors
-            in HFrEF
-          </li>
-          <li>
-            Identify major randomized controlled trials (EMPEROR-Reduced,
-            DAPA-HF)
-          </li>
-          <li>
-            Extract cardiovascular mortality outcomes and subgroup analyses
-          </li>
-          <li>Compare efficacy in diabetic vs non-diabetic populations</li>
-          <li>Synthesize safety profile and clinical implications</li>
-        </ol>
-      </div>
-    ),
+    content: `**Research Plan:**
+
+1. Search for systematic reviews and meta-analyses on SGLT2 inhibitors in HFrEF
+2. Identify major randomized controlled trials (EMPEROR-Reduced, DAPA-HF)
+3. Extract cardiovascular mortality outcomes and subgroup analyses
+4. Compare efficacy in diabetic vs non-diabetic populations
+5. Synthesize safety profile and clinical implications`,
   },
   {
     agentName: "Evidence Agent",
     timestamp: "2:35:03 PM",
     color: "green",
-    content: (
-      <div className="space-y-3 text-sm">
-        <div className="text-gray-700">
-          <span className="font-medium">Search Query:</span> "SGLT2 inhibitors
-          AND heart failure reduced ejection fraction AND cardiovascular
-          mortality"
-        </div>
-        <div className="bg-green-50 border border-green-200 rounded-md p-3">
-          <div className="font-medium text-green-900 mb-1">
-            Found 23 relevant studies
-          </div>
-          <div className="text-sm text-gray-700">
-            Including 2 landmark trials (EMPEROR-Reduced, DAPA-HF), 4
-            meta-analyses
-          </div>
-        </div>
-      </div>
-    ),
+    content: `**Search Query:** \`"SGLT2 inhibitors AND heart failure reduced ejection fraction AND cardiovascular mortality"\`
+
+> **Found 23 relevant studies** — including 2 landmark trials (EMPEROR-Reduced, DAPA-HF) and 4 meta-analyses.`,
   },
   {
     agentName: "Analysis Agent",
     timestamp: "2:38:24 PM",
     color: "yellow",
-    content: (
-      <div className="space-y-3">
-        <div>
-          <div className="font-medium text-gray-900 mb-2 text-sm">
-            Key Clinical Outcomes:
-          </div>
-          <div className="space-y-1.5 text-sm text-gray-700">
-            <div className="flex items-start gap-2">
-              <div className="w-1 h-1 rounded-full bg-gray-400 mt-2 flex-shrink-0" />
-              <div>
-                <span className="font-medium">Primary Outcome:</span> 25%
-                reduction in CV death or HF hospitalization (HR 0.75, 95% CI
-                0.65-0.86, P&lt;0.001)
-              </div>
-            </div>
-            <div className="flex items-start gap-2">
-              <div className="w-1 h-1 rounded-full bg-gray-400 mt-2 flex-shrink-0" />
-              <div>
-                <span className="font-medium">HF Hospitalizations:</span> 30%
-                relative risk reduction (HR 0.70, 95% CI 0.58-0.85)
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div className="font-medium text-gray-900 mb-2 text-sm">
-            Subgroup Analysis:
-          </div>
-          <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3 text-sm text-gray-700">
-            Benefit consistent in diabetic vs non-diabetic patients (P=0.28 for
-            interaction)
-          </div>
-        </div>
-      </div>
-    ),
+    content: `**Key Clinical Outcomes:**
+
+- **Primary Outcome:** 25% reduction in CV death or HF hospitalization (HR 0.75, 95% CI 0.65–0.86, P<0.001)
+- **HF Hospitalizations:** 30% relative risk reduction (HR 0.70, 95% CI 0.58–0.85)
+
+**Subgroup Analysis:**
+
+> Benefit consistent in diabetic vs non-diabetic patients (P=0.28 for interaction).`,
   },
   {
     agentName: "Summary Agent",
     timestamp: "2:45:51 PM",
     color: "purple",
-    content: (
-      <div className="bg-purple-50 border border-purple-200 rounded-md p-3">
-        <div className="font-medium text-gray-900 mb-1.5 text-sm">
-          Clinical Conclusion:
-        </div>
-        <div className="text-sm text-gray-700 leading-relaxed">
-          SGLT2 inhibitors demonstrate robust evidence for reducing
-          cardiovascular events in HFrEF patients, with benefits consistent
-          regardless of diabetes status. Class I recommendation for HFrEF
-          patients with NYHA Class II-IV symptoms.
-        </div>
-      </div>
-    ),
+    content: `**Clinical Conclusion:**
+
+SGLT2 inhibitors demonstrate robust evidence for reducing cardiovascular events in HFrEF patients, with benefits consistent regardless of diabetes status. Class I recommendation for HFrEF patients with NYHA Class II–IV symptoms.`,
   },
 ];

@@ -1,4 +1,5 @@
 import { AgentCard } from "../AgentCard";
+import { Markdown } from "../Markdown";
 import type { ResponsePayload } from "../../../api/events";
 import type { AgentColor } from "../../../types";
 
@@ -21,7 +22,7 @@ export function ExpertResponseCard({ payload, isFinal = false }: ExpertResponseC
   return (
     <AgentCard agentName={name} timestamp={timestamp} color={color} defaultExpanded={true}>
       <div className="space-y-3 text-sm text-gray-800">
-        <div className="whitespace-pre-wrap leading-relaxed">{payload.answer}</div>
+        <Markdown>{payload.answer}</Markdown>
 
         {payload.citations.length > 0 && (
           <div>

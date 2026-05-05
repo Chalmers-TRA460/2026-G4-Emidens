@@ -20,7 +20,7 @@ export interface AgentCardData {
   agentName: string;
   timestamp: string;
   color: AgentColor;
-  content: React.ReactNode;
+  content: string;
 }
 
 export interface SourceData {

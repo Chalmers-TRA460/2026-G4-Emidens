@@ -1,4 +1,5 @@
 import { AgentCard } from './AgentCard';
+import { Markdown } from './Markdown';
 import type { AgentCardData } from '../../types';
 
 interface AgentResponsesProps {
@@ -10,7 +11,7 @@ export function AgentResponses({ agents }: AgentResponsesProps) {
     <div className="space-y-3">
       {agents.map((agent, i) => (
         <AgentCard key={i} agentName={agent.agentName} timestamp={agent.timestamp} color={agent.color}>
-          {agent.content}
+          <Markdown>{agent.content}</Markdown>
         </AgentCard>
       ))}
     </div>
