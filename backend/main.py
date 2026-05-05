@@ -1,6 +1,6 @@
 import asyncio
 
-from langchain_ollama import ChatOllama
+from langchain_anthropic import ChatAnthropic
 
 from agents import AgentRequest, Orchestrator, make_experts
 from graph import build_graph, initial_state
@@ -8,9 +8,12 @@ from settings import settings
 
 
 async def main() -> None:
-    llm = ChatOllama(
-        model=settings.model,
+    llm = ChatAnthropic(
+        model_name=settings.model,
         base_url=settings.ollama_base_url,
+        temperature=0.0,
+        stop=None,
+        timeout=None,
     )
 
     experts = make_experts(llm)

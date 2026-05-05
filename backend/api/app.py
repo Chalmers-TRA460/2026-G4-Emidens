@@ -10,7 +10,7 @@ warnings.filterwarnings("ignore", message="Pydantic serializer warnings")
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from langchain_openai import ChatOpenAI
+from langchain_anthropic import ChatAnthropic
 
 from agents import Orchestrator, make_experts
 from agents.pharmaceutical import build_pharmaceutical_graph
@@ -23,10 +23,13 @@ from .routes import dev_router, query_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
-    llm = ChatOpenAI(
-        model=settings.model, api_key=settings.openai_api_key, temperature=0.0
+    llm = ChatAnthropic(
+        model_name=settings.model,
+        base_url=settings.ollama_base_url,
+        temperature=0.0,
+        stop=None,
+        timeout=None,
     )
-    # llm = ChatOllama(model=settings.model, base_url=settings.ollama_base_url)
     app.state.graph = build_graph(Orchestrator(llm=llm), make_experts(llm))
     app.state.pharmaceutical_graph = build_pharmaceutical_graph(llm)
     app.state.research_graph = build_research_graph(llm)
