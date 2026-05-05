@@ -1,12 +1,7 @@
 ---
 name: dose-calculation
 description: Calculate medication doses for Swedish healthcare using FASS, Janusmed, Strama, and Kloka listan. Use when user asks about drug dosing, dose adjustments, or medication calculations - trigger phrases include "vilken dos", "how much", "dosering", "dose calculation", "adjust dose", "renal dosing", "pediatric dose", or mentions specific drugs with dosing questions. Handles vague ranges ("10-20 mg") by making decision inputs explicit.
-license: MIT
-metadata:
-  author: Healthcare Workflow Optimization
-  version: 2.1.0
-  category: healthcare
-  tags: [dosing, dose-calculation, swedish-healthcare, clinical-decision-support]
+
 ---
 
 # Dose Calculation Skill
