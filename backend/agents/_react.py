@@ -49,5 +49,7 @@ def build_user_message(request: AgentRequest) -> str:
 def final_answer(messages: list[BaseMessage]) -> str:
     for m in reversed(messages):
         if isinstance(m, AIMessage) and m.content and not m.tool_calls:
+            if isinstance(m.content, list):
+                return "".join(b["text"] for b in m.content if b.get("type") == "text")
             return str(m.content)
     return "[no answer produced]"
