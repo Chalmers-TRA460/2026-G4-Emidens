@@ -1,7 +1,6 @@
 ---
 name: dose-calculation
-description: Calculate medication doses for Swedish healthcare using FASS, Janusmed, Strama, and Kloka listan. Use when user asks about drug dosing, dose adjustments, or medication calculations - trigger phrases include "vilken dos", "how much", "dosering", "dose calculation", "adjust dose", "renal dosing", "pediatric dose", or mentions specific drugs with dosing questions. Handles vague ranges ("10-20 mg") by making decision inputs explicit.
-
+description: Calculate medication doses for Swedish healthcare using FASS, Strama, and Kloka listan. Use when user asks about drug dosing, dose adjustments, or medication calculations - trigger phrases include "vilken dos", "how much", "dosering", "dose calculation", "adjust dose", "renal dosing", "pediatric dose", or mentions specific drugs with dosing questions. Handles vague ranges ("10-20 mg") by making decision inputs explicit.
 ---
 
 # Dose Calculation Skill
@@ -19,7 +18,7 @@ This skill transforms vague dosing ranges into actionable recommendations by mak
 **For urgent dosing questions:**
 - ✅ **Always state:** Standard dose, required inputs, missing inputs, source
 - ✅ **Never hide:** Assumptions, ranges, or uncertainty
-- ✅ **Always cite:** FASS, Janusmed, Strama, or other Swedish sources
+- ✅ **Always cite:** FASS, Strama, or other Swedish sources
 - ⚠️ **Refuse to commit** if critical inputs missing (don't guess renal function, weight, etc.)
 
 ## Workflow Instructions
@@ -34,7 +33,7 @@ Systematically check these inputs in order:
 4. **Age Band** - Neonatal/pediatric/adult/geriatric
 5. **Renal Function** - eGFR for renally-cleared drugs
 6. **Hepatic Function** - Child-Pugh class for hepatically-metabolized drugs
-7. **Concomitant Medications** - Check Janusmed for interactions
+7. **Concomitant Medications** - Check FASS for major drug interactions
 
 **Missing critical inputs:** DO NOT GUESS for weight-based dosing, narrow therapeutic index drugs, or renal/hepatic impairment. State what's missing and why it's critical.
 
@@ -46,6 +45,7 @@ Systematically check these inputs in order:
    - "Dosering vid nedsatt leverfunktion" for hepatic adjustments
    - "Barn och ungdom" for pediatric dosing
    - "Äldre patienter" for geriatric considerations
+   - "Interaktioner" for drug-drug interactions
 
 2. **Strama** (for antibiotics) - Evidence-based national guidelines
    - Specifies exact dose + frequency + duration
@@ -54,12 +54,9 @@ Systematically check these inputs in order:
 3. **Kloka listan** - First-line recommendations and starting doses
    - Often narrows FASS range to specific starting dose
 
-4. **Janusmed** - Interaction checking and clearer dosing tables
-   - Essential for drug-drug interaction assessment
+4. **Local PM** - Hospital-specific protocols (if mentioned in query)
 
-5. **Local PM** - Hospital-specific protocols (if mentioned in query)
-
-6. **Internetmedicin** - Treatment duration and monitoring guidance
+5. **Internetmedicin** - Treatment duration and monitoring guidance
 
 ### Step 3: Handle Vague Ranges
 
@@ -100,7 +97,7 @@ When FASS gives a range (e.g., "10-20 mg"), don't just repeat it:
 Before finalizing any dose:
 
 - **Contraindications:** Check FASS "Kontraindikationer"
-- **Interactions:** Use Janusmed interaction checker (especially if >2 medications)
+- **Interactions:** Check FASS "Interaktioner" section for major drug-drug interactions
 - **Narrow therapeutic index:** State monitoring plan (TDM, labs)
   - Examples: gentamicin, vancomycin, warfarin, digoxin, lithium
 - **Formulation match:** Verify dose matches available strengths
@@ -244,7 +241,7 @@ Geriatric principle: "Start low, go slow"
   - G3b: 30-44 (often needs adjustment)
   - G4: 15-29 (major adjustment)
   - G5: <15 (many drugs contraindicated)
-- Source: FASS "Dosering vid nedsatt njurfunktion", Janusmed tables
+- Source: FASS "Dosering vid nedsatt njurfunktion"
 - **Check for:** All elderly, renally-cleared drugs, drugs with renal dosing section in FASS
 
 ### Hepatic Function
@@ -255,16 +252,18 @@ Geriatric principle: "Start low, go slow"
 - Source: FASS "Dosering vid nedsatt leverfunktion"
 
 ### Concomitant Medications
-- Tool: **Janusmed Interactions** (primary in Sweden)
-- Interaction severity: A (none), B (minor), C (moderate), D (contraindicated)
-- Common issues: CYP450 interactions, renal competition, additive effects
-- Always check if patient has >2 medications
-
-## Special Populations
+- Check FASS "Interaktioner" section for major drug-drug interactions
+- Focus on:
+  - CYP450 interactions (enzyme inducers/inhibitors)
+  - QT-prolonging drugs
+  - Serotonergic drugs (risk of serotonin syndrome)
+  - Anticoagulants (bleeding risk)
+  - Drugs with overlapping toxicity
+- If complex polypharmacy (>5 medications), recommend pharmacist consultation
 
 ### Pediatric Dosing
-- Almost always mg/kg with maximum dose cap
-- Example: "10-15 mg/kg var 4-6:e timme, max 60 mg/kg/dygn"
+- FASS "Barn och ungdom" section
+- Often dose by weight (mg/kg) or body surface area (mg/m²)
 - If not in FASS "Barn och ungdom" → may state "Används ej till barn" → requires specialist
 - **Never extrapolate from adult doses**
 - **Always use actual weight**
@@ -311,7 +310,7 @@ Before finalizing any dose recommendation:
 - [ ] Weight obtained (if weight-based)
 - [ ] Renal function checked (if renally-cleared)
 - [ ] Hepatic function checked (if hepatically-metabolized)
-- [ ] Medications reviewed (Janusmed)
+- [ ] Major drug interactions reviewed (FASS "Interaktioner")
 
 **Sources cited:**
 - [ ] FASS section referenced with exact quote
@@ -320,7 +319,7 @@ Before finalizing any dose recommendation:
 
 **Safety:**
 - [ ] Contraindications ruled out
-- [ ] Interactions checked
+- [ ] Major interactions checked
 - [ ] Narrow therapeutic index → monitoring plan
 - [ ] Elderly/renal/hepatic → adjustments applied
 
@@ -510,20 +509,3 @@ MONITORING:
 - Clinical response in 48-72 hours
 - If worsening → consider increasing frequency
 ```
-
-## Integration with Other Skills
-
-- **fass-dosing-navigator** - Use when needing to efficiently search FASS for specific sections
-- Works alongside Swedish clinical guideline skills
-
-## Version History
-
-- **v2.1.0 (2026-05-05):** Restructured based on Anthropic Skills Guide
-  - Improved description with specific trigger phrases
-  - Clearer step-by-step workflow instructions
-  - Condensed from 7,000+ words to ~3,500 words
-  - Enhanced output formatting guidance
-  - Maintained all safety features and Swedish source integration
-  
-- **v2.0.0:** Major update integrating Swedish healthcare sources
-- **v1.0.0:** Initial release
