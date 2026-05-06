@@ -16,10 +16,10 @@ This skill transforms vague dosing ranges into actionable recommendations by mak
 ## Quick Reference
 
 **For urgent dosing questions:**
-- ✅ **Always state:** Standard dose, required inputs, missing inputs, source
-- ✅ **Never hide:** Assumptions, ranges, or uncertainty
-- ✅ **Always cite:** FASS, Strama, or other Swedish sources
-- ⚠️ **Refuse to commit** if critical inputs missing (don't guess renal function, weight, etc.)
+- **Always state:** Standard dose, required inputs, missing inputs, source
+- **Never hide:** Assumptions, ranges, or uncertainty
+- **Always cite:** FASS, Strama, or other Swedish sources
+- **Refuse to commit** if critical inputs missing (don't guess renal function, weight, etc.)
 
 ## Workflow Instructions
 
@@ -114,9 +114,9 @@ INDICATION: [Why drug is being given]
 ROUTE: [Oral/IV/other]
 
 PATIENT INPUTS:
-✅ [Input]: [Value] (Source: stated/assumed/calculated)
-✅ [Input]: [Value]
-❌ [Missing input]: NOT PROVIDED - [why it matters]
+[Input]: [Value] (Source: stated/assumed/calculated)
+[Input]: [Value]
+[Missing input]: NOT PROVIDED - [why it matters]
 
 FASS DOSING:
 "[Exact quote from FASS]"
@@ -170,8 +170,8 @@ Example doses for reference (NOT patient-specific):
 - [General range to show scale]
 
 ACTION REQUIRED:
-1. ✅ Obtain [missing input]
-2. ✅ [Other actions needed]
+1. Obtain [missing input]
+2. [Other actions needed]
 
 DO NOT guess [input] for [drug class/situation].
 ```
@@ -347,9 +347,9 @@ INDICATION: Hypertension
 ROUTE: Oral (tablet)
 
 PATIENT INPUTS:
-✅ Age: 45 years (healthy adult)
-✅ Renal function: eGFR 80 (normal, no adjustment)
-✅ Other medications: None
+Age: 45 years (healthy adult)
+Renal function: eGFR 80 (normal, no adjustment)
+Other medications: None
 
 FASS DOSING:
 "Hypertoni: 50-100 mg 2 gånger dagligen"
@@ -385,7 +385,7 @@ CANNOT PROVIDE DOSE
 Drug: Gentamicin
 Indication: Sepsis
 
-❌ MISSING CRITICAL INPUT: Patient weight
+MISSING CRITICAL INPUT: Patient weight
 
 WHY WEIGHT IS CRITICAL:
 - Gentamicin is dosed as mg/kg (FASS: "5-7 mg/kg per dose")
@@ -406,10 +406,10 @@ EXAMPLE DOSES (reference only):
 - 90 kg patient: 630 mg every 24 hours
 
 ACTION REQUIRED:
-1. ✅ Obtain patient weight in kg
-2. ✅ Obtain eGFR
-3. ✅ Consult pharmacy (gentamicin requires specialist dosing)
-4. ✅ Plan TDM: Trough before 3rd dose
+1. Obtain patient weight in kg
+2. Obtain eGFR
+3. Consult pharmacy (gentamicin requires specialist dosing)
+4. Plan TDM: Trough before 3rd dose
 
 DO NOT guess weight for aminoglycosides.
 ```
@@ -425,9 +425,9 @@ INDICATION: Depression (major depressive disorder)
 ROUTE: Oral tablet
 
 PATIENT INPUTS:
-✅ Age: 30 years (healthy adult)
-✅ Renal/hepatic: Assumed normal
-✅ Other medications: None
+Age: 30 years (healthy adult)
+Renal/hepatic: Assumed normal
+Other medications: None
 
 FASS DOSING:
 "Depression: 50-200 mg dagligen"
@@ -474,8 +474,8 @@ DOSE RECOMMENDATION: Penicillin V
 INDICATION: Community-acquired pneumonia
 
 PATIENT INPUTS:
-✅ Age: 85 years (very elderly)
-✅ Renal: eGFR 30 (G4 - severe impairment)
+Age: 85 years (very elderly)
+Renal: eGFR 30 (G4 - severe impairment)
 
 SOURCE ANALYSIS:
 
@@ -486,7 +486,7 @@ STRAMA: "1 g × 3 gånger dagligen i 7 dagar"
 - National evidence-based guideline
 
 RESOLUTION:
-All sources agree: 1 g per dose ✅
+All sources agree: 1 g per dose 
 Differ on frequency: × 3 vs. × 4
 
 RECOMMENDED DOSE:
