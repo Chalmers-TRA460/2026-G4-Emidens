@@ -1,11 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useQueryStream } from "../../../hooks/useQueryStream";
-import { SSE_EVENTS, type StreamEvent } from "../../../api/events";
 import { QueryInput } from "./QueryInput";
-import { RoutingPanel } from "./RoutingPanel";
-import { ToolEventLine } from "./ToolEventLine";
-import { ReasoningLine } from "./ReasoningLine";
-import { ExpertResponseCard } from "./ExpertResponseCard";
+import { EventView } from "./EventView";
 
 const STATUS_LABEL: Record<string, string> = {
   idle:      "Ready",
@@ -75,23 +71,4 @@ export function RunPanel({ title, path, badge, placeholder }: RunPanelProps) {
       </div>
     </div>
   );
-}
-
-function EventView({ event }: { event: StreamEvent }) {
-  switch (event.type) {
-    case SSE_EVENTS.ROUTING:
-      return <RoutingPanel payload={event.data} />;
-    case SSE_EVENTS.EXPERT_RESPONSE:
-      return <ExpertResponseCard payload={event.data} />;
-    case SSE_EVENTS.FINAL:
-      return <ExpertResponseCard payload={event.data} isFinal />;
-    case SSE_EVENTS.REASONING:
-      return <ReasoningLine text={event.data.text} />;
-    case SSE_EVENTS.TOOL_CALL:
-      return <ToolEventLine kind="call" tool={event.data.tool} payload={event.data.input} />;
-    case SSE_EVENTS.TOOL_RESULT:
-      return <ToolEventLine kind="result" tool={event.data.tool} payload={event.data.output} />;
-    case SSE_EVENTS.DONE:
-      return null;
-  }
 }

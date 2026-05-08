@@ -4,6 +4,7 @@ import { SessionsPage } from './pages/SessionsPage';
 import { SessionDetailPage } from './pages/SessionDetailPage';
 import { NewRunPage } from './pages/NewRunPage';
 import { AgentsPage } from './pages/AgentsPage';
+import { SettingsPage } from './pages/SettingsPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
 
 export default function App() {
@@ -17,7 +18,7 @@ export default function App() {
         <Route path="/new" element={<NewRunPage />} />
         <Route path="/agents" element={<AgentsPage />} />
         <Route path="/knowledge" element={<PlaceholderPage title="Knowledge" />} />
-        <Route path="/settings" element={<PlaceholderPage title="Settings" />} />
+        <Route path="/settings" element={<SettingsPage />} />
       </Routes>
     </div>
   );

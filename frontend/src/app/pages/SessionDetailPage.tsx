@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { Header } from '../components/Header';
 import { RunOverview } from '../components/RunOverview';
 import { SourcePreview } from '../components/SourcePreview';
 import { AgentResponses } from '../components/AgentResponses';
+import { RichRunView } from '../components/RichRunView';
 import { mockAgentCards, sessions } from '../../mockData';
+import { get as getStoredSession, type StoredSession } from '../../storage/sessions';
+import { relativeTime } from '../../storage/format';
+import { deriveSessionView } from '../../storage/derive';
 
 type TabId = 'responses' | 'conversation';
 
@@ -16,15 +20,73 @@ const tabs: { id: TabId; label: string }[] = [
 export function SessionDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState<TabId>('responses');
+  const [stored, setStored] = useState<StoredSession | undefined>(undefined);
+  const [storedLoaded, setStoredLoaded] = useState(false);
 
-  const session = sessions.find((s) => s.id === id);
+  useEffect(() => {
+    setStored(id ? getStoredSession(id) : undefined);
+    setStoredLoaded(true);
+  }, [id]);
 
-  if (!session) {
-    return <Navigate to="/" replace />;
+  if (stored) {
+    return <StoredSessionView session={stored} />;
   }
 
-  const run = session.run;
+  const mockSession = sessions.find((s) => s.id === id);
+  if (mockSession) {
+    return (
+      <MockSessionView
+        session={mockSession}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
+    );
+  }
 
+  if (!storedLoaded) return null;
+  return <Navigate to="/" replace />;
+}
+
+function StoredSessionView({ session }: { session: StoredSession }) {
+  const status = session.status === 'completed' ? 'completed' : 'failed';
+  const { runOverview, agentCards } = deriveSessionView({
+    id: session.id,
+    startedAt: session.startedAt,
+    finishedAt: session.finishedAt,
+    status: session.status,
+    events: session.events,
+  });
+
+  return (
+    <div className="flex-1 flex flex-col min-w-0">
+      <Header
+        breadcrumbs={[
+          { label: 'Sessions', to: '/' },
+          { label: relativeTime(session.startedAt) },
+        ]}
+        query={session.query}
+        status={status}
+        finishedAgo={relativeTime(session.finishedAt)}
+      />
+      <RichRunView
+        runOverview={runOverview}
+        agentCards={agentCards}
+        events={session.events}
+      />
+    </div>
+  );
+}
+
+function MockSessionView({
+  session,
+  activeTab,
+  setActiveTab,
+}: {
+  session: typeof sessions[number];
+  activeTab: TabId;
+  setActiveTab: (id: TabId) => void;
+}) {
+  const run = session.run;
   return (
     <div className="flex-1 flex flex-col min-w-0">
       <Header

@@ -8,14 +8,25 @@ interface UseQueryStream {
   events: StreamEvent[];
   status: StreamStatus;
   error: Error | null;
+  runId: string | null;
+  query: string | null;
+  startedAt: number | null;
   submit: (query: string) => void;
   reset: () => void;
+}
+
+function newRunId(): string {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
+  return `run_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
 }
 
 export function useQueryStream(path: string = "/query/stream"): UseQueryStream {
   const [events, setEvents] = useState<StreamEvent[]>([]);
   const [status, setStatus] = useState<StreamStatus>("idle");
   const [error, setError] = useState<Error | null>(null);
+  const [runId, setRunId] = useState<string | null>(null);
+  const [query, setQuery] = useState<string | null>(null);
+  const [startedAt, setStartedAt] = useState<number | null>(null);
   const controllerRef = useRef<AbortController | null>(null);
 
   const reset = useCallback(() => {
@@ -24,9 +35,12 @@ export function useQueryStream(path: string = "/query/stream"): UseQueryStream {
     setEvents([]);
     setStatus("idle");
     setError(null);
+    setRunId(null);
+    setQuery(null);
+    setStartedAt(null);
   }, []);
 
-  const submit = useCallback((query: string) => {
+  const submit = useCallback((nextQuery: string) => {
     controllerRef.current?.abort();
     const controller = new AbortController();
     controllerRef.current = controller;
@@ -34,10 +48,13 @@ export function useQueryStream(path: string = "/query/stream"): UseQueryStream {
     setEvents([]);
     setError(null);
     setStatus("streaming");
+    setRunId(newRunId());
+    setQuery(nextQuery);
+    setStartedAt(Date.now());
 
     (async () => {
       try {
-        for await (const ev of streamQuery(query, controller.signal, path)) {
+        for await (const ev of streamQuery(nextQuery, controller.signal, path)) {
           setEvents((prev) => [...prev, ev]);
           if (ev.type === SSE_EVENTS.DONE) break;
         }
@@ -52,5 +69,5 @@ export function useQueryStream(path: string = "/query/stream"): UseQueryStream {
 
   useEffect(() => () => controllerRef.current?.abort(), []);
 
-  return { events, status, error, submit, reset };
+  return { events, status, error, runId, query, startedAt, submit, reset };
 }
