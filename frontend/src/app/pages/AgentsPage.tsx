@@ -10,7 +10,13 @@ export function AgentsPage() {
           re-prompt loop, and synthesis.
         </p>
       </div>
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 p-4 min-h-0">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 p-4 min-h-0">
+        <RunPanel
+          title="Cardiology (direct)"
+          path="/dev/cardiology/stream"
+          badge="dev"
+          placeholder="Cardiology question — searches Swedish guidelines…"
+        />
         <RunPanel
           title="Pharmaceutical (direct)"
           path="/dev/pharmaceutical/stream"

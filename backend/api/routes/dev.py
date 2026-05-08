@@ -108,3 +108,17 @@ async def research_stream(
             capability=AgentCapability.RESEARCH,
         )
     )
+
+
+@router.post("/cardiology/stream")
+async def cardiology_stream(
+    body: DevQueryRequest, request: Request
+) -> EventSourceResponse:
+    return EventSourceResponse(
+        _stream_agent_graph(
+            request.app.state.cardiology_graph,
+            body,
+            agent_name="cardiology",
+            capability=AgentCapability.CARDIOLOGY,
+        )
+    )

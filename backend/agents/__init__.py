@@ -9,9 +9,9 @@ from .base import (
 )
 from .orchestrator import EvaluationAction, EvaluationDecision, ExpertAssignment, Orchestrator, RoutingDecision
 from ._stub import make_stub_agent
+from .cardiology import make_cardiology_expert, cardiology_expert
 from .research import make_research_expert, research_expert
 from .pharmaceutical import make_pharmaceutical_expert, pharmaceutical_expert
-from .cardio_expert import cardio_expert
 from ._factory import make_experts
 
 __all__ = [
@@ -23,6 +23,7 @@ __all__ = [
     "AgentRequest",
     "AgentResponse",
     "TraceStep",
+    "make_cardiology_expert",
     "make_research_expert",
     "make_pharmaceutical_expert",
     "EvaluationAction",
@@ -31,7 +32,7 @@ __all__ = [
     "Orchestrator",
     "RoutingDecision",
     "make_experts",
-    "cardio_expert",
+    "cardiology_expert",
     "pharmaceutical_expert",
     "research_expert",
 ]

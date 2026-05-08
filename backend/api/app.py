@@ -13,6 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from langchain_anthropic import ChatAnthropic
 
 from agents import Orchestrator, make_experts
+from agents.cardiology import build_cardiology_graph
 from agents.pharmaceutical import build_pharmaceutical_graph
 from agents.research import build_research_graph
 from graph import build_graph
@@ -33,6 +34,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
     app.state.graph = build_graph(Orchestrator(llm=llm), make_experts(llm))
     app.state.pharmaceutical_graph = build_pharmaceutical_graph(llm)
     app.state.research_graph = build_research_graph(llm)
+    app.state.cardiology_graph = build_cardiology_graph(llm)
     yield
 
 
