@@ -229,14 +229,6 @@ Remind user to consider:
 - Age — elderly more sensitive to interactions
 - Genetic factors — CYP2D6/2C19 poor metabolizers have altered interaction profiles
 
-## References
-
-For detailed reference material on specific interaction mechanisms and Swedish prescribing guidelines, see:
-- `references/cyp450-substrates.md` — CYP enzyme system substrate/inhibitor/inducer tables
-- `references/qt-prolonging-drugs.md` — Complete list of QT-prolonging medications
-- `references/bleeding-risk-combinations.md` — High-risk anticoagulant/antiplatelet combinations
-- `references/swedish-guidelines.md` — Links to Läkemedelsverket and regional guidelines
-
 ## Critical Rules
 
 1. **List KONTRAINDIKATION and MAJOR interactions first** — never bury life-threatening interactions
