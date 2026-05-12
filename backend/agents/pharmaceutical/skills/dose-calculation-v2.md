@@ -313,7 +313,7 @@ Before finalizing any dose recommendation:
 - [ ] Major drug interactions reviewed (FASS "Interaktioner")
 
 **Sources cited:**
-- [ ] FASS section referenced with exact quote
+- [ ] FASS section referenced with exact word by word quote with the link attached.
 - [ ] Swedish guidelines cited (Strama/Kloka listan if applicable)
 - [ ] Assumptions stated explicitly
 
