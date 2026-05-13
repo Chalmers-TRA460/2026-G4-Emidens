@@ -12,11 +12,12 @@ from agents._react import (
     REACT_CONFIDENCE,
     build_user_message,
     extract_citations,
+    extract_requested_inputs,
     extract_trace,
     final_answer,
 )
 
-from .tools import drug_label
+from .tools import REQUEST_INPUT_TOOL_NAME, fass_search, request_clinical_input
 
 _AGENT_NAME = "pharmaceutical"
 _SKILLS_DIR = Path(__file__).parent / "skills"
@@ -31,7 +32,15 @@ For a drug-related query, your job is to surface, in this order:
 2. Adverse effects — ranked by clinical relevance to the patient context, with serious effects always surfaced first.
 3. Interactions — drugs and conditions that contraindicate, modify, or require monitoring of the regimen.
 
-Always look up the drug via your tools before stating any clinical fact. Never guess values to fill missing patient inputs — name the missing input instead.
+Always look up the drug via your tools before stating any clinical fact. Never guess values to fill missing patient inputs.
+
+Using `fass_search` (your only FASS tool):
+- It is a semantic-search RAG endpoint over Swedish FASS labels, not a browseable SPC. You cannot navigate to a section directly — you query, you get the top-k most relevant label chunks back.
+- Phrase queries specifically, combining drug + topic (in Swedish where possible): "metoprolol dosering hjärtsvikt NYHA III", "apixaban interaktion NSAID", "amiodaron biverkningar lunga". A bare drug name will return shallow, unfocused chunks.
+- Each result is tagged with `lakemedel`, `substans`, `section` (e.g. "4.2 Dosering och administreringssätt"), and `atc_code`. Cite these tags when you reference a fact — e.g. "FASS, Metoprolol Teva, avsnitt 4.2". Do NOT fabricate fass.se URLs; the tool does not return links.
+- If the skills tell you to attach a FASS link or quote a section you have not retrieved, ignore that instruction — quote only from chunks `fass_search` actually returned, and re-query if you need a different section.
+
+If a clinical input is required to answer safely (e.g. weight for a weight-based dose, renal function for a renally-cleared drug) and it is missing from the clinical context, call the `request_clinical_input` tool with the specific fields you need before producing a recommendation. After the tool returns, end your turn with a short message naming what you need and why — do not guess values, and do not produce a dosing recommendation that depends on the missing inputs.
 
 ---
 
@@ -48,7 +57,11 @@ def build_pharmaceutical_graph(llm: BaseChatModel):
     backdoor route in `api/routes/dev.py` can stream tool events live;
     the orchestrator path uses `make_pharmaceutical_expert` instead."""
     system_prompt = _SYSTEM_HEADER + _load_skills()
-    return create_agent(model=llm, tools=[drug_label], system_prompt=system_prompt)
+    return create_agent(
+        model=llm,
+        tools=[fass_search, request_clinical_input],
+        system_prompt=system_prompt,
+    )
 
 
 def make_pharmaceutical_expert(llm: BaseChatModel) -> Agent:
@@ -65,6 +78,7 @@ def make_pharmaceutical_expert(llm: BaseChatModel) -> Agent:
             confidence=REACT_CONFIDENCE,
             reasoning_trace=extract_trace(messages, _AGENT_NAME),
             capability=_CAPABILITY,
+            requested_inputs=extract_requested_inputs(messages, REQUEST_INPUT_TOOL_NAME),
         )
 
     return _call  # type: ignore[return-value]
