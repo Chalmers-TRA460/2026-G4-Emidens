@@ -58,12 +58,13 @@ class AgentRequest(BaseModel):
 
 
 class AgentResponse(BaseModel):
-    answer:          str
-    citations:       list[Citation]
-    confidence:      float           = Field(ge=0.0, le=1.0)
-    reasoning_trace: list[TraceStep]
-    escalate:        bool            = False
-    capability:      AgentCapability
+    answer:           str
+    citations:        list[Citation]
+    confidence:       float           = Field(ge=0.0, le=1.0)
+    reasoning_trace:  list[TraceStep]
+    escalate:         bool            = False
+    capability:       AgentCapability
+    requested_inputs: list[str]       = Field(default_factory=list)
 
 
 @runtime_checkable

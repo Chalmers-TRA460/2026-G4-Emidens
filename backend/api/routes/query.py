@@ -11,7 +11,7 @@ from langgraph.graph.state import CompiledStateGraph
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
-from agents import AgentCapability, AgentRequest, AgentResponse
+from agents import AgentCapability, AgentRequest, AgentResponse, ClinicalContext
 from graph import (
     KEY_FINAL_RESPONSE,
     KEY_RESPONSES,
@@ -35,7 +35,8 @@ class SSEEvent(StrEnum):
 
 
 class QueryRequest(BaseModel):
-    query: str
+    query:            str
+    clinical_context: ClinicalContext | None = None
 
 
 def _emit(event: SSEEvent, data: Any) -> dict[str, str]:
@@ -54,6 +55,7 @@ def _serialize_response(r: AgentResponse) -> dict[str, Any]:
             {"agent": s.agent, "message": s.message, "time": s.formatted_time}
             for s in r.reasoning_trace
         ],
+        "requested_inputs": r.requested_inputs,
     }
 
 
@@ -107,5 +109,8 @@ async def _stream(
 
 @router.post("/query/stream")
 async def query_stream(body: QueryRequest, request: Request) -> EventSourceResponse:
-    agent_request = AgentRequest(query=body.query)
+    agent_request = AgentRequest(
+        query=body.query,
+        clinical_context=body.clinical_context or ClinicalContext(),
+    )
     return EventSourceResponse(_stream(request.app.state.graph, agent_request))

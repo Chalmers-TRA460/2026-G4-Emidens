@@ -9,15 +9,28 @@ function getBaseUrl(): string {
   return DEFAULT_BASE_URL;
 }
 
+export interface ClinicalContext {
+  age_years?:           number | null;
+  weight_kg?:           number | null;
+  active_conditions?:   string[];
+  current_medications?: string[];
+  renal_impairment?:    boolean;
+  hepatic_impairment?:  boolean;
+}
+
 export async function* streamQuery(
   query: string,
   signal?: AbortSignal,
   path: string = "/query/stream",
+  clinicalContext?: ClinicalContext,
 ): AsyncGenerator<StreamEvent> {
+  const body: Record<string, unknown> = { query };
+  if (clinicalContext) body.clinical_context = clinicalContext;
+
   const res = await fetch(`${getBaseUrl()}${path}`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "text/event-stream" },
-    body: JSON.stringify({ query }),
+    body: JSON.stringify(body),
     signal,
   });
 

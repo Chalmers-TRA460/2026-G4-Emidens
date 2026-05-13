@@ -35,6 +35,8 @@ def _emit(event: str, data: Any) -> dict[str, str]:
 
 
 def _final_payload(messages: list[Any], agent_name: str, capability: AgentCapability) -> dict[str, Any]:
+    from agents._react import extract_requested_inputs
+    from agents.pharmaceutical.tools import REQUEST_INPUT_TOOL_NAME
     return {
         "capability": capability.value,
         "answer": final_answer(messages),
@@ -45,6 +47,7 @@ def _final_payload(messages: list[Any], agent_name: str, capability: AgentCapabi
             {"agent": s.agent, "message": s.message, "time": s.formatted_time}
             for s in extract_trace(messages, agent_name)
         ],
+        "requested_inputs": extract_requested_inputs(messages, REQUEST_INPUT_TOOL_NAME),
     }
 
 

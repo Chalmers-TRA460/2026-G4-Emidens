@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { streamQuery } from "../api/stream";
+import { streamQuery, type ClinicalContext } from "../api/stream";
 import { SSE_EVENTS, type StreamEvent } from "../api/events";
 
 export type StreamStatus = "idle" | "streaming" | "done" | "error";
@@ -11,7 +11,7 @@ interface UseQueryStream {
   runId: string | null;
   query: string | null;
   startedAt: number | null;
-  submit: (query: string) => void;
+  submit: (query: string, clinicalContext?: ClinicalContext) => void;
   reset: () => void;
 }
 
@@ -40,7 +40,7 @@ export function useQueryStream(path: string = "/query/stream"): UseQueryStream {
     setStartedAt(null);
   }, []);
 
-  const submit = useCallback((nextQuery: string) => {
+  const submit = useCallback((nextQuery: string, clinicalContext?: ClinicalContext) => {
     controllerRef.current?.abort();
     const controller = new AbortController();
     controllerRef.current = controller;
@@ -54,7 +54,7 @@ export function useQueryStream(path: string = "/query/stream"): UseQueryStream {
 
     (async () => {
       try {
-        for await (const ev of streamQuery(nextQuery, controller.signal, path)) {
+        for await (const ev of streamQuery(nextQuery, controller.signal, path, clinicalContext)) {
           setEvents((prev) => [...prev, ev]);
           if (ev.type === SSE_EVENTS.DONE) break;
         }

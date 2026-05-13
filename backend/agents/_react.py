@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, ToolMessage
 
 from .base import AgentRequest, Citation, TraceStep
@@ -9,6 +11,27 @@ REACT_CONFIDENCE = 0.7  # TODO: replace with structured output confidence
 _CITATION_PREVIEW_LEN = 200
 _TRACE_CONTENT_LEN    = 300
 _TRACE_RESULT_LEN     = 200
+
+_NEEDS_INPUT_PATTERN = re.compile(r"<<NEEDS_INPUT:\s*([^>]+)>>")
+
+
+def extract_requested_inputs(messages: list[BaseMessage], tool_name: str) -> list[str]:
+    """Return the union of fields requested via the given input-request tool.
+    Tool result format: ``<<NEEDS_INPUT: field1,field2>>``."""
+    fields: list[str] = []
+    seen: set[str] = set()
+    for m in messages:
+        if not isinstance(m, ToolMessage) or m.name != tool_name:
+            continue
+        match = _NEEDS_INPUT_PATTERN.search(str(m.content))
+        if not match:
+            continue
+        for raw in match.group(1).split(","):
+            field = raw.strip()
+            if field and field not in seen:
+                seen.add(field)
+                fields.append(field)
+    return fields
 
 
 def extract_citations(messages: list[BaseMessage]) -> list[Citation]:

@@ -30,6 +30,7 @@ export interface ResponsePayload {
   escalate: boolean;
   citations: Citation[];
   trace: TraceStep[];
+  requested_inputs?: string[];
 }
 
 export interface RoutingAssignment {
