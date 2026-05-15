@@ -31,6 +31,7 @@ export async function* streamQuery(
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "text/event-stream" },
     body: JSON.stringify(body),
+    credentials: "include",
     signal,
   });
 
