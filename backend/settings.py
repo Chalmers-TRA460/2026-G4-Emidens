@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     ollama_base_url: str = "http://localhost:11434"
     api_host: str = "127.0.0.1"
     api_port: int = 8080
+    allowed_origin: str = "http://localhost:5173"
 
 
 settings = Settings()
