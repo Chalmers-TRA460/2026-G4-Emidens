@@ -49,3 +49,8 @@ app.add_middleware(
 
 app.include_router(query_router)
 app.include_router(dev_router, prefix="/dev")
+
+
+@app.get("/ping")
+async def ping() -> dict[str, str]:
+    return {"status": "ok"}
