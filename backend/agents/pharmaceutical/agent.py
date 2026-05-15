@@ -40,8 +40,6 @@ Using `fass_search` (your only FASS tool):
 - Each result is tagged with `lakemedel`, `substans`, `section` (e.g. "4.2 Dosering och administreringssätt"), and `atc_code`. Cite these tags when you reference a fact — e.g. "FASS, Metoprolol Teva, avsnitt 4.2". Do NOT fabricate fass.se URLs; the tool does not return links.
 - If the skills tell you to attach a FASS link or quote a section you have not retrieved, ignore that instruction — quote only from chunks `fass_search` actually returned, and re-query if you need a different section.
 
-If a clinical input is required to answer safely (e.g. weight for a weight-based dose, renal function for a renally-cleared drug) and it is missing from the clinical context, call the `request_clinical_input` tool with the specific fields you need before producing a recommendation. After the tool returns, end your turn with a short message naming what you need and why — do not guess values, and do not produce a dosing recommendation that depends on the missing inputs.
-
 ---
 
 """
@@ -59,7 +57,7 @@ def build_pharmaceutical_graph(llm: BaseChatModel):
     system_prompt = _SYSTEM_HEADER + _load_skills()
     return create_agent(
         model=llm,
-        tools=[fass_search, request_clinical_input],
+        tools=[fass_search],
         system_prompt=system_prompt,
     )
 
