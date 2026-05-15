@@ -13,7 +13,10 @@ export function Sidebar() {
   return (
     <div className="w-60 bg-[#0f1a2e] text-white flex flex-col h-full">
       <div className="px-5 pt-5 pb-4 mb-2 border-b border-white/20">
-        <div className="font-bold text-xl">Konsult</div>
+        <div className="flex items-center gap-3">
+          <img src="/logo.svg" alt="" className="w-7 h-7" />
+          <div className="font-bold text-xl">Konsult</div>
+        </div>
       </div>
 
       <nav className="flex-1 px-3">
