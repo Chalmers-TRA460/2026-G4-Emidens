@@ -11,10 +11,10 @@ export const SSE_EVENTS = {
 export type SSEEventType = typeof SSE_EVENTS[keyof typeof SSE_EVENTS];
 
 export interface Citation {
-  source: string;
-  section: string;
-  location: string;
-  confidence: number;
+  source:        string;
+  section:       string;
+  tool_call_id?: string;
+  confidence:    number;
 }
 
 export interface TraceStep {
@@ -47,14 +47,42 @@ export interface ReasoningPayload {
   text: string;
 }
 
+export interface GuidelineChunk {
+  chunk_id:     string;
+  doc_id:       number;
+  heading_path: string;
+  text:         string;
+  score:        number;
+}
+
+export interface FassChunk {
+  chunk_id:       string;
+  doc_folder:     string;
+  lakemedel:      string;
+  substans?:      string | null;
+  beredningsform: string;
+  section:        string;
+  atc_code:       string;
+  content:        string;
+  score:          number;
+}
+
+export type ToolArtifact =
+  | { kind: "guidelines"; query: string; results: GuidelineChunk[] }
+  | { kind: "fass";       query: string; results: FassChunk[] }
+  | { kind: "drug_label"; drug_name: string; sections: Record<string, string> };
+
 export interface ToolCallPayload {
   tool: string;
   input: unknown;
+  tool_call_id?: string;
 }
 
 export interface ToolResultPayload {
   tool: string;
   output: unknown;
+  tool_call_id?: string;
+  artifact?: ToolArtifact | null;
 }
 
 export type StreamEvent =

@@ -102,6 +102,7 @@ export const mockAgentCards: AgentCardData[] = [
 3. Extract cardiovascular mortality outcomes and subgroup analyses
 4. Compare efficacy in diabetic vs non-diabetic populations
 5. Synthesize safety profile and clinical implications`,
+    citations: [],
   },
   {
     agentName: "Evidence Agent",
@@ -110,6 +111,7 @@ export const mockAgentCards: AgentCardData[] = [
     content: `**Search Query:** \`"SGLT2 inhibitors AND heart failure reduced ejection fraction AND cardiovascular mortality"\`
 
 > **Found 23 relevant studies** — including 2 landmark trials (EMPEROR-Reduced, DAPA-HF) and 4 meta-analyses.`,
+    citations: [],
   },
   {
     agentName: "Analysis Agent",
@@ -123,6 +125,7 @@ export const mockAgentCards: AgentCardData[] = [
 **Subgroup Analysis:**
 
 > Benefit consistent in diabetic vs non-diabetic patients (P=0.28 for interaction).`,
+    citations: [],
   },
   {
     agentName: "Summary Agent",
@@ -131,5 +134,6 @@ export const mockAgentCards: AgentCardData[] = [
     content: `**Clinical Conclusion:**
 
 SGLT2 inhibitors demonstrate robust evidence for reducing cardiovascular events in HFrEF patients, with benefits consistent regardless of diabetes status. Class I recommendation for HFrEF patients with NYHA Class II–IV symptoms.`,
+    citations: [],
   },
 ];

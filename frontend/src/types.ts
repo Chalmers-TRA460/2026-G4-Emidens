@@ -1,3 +1,5 @@
+import type { Citation } from './api/events';
+
 export type RunStatus = 'running' | 'completed' | 'failed';
 
 export type AgentColor = 'blue' | 'green' | 'yellow' | 'purple';
@@ -21,6 +23,7 @@ export interface AgentCardData {
   timestamp: string;
   color: AgentColor;
   content: string;
+  citations: Citation[];
 }
 
 export interface SourceData {

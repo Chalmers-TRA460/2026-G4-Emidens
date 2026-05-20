@@ -135,6 +135,7 @@ export function NewRunPage() {
           runOverview={derived.runOverview}
           agentCards={derived.agentCards}
           events={events}
+          toolResults={derived.toolResults}
         />
       ) : null}
 

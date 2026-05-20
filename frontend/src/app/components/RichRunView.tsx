@@ -1,10 +1,10 @@
-import { useState, type ReactNode } from "react";
-import type { StreamEvent } from "../../api/events";
+import { useEffect, useState } from "react";
+import type { Citation, StreamEvent, ToolResultPayload } from "../../api/events";
 import type { AgentCardData, RunOverviewData } from "../../types";
 import { AgentResponses } from "./AgentResponses";
 import { RunOverview } from "./RunOverview";
 import { EventView } from "./live/EventView";
-import { DocumentPlaceholder } from "./DocumentPlaceholder";
+import { DocumentPanel } from "./DocumentPanel";
 import { ResizableThreeColumns } from "./ResizableThreeColumns";
 
 type TabId = "responses" | "conversation";
@@ -18,16 +18,19 @@ interface RichRunViewProps {
   runOverview: RunOverviewData;
   agentCards: AgentCardData[];
   events: StreamEvent[];
-  documentSlot?: ReactNode;
+  toolResults: Map<string, ToolResultPayload>;
 }
 
 export function RichRunView({
   runOverview,
   agentCards,
   events,
-  documentSlot,
+  toolResults,
 }: RichRunViewProps) {
   const [activeTab, setActiveTab] = useState<TabId>("responses");
+  const [selected, setSelected] = useState<Citation | null>(null);
+
+  useEffect(() => setSelected(null), [runOverview.runId]);
 
   return (
     <ResizableThreeColumns
@@ -66,7 +69,11 @@ export function RichRunView({
                   Waiting for expert responses…
                 </div>
               ) : (
-                <AgentResponses agents={agentCards} />
+                <AgentResponses
+                  agents={agentCards}
+                  selected={selected}
+                  onSelect={setSelected}
+                />
               )
             ) : (
               <ConversationStream events={events} />
@@ -74,7 +81,13 @@ export function RichRunView({
           </div>
         </div>
       }
-      right={documentSlot ?? <DocumentPlaceholder />}
+      right={
+        <DocumentPanel
+          selected={selected}
+          toolResults={toolResults}
+          onClose={() => setSelected(null)}
+        />
+      }
     />
   );
 }

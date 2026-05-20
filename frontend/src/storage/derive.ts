@@ -1,6 +1,11 @@
-import { SSE_EVENTS, type StreamEvent, type ResponsePayload } from "../api/events";
+import {
+  SSE_EVENTS,
+  type StreamEvent,
+  type ResponsePayload,
+  type ToolResultPayload,
+} from "../api/events";
 import type { AgentCardData, AgentColor, RunOverviewData, TimelineStep } from "../types";
-import { formatDuration, formatStarted } from "./format";
+import { formatDuration, formatStarted, humanize } from "./format";
 
 const AGENT_COLORS: AgentColor[] = ["blue", "green", "yellow", "purple"];
 
@@ -17,10 +22,7 @@ export interface DeriveInput {
 export interface DerivedSessionView {
   runOverview: RunOverviewData;
   agentCards: AgentCardData[];
-}
-
-function capitalize(s: string): string {
-  return s.length === 0 ? s : s[0].toUpperCase() + s.slice(1);
+  toolResults: Map<string, ToolResultPayload>;
 }
 
 function timeFromTrace(payload: ResponsePayload, fallback: number): string {
@@ -36,23 +38,12 @@ function timeFromTrace(payload: ResponsePayload, fallback: number): string {
 }
 
 function agentLabel(capability: string): string {
-  return `${capitalize(capability)} Expert`;
-}
-
-function formatResponseContent(payload: ResponsePayload): string {
-  const lines = [payload.answer.trim()];
-  if (payload.citations.length > 0) {
-    lines.push("");
-    lines.push("**Citations:**");
-    for (const c of payload.citations) {
-      lines.push(`- ${c.source} — ${c.section}`);
-    }
-  }
-  return lines.join("\n");
+  return `${humanize(capability)} Expert`;
 }
 
 export function deriveSessionView(input: DeriveInput): DerivedSessionView {
   const expertEvents: { capability: string; payload: ResponsePayload }[] = [];
+  const toolResults = new Map<string, ToolResultPayload>();
   let finalEvent: ResponsePayload | undefined;
   let routingPresent = false;
 
@@ -63,6 +54,8 @@ export function deriveSessionView(input: DeriveInput): DerivedSessionView {
       expertEvents.push({ capability: ev.data.capability, payload: ev.data });
     } else if (ev.type === SSE_EVENTS.FINAL) {
       finalEvent = ev.data;
+    } else if (ev.type === SSE_EVENTS.TOOL_RESULT && ev.data.tool_call_id) {
+      toolResults.set(ev.data.tool_call_id, ev.data);
     }
   }
 
@@ -70,7 +63,8 @@ export function deriveSessionView(input: DeriveInput): DerivedSessionView {
     agentName: agentLabel(e.capability),
     timestamp: timeFromTrace(e.payload, input.startedAt),
     color: AGENT_COLORS[i % AGENT_COLORS.length],
-    content: formatResponseContent(e.payload),
+    content: e.payload.answer.trim(),
+    citations: e.payload.citations,
   }));
 
   if (finalEvent) {
@@ -78,7 +72,8 @@ export function deriveSessionView(input: DeriveInput): DerivedSessionView {
       agentName: "Synthesis",
       timestamp: timeFromTrace(finalEvent, input.finishedAt ?? Date.now()),
       color: AGENT_COLORS[agentCards.length % AGENT_COLORS.length],
-      content: formatResponseContent(finalEvent),
+      content: finalEvent.answer.trim(),
+      citations: finalEvent.citations,
     });
   }
 
@@ -132,5 +127,5 @@ export function deriveSessionView(input: DeriveInput): DerivedSessionView {
     timeline,
   };
 
-  return { runOverview, agentCards };
+  return { runOverview, agentCards, toolResults };
 }

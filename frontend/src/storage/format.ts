@@ -26,3 +26,15 @@ export function formatStarted(epochMs: number): string {
     minute: "2-digit",
   });
 }
+
+export function humanize(snake: string): string {
+  return snake
+    .split("_")
+    .filter((w) => w.length > 0)
+    .map((w) => w[0].toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
+export function formatConfidence(value: number): string {
+  return `${Math.round(value * 100)}%`;
+}

@@ -49,7 +49,7 @@ export function SessionDetailPage() {
 
 function StoredSessionView({ session }: { session: StoredSession }) {
   const status = session.status === 'completed' ? 'completed' : 'failed';
-  const { runOverview, agentCards } = deriveSessionView({
+  const { runOverview, agentCards, toolResults } = deriveSessionView({
     id: session.id,
     startedAt: session.startedAt,
     finishedAt: session.finishedAt,
@@ -72,6 +72,7 @@ function StoredSessionView({ session }: { session: StoredSession }) {
         runOverview={runOverview}
         agentCards={agentCards}
         events={session.events}
+        toolResults={toolResults}
       />
     </div>
   );

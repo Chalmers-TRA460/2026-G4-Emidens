@@ -2,6 +2,7 @@ import { AgentCard } from "../AgentCard";
 import { Markdown } from "../Markdown";
 import type { ResponsePayload } from "../../../api/events";
 import type { AgentColor } from "../../../types";
+import { formatConfidence, humanize } from "../../../storage/format";
 
 const COLOR_BY_CAPABILITY: Record<string, AgentColor> = {
   cardiology:     "blue",
@@ -16,8 +17,8 @@ interface ExpertResponseCardProps {
 
 export function ExpertResponseCard({ payload, isFinal = false }: ExpertResponseCardProps) {
   const color = COLOR_BY_CAPABILITY[payload.capability] ?? "blue";
-  const name = isFinal ? "Final Answer" : prettyCapability(payload.capability);
-  const timestamp = `confidence ${payload.confidence.toFixed(2)}${payload.escalate ? " · escalate" : ""}`;
+  const name = isFinal ? "Final Answer" : humanize(payload.capability);
+  const timestamp = `confidence ${formatConfidence(payload.confidence)}${payload.escalate ? " · escalate" : ""}`;
 
   return (
     <AgentCard agentName={name} timestamp={timestamp} color={color} defaultExpanded={true}>
@@ -57,6 +58,3 @@ export function ExpertResponseCard({ payload, isFinal = false }: ExpertResponseC
   );
 }
 
-function prettyCapability(cap: string): string {
-  return cap.split("_").map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join(" ");
-}
