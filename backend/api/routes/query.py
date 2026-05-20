@@ -69,13 +69,24 @@ async def _stream(
         data = ev.get("data", {})
 
         if kind == "on_tool_start":
-            yield _emit(SSEEvent.TOOL_CALL, {"tool": name, "input": data.get("input")})
+            yield _emit(SSEEvent.TOOL_CALL, {
+                "tool": name,
+                "input": data.get("input"),
+                "tool_call_id": ev.get("run_id"),
+            })
             continue
 
         if kind == "on_tool_end":
             output = data.get("output")
             content = getattr(output, "content", output)
-            yield _emit(SSEEvent.TOOL_RESULT, {"tool": name, "output": content})
+            tool_call_id = getattr(output, "tool_call_id", None)
+            artifact = getattr(output, "artifact", None)
+            yield _emit(SSEEvent.TOOL_RESULT, {
+                "tool": name,
+                "output": content,
+                "tool_call_id": tool_call_id,
+                "artifact": artifact.model_dump() if artifact is not None else None,
+            })
             continue
 
         if kind != "on_chain_end":

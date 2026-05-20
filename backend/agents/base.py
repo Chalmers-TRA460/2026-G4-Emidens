@@ -29,10 +29,10 @@ class ClinicalContext(BaseModel):
 
 
 class Citation(BaseModel):
-    source:     str
-    section:    str
-    location:   str
-    confidence: float = Field(ge=0.0, le=1.0)
+    source:       str
+    section:      str
+    tool_call_id: str | None = None
+    confidence:   float = Field(ge=0.0, le=1.0)
 
 
 class TraceStep(BaseModel):

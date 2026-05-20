@@ -3,6 +3,7 @@ from __future__ import annotations
 import httpx
 from langchain_core.tools import tool
 
+from agents._artifacts import FassArtifact, FassChunk
 from settings import settings
 
 _BASE_URL = "https://konsulten-intelligence-gaf4gqgwbvgcgca8.swedencentral-01.azurewebsites.net/external/fass/search"
@@ -12,21 +13,21 @@ _MAX_TOP_K = 10
 _MAX_CHUNK_CHARS = 1500
 
 
-def _format_chunk(chunk: dict) -> str:
-    drug = chunk.get("lakemedel") or "Okänt läkemedel"
-    section = chunk.get("section") or "Okänd sektion"
+def _format_chunk(chunk: FassChunk) -> str:
+    drug = chunk.lakemedel or "Okänt läkemedel"
+    section = chunk.section or "Okänd sektion"
     header = f"## {drug} — {section}"
 
     meta: list[str] = []
-    if (atc := chunk.get("atc_code")):
-        meta.append(f"ATC: {atc}")
-    if (form := chunk.get("beredningsform")):
-        meta.append(f"Beredningsform: {form}")
-    if (sub := chunk.get("substans")):
-        meta.append(f"Substans: {sub}")
+    if chunk.atc_code:
+        meta.append(f"ATC: {chunk.atc_code}")
+    if chunk.beredningsform:
+        meta.append(f"Beredningsform: {chunk.beredningsform}")
+    if chunk.substans:
+        meta.append(f"Substans: {chunk.substans}")
     meta_line = " | ".join(meta)
 
-    content = (chunk.get("content") or "").strip()
+    content = chunk.content.strip()
     if len(content) > _MAX_CHUNK_CHARS:
         content = content[:_MAX_CHUNK_CHARS] + "…"
 
@@ -38,8 +39,8 @@ def _format_chunk(chunk: dict) -> str:
     return "\n".join(parts)
 
 
-@tool
-def fass_search(query: str, top_k: int = _DEFAULT_TOP_K) -> str:
+@tool(response_format="content_and_artifact")
+def fass_search(query: str, top_k: int = _DEFAULT_TOP_K) -> tuple[str, FassArtifact]:
     """Search Swedish FASS drug labels (Läkemedelsfakta) with a natural-language question.
 
     Use this for any Swedish-regulatory drug question: dosing, indications, contraindications,
@@ -62,6 +63,9 @@ def fass_search(query: str, top_k: int = _DEFAULT_TOP_K) -> str:
         response = client.post(_BASE_URL, headers=headers, json=payload)
     response.raise_for_status()
     results = response.json().get("results") or []
-    if not results:
-        return f"No FASS results for query: {query!r}."
-    return "\n\n".join(_format_chunk(r) for r in results)
+    chunks = [FassChunk(**r) for r in results]
+    artifact = FassArtifact(query=query, results=chunks)
+    if not chunks:
+        return (f"No FASS results for query: {query!r}.", artifact)
+    content = "\n\n".join(_format_chunk(c) for c in chunks)
+    return (content, artifact)

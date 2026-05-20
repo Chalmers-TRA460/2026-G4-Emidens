@@ -3,6 +3,8 @@ from __future__ import annotations
 import httpx
 from langchain_core.tools import tool
 
+from agents._artifacts import DrugLabelArtifact
+
 # TODO: supplement with FASS for Swedish-regulatory alignment.
 # openFDA covers US labels and is API-key-free, can we use it partily? I will use it to begin with for getting the agent running.
 
@@ -37,8 +39,8 @@ def _format_label(record: dict) -> str:
     return "\n\n".join(parts) if parts else "Label found but contained none of the requested sections."
 
 
-@tool
-def drug_label(drug_name: str) -> str:
+@tool(response_format="content_and_artifact")
+def drug_label(drug_name: str) -> tuple[str, DrugLabelArtifact]:
     """Look up a drug's regulatory label by name. Returns indications, dosage, contraindications,
     warnings, drug interactions, and adverse reactions in that order.
 
@@ -50,10 +52,17 @@ def drug_label(drug_name: str) -> str:
     params = {"search": f"openfda.generic_name:{safe_name}", "limit": _LABEL_LIMIT}
     with httpx.Client(timeout=_TIMEOUT_S) as client:
         response = client.get(_BASE_URL, params=params)
+    empty = DrugLabelArtifact(drug_name=drug_name, sections={})
     if response.status_code == 404:
-        return f"No openFDA label found for '{drug_name}'."
+        return (f"No openFDA label found for '{drug_name}'.", empty)
     response.raise_for_status()
     results = response.json().get("results") or []
     if not results:
-        return f"No openFDA label found for '{drug_name}'."
-    return _format_label(results[0])
+        return (f"No openFDA label found for '{drug_name}'.", empty)
+    record = results[0]
+    sections = {
+        s: text for s in _SECTIONS
+        if (text := _section_text(record, s)) is not None
+    }
+    artifact = DrugLabelArtifact(drug_name=drug_name, sections=sections)
+    return (_format_label(record), artifact)

@@ -9,8 +9,8 @@ from .base import AgentRequest, Citation, TraceStep
 REACT_CONFIDENCE = 0.7  # TODO: replace with structured output confidence
 
 _CITATION_PREVIEW_LEN = 200
-_TRACE_CONTENT_LEN    = 300
-_TRACE_RESULT_LEN     = 200
+_TRACE_CONTENT_LEN = 300
+_TRACE_RESULT_LEN = 200
 
 _NEEDS_INPUT_PATTERN = re.compile(r"<<NEEDS_INPUT:\s*([^>]+)>>")
 
@@ -39,7 +39,7 @@ def extract_citations(messages: list[BaseMessage]) -> list[Citation]:
         Citation(
             source=m.name or "tool",
             section=str(m.content)[:_CITATION_PREVIEW_LEN],
-            location=f"tool_call_id:{m.tool_call_id}",
+            tool_call_id=m.tool_call_id,
             confidence=REACT_CONFIDENCE,
         )
         for m in messages
@@ -51,15 +51,35 @@ def extract_trace(messages: list[BaseMessage], agent_name: str) -> list[TraceSte
     steps: list[TraceStep] = []
     for m in messages:
         if isinstance(m, HumanMessage):
-            steps.append(TraceStep(agent=agent_name, message=f"Input: {str(m.content)[:_TRACE_CONTENT_LEN]}"))
+            steps.append(
+                TraceStep(
+                    agent=agent_name,
+                    message=f"Input: {str(m.content)[:_TRACE_CONTENT_LEN]}",
+                )
+            )
         elif isinstance(m, AIMessage):
             if m.tool_calls:
                 for tc in m.tool_calls:
-                    steps.append(TraceStep(agent=agent_name, message=f"Tool call: {tc['name']}({tc['args']})"))
+                    steps.append(
+                        TraceStep(
+                            agent=agent_name,
+                            message=f"Tool call: {tc['name']}({tc['args']})",
+                        )
+                    )
             elif m.content:
-                steps.append(TraceStep(agent=agent_name, message=f"Reasoning: {str(m.content)[:_TRACE_CONTENT_LEN]}"))
+                steps.append(
+                    TraceStep(
+                        agent=agent_name,
+                        message=f"Reasoning: {str(m.content)[:_TRACE_CONTENT_LEN]}",
+                    )
+                )
         elif isinstance(m, ToolMessage):
-            steps.append(TraceStep(agent=agent_name, message=f"Tool result [{m.name}]: {str(m.content)[:_TRACE_RESULT_LEN]}"))
+            steps.append(
+                TraceStep(
+                    agent=agent_name,
+                    message=f"Tool result [{m.name}]: {str(m.content)[:_TRACE_RESULT_LEN]}",
+                )
+            )
     return steps
 
 
@@ -73,6 +93,10 @@ def final_answer(messages: list[BaseMessage]) -> str:
     for m in reversed(messages):
         if isinstance(m, AIMessage) and m.content and not m.tool_calls:
             if isinstance(m.content, list):
-                return "".join(b["text"] for b in m.content if b.get("type") == "text")
+                return "".join(
+                    b["text"]
+                    for b in m.content
+                    if isinstance(b, dict) and b.get("type") == "text"
+                )
             return str(m.content)
     return "[no answer produced]"

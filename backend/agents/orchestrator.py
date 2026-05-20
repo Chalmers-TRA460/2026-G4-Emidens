@@ -56,10 +56,8 @@ Expert responses:
 {responses}
 
 Rules:
-- Attribute every claim to its source citations
 - If experts contradict each other, flag it explicitly in the answer
 - Set escalate=True if any expert escalated or if overall confidence is below {threshold}
-- Include all citations from all experts
 - Be concise — this answer goes directly to a clinician under time pressure
 """
 
@@ -87,7 +85,6 @@ class EvaluationDecision(BaseModel):
 
 class _SynthesisOutput(BaseModel):
     answer:          str
-    citations:       list[Citation]
     confidence:      float
     reasoning_trace: list[str]
     escalate:        bool = False
@@ -154,10 +151,11 @@ class Orchestrator:
         expert_escalated = any(r.escalate for r in responses)
         fallback_cap = routing.assignments[0].capability if routing.assignments else AgentCapability.CARDIOLOGY
         primary_cap = max(responses, key=lambda r: r.confidence).capability if responses else fallback_cap
+        all_citations: list[Citation] = list(chain.from_iterable(r.citations for r in responses))
 
         return AgentResponse(
             answer=result.answer,
-            citations=result.citations,
+            citations=all_citations,
             confidence=result.confidence,
             reasoning_trace=full_trace,
             escalate=result.escalate or expert_escalated or result.confidence < ESCALATE_CONFIDENCE_THRESHOLD,
