@@ -8,7 +8,8 @@ from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import HumanMessage
 
 from agents.base import Agent, AgentCapability, AgentRequest, AgentResponse
-from agents._react import REACT_CONFIDENCE, build_user_message, extract_citations, extract_trace, final_answer
+from agents._react import build_user_message, extract_citations, extract_trace, final_answer
+from agents.confidence import research_confidence
 from .tools import pubmed_tool
 
 _AGENT_NAME = AgentCapability.RESEARCH.value
@@ -50,7 +51,7 @@ def make_research_expert(llm: BaseChatModel) -> Agent:
         return AgentResponse(
             answer=final_answer(messages),
             citations=extract_citations(messages),
-            confidence=REACT_CONFIDENCE,
+            confidence=research_confidence(messages, request),
             reasoning_trace=extract_trace(messages, _AGENT_NAME),
             capability=AgentCapability.RESEARCH,
         )

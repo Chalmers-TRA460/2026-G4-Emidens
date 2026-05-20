@@ -9,13 +9,13 @@ from langchain_core.messages import HumanMessage
 
 from agents.base import Agent, AgentCapability, AgentRequest, AgentResponse
 from agents._react import (
-    REACT_CONFIDENCE,
     build_user_message,
     extract_citations,
     extract_requested_inputs,
     extract_trace,
     final_answer,
 )
+from agents.confidence import pharmaceutical_confidence
 
 from .tools import REQUEST_INPUT_TOOL_NAME, fass_search, request_clinical_input
 
@@ -73,7 +73,7 @@ def make_pharmaceutical_expert(llm: BaseChatModel) -> Agent:
         return AgentResponse(
             answer=final_answer(messages),
             citations=extract_citations(messages),
-            confidence=REACT_CONFIDENCE,
+            confidence=pharmaceutical_confidence(messages, request),
             reasoning_trace=extract_trace(messages, _AGENT_NAME),
             capability=_CAPABILITY,
             requested_inputs=extract_requested_inputs(messages, REQUEST_INPUT_TOOL_NAME),
