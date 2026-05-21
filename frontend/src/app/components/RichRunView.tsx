@@ -29,8 +29,14 @@ export function RichRunView({
 }: RichRunViewProps) {
   const [activeTab, setActiveTab] = useState<TabId>("responses");
   const [selected, setSelected] = useState<Citation | null>(null);
+  const [docCollapsed, setDocCollapsed] = useState(true);
 
   useEffect(() => setSelected(null), [runOverview.runId]);
+
+  const handleSelectCitation = (c: Citation) => {
+    setSelected(c);
+    setDocCollapsed(false);
+  };
 
   return (
     <ResizableThreeColumns
@@ -72,7 +78,7 @@ export function RichRunView({
                 <AgentResponses
                   agents={agentCards}
                   selected={selected}
-                  onSelect={setSelected}
+                  onSelect={handleSelectCitation}
                 />
               )
             ) : (
@@ -82,12 +88,16 @@ export function RichRunView({
         </div>
       }
       right={
-        <DocumentPanel
-          selected={selected}
-          toolResults={toolResults}
-          onClose={() => setSelected(null)}
-        />
+        docCollapsed ? null : (
+          <DocumentPanel
+            selected={selected}
+            toolResults={toolResults}
+            onClose={() => setSelected(null)}
+            onCollapse={() => setDocCollapsed(true)}
+          />
+        )
       }
+      onExpandRight={() => setDocCollapsed(false)}
     />
   );
 }

@@ -16,7 +16,14 @@ export function AgentResponses({ agents, selected = null, onSelect = noop }: Age
   return (
     <div className="space-y-3">
       {agents.map((agent, i) => (
-        <AgentCard key={i} agentName={agent.agentName} timestamp={agent.timestamp} color={agent.color}>
+        <AgentCard
+          key={i}
+          agentName={agent.agentName}
+          timestamp={agent.timestamp}
+          color={agent.color}
+          confidence={agent.confidence}
+          defaultExpanded={agent.isFinal}
+        >
           <Markdown>{agent.content}</Markdown>
           <CitationList
             citations={agent.citations}

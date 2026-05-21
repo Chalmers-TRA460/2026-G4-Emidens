@@ -103,6 +103,8 @@ export const mockAgentCards: AgentCardData[] = [
 4. Compare efficacy in diabetic vs non-diabetic populations
 5. Synthesize safety profile and clinical implications`,
     citations: [],
+    confidence: 0.82,
+    isFinal: false,
   },
   {
     agentName: "Evidence Agent",
@@ -112,6 +114,8 @@ export const mockAgentCards: AgentCardData[] = [
 
 > **Found 23 relevant studies** — including 2 landmark trials (EMPEROR-Reduced, DAPA-HF) and 4 meta-analyses.`,
     citations: [],
+    confidence: 0.78,
+    isFinal: false,
   },
   {
     agentName: "Analysis Agent",
@@ -126,6 +130,8 @@ export const mockAgentCards: AgentCardData[] = [
 
 > Benefit consistent in diabetic vs non-diabetic patients (P=0.28 for interaction).`,
     citations: [],
+    confidence: 0.71,
+    isFinal: false,
   },
   {
     agentName: "Summary Agent",
@@ -135,5 +141,7 @@ export const mockAgentCards: AgentCardData[] = [
 
 SGLT2 inhibitors demonstrate robust evidence for reducing cardiovascular events in HFrEF patients, with benefits consistent regardless of diabetes status. Class I recommendation for HFrEF patients with NYHA Class II–IV symptoms.`,
     citations: [],
+    confidence: 0.88,
+    isFinal: true,
   },
 ];

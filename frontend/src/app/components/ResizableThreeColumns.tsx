@@ -1,4 +1,5 @@
 import { useRef, useState, type ReactNode } from "react";
+import { PanelRightOpen } from "lucide-react";
 
 const MIN_SIDE_PCT = 12;
 const MIN_CENTER_PCT = 25;
@@ -6,9 +7,10 @@ const MIN_CENTER_PCT = 25;
 interface ResizableThreeColumnsProps {
   left: ReactNode;
   center: ReactNode;
-  right: ReactNode;
+  right: ReactNode | null;
   initialLeftPct?: number;
   initialRightPct?: number;
+  onExpandRight?: () => void;
 }
 
 export function ResizableThreeColumns({
@@ -17,6 +19,7 @@ export function ResizableThreeColumns({
   right,
   initialLeftPct = 20,
   initialRightPct = 35,
+  onExpandRight,
 }: ResizableThreeColumnsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [leftPct, setLeftPct] = useState(initialLeftPct);
@@ -41,7 +44,7 @@ export function ResizableThreeColumns({
         const xPct = ((ev.clientX - rect.left) / rect.width) * 100;
 
         if (which === "left") {
-          const cap = 100 - rightPctRef.current - MIN_CENTER_PCT;
+          const cap = 100 - (right ? rightPctRef.current : 0) - MIN_CENTER_PCT;
           const next = Math.max(MIN_SIDE_PCT, Math.min(cap, xPct));
           setLeftPct(next);
         } else {
@@ -77,13 +80,19 @@ export function ResizableThreeColumns({
       </div>
       <ResizeHandle onPointerDown={startDrag("left")} />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">{center}</div>
-      <ResizeHandle onPointerDown={startDrag("right")} />
-      <div
-        style={{ width: `${rightPct}%` }}
-        className="flex flex-col min-w-0 overflow-hidden"
-      >
-        {right}
-      </div>
+      {right ? (
+        <>
+          <ResizeHandle onPointerDown={startDrag("right")} />
+          <div
+            style={{ width: `${rightPct}%` }}
+            className="flex flex-col min-w-0 overflow-hidden"
+          >
+            {right}
+          </div>
+        </>
+      ) : onExpandRight ? (
+        <ExpandTab onClick={onExpandRight} />
+      ) : null}
     </div>
   );
 }
@@ -102,5 +111,17 @@ function ResizeHandle({
     >
       <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-px bg-gray-200 group-hover:bg-blue-400 group-active:bg-blue-600 transition-colors" />
     </div>
+  );
+}
+
+function ExpandTab({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      aria-label="Expand document panel"
+      className="ml-2 flex flex-col items-center justify-center w-6 rounded-md border border-gray-200 bg-white text-gray-500 hover:text-blue-600 hover:border-blue-300 transition-colors"
+    >
+      <PanelRightOpen className="w-4 h-4" />
+    </button>
   );
 }

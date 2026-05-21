@@ -1,4 +1,4 @@
-import { X } from 'lucide-react';
+import { X, PanelRightClose } from 'lucide-react';
 import type { Citation, ToolArtifact, ToolResultPayload } from '../../api/events';
 import { formatConfidence, humanize } from '../../storage/format';
 import { DocumentPlaceholder } from './DocumentPlaceholder';
@@ -8,10 +8,11 @@ interface DocumentPanelProps {
   selected:    Citation | null;
   toolResults: Map<string, ToolResultPayload>;
   onClose:     () => void;
+  onCollapse:  () => void;
 }
 
-export function DocumentPanel({ selected, toolResults, onClose }: DocumentPanelProps) {
-  if (!selected) return <DocumentPlaceholder />;
+export function DocumentPanel({ selected, toolResults, onClose, onCollapse }: DocumentPanelProps) {
+  if (!selected) return <DocumentPlaceholder onCollapse={onCollapse} />;
   const result = selected.tool_call_id ? toolResults.get(selected.tool_call_id) : undefined;
 
   return (
@@ -23,13 +24,22 @@ export function DocumentPanel({ selected, toolResults, onClose }: DocumentPanelP
             confidence {formatConfidence(selected.confidence)}
           </div>
         </div>
-        <button
-          onClick={onClose}
-          aria-label="Close preview"
-          className="text-gray-400 hover:text-gray-700 shrink-0"
-        >
-          <X className="w-4 h-4" />
-        </button>
+        <div className="flex items-center gap-1 shrink-0">
+          <button
+            onClick={onClose}
+            aria-label="Close preview"
+            className="p-1 text-gray-400 hover:text-gray-700"
+          >
+            <X className="w-4 h-4" />
+          </button>
+          <button
+            onClick={onCollapse}
+            aria-label="Collapse document panel"
+            className="p-1 text-gray-400 hover:text-gray-700"
+          >
+            <PanelRightClose className="w-4 h-4" />
+          </button>
+        </div>
       </header>
       <div className="flex-1 overflow-y-auto p-4">
         <ToolResultBody citation={selected} result={result} />

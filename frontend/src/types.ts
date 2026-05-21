@@ -24,6 +24,8 @@ export interface AgentCardData {
   color: AgentColor;
   content: string;
   citations: Citation[];
+  confidence: number;
+  isFinal: boolean;
 }
 
 export interface SourceData {

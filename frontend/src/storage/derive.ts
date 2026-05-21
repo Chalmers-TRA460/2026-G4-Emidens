@@ -65,6 +65,8 @@ export function deriveSessionView(input: DeriveInput): DerivedSessionView {
     color: AGENT_COLORS[i % AGENT_COLORS.length],
     content: e.payload.answer.trim(),
     citations: e.payload.citations,
+    confidence: e.payload.confidence,
+    isFinal: false,
   }));
 
   if (finalEvent) {
@@ -74,6 +76,8 @@ export function deriveSessionView(input: DeriveInput): DerivedSessionView {
       color: AGENT_COLORS[agentCards.length % AGENT_COLORS.length],
       content: finalEvent.answer.trim(),
       citations: finalEvent.citations,
+      confidence: finalEvent.confidence,
+      isFinal: true,
     });
   }
 

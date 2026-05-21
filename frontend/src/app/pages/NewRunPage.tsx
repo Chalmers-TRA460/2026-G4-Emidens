@@ -3,6 +3,7 @@ import { useQueryStream } from "../../hooks/useQueryStream";
 import type { ClinicalContext } from "../../api/stream";
 import { SSE_EVENTS } from "../../api/events";
 import { QueryInput } from "../components/live/QueryInput";
+import { WelcomeView } from "../components/live/WelcomeView";
 import { RichRunView } from "../components/RichRunView";
 import { ClinicalInputForm } from "../components/live/ClinicalInputForm";
 import { save as saveSession } from "../../storage/sessions";
@@ -125,11 +126,7 @@ export function NewRunPage() {
       )}
 
       {!hasStarted ? (
-        <div className="flex-1 p-5 overflow-y-auto">
-          <div className="max-w-3xl mx-auto">
-            <QueryInput onSubmit={submit} disabled={false} />
-          </div>
-        </div>
+        <WelcomeView onSubmit={submit} />
       ) : derived ? (
         <RichRunView
           runOverview={derived.runOverview}
@@ -140,7 +137,7 @@ export function NewRunPage() {
       ) : null}
 
       {hasStarted && status !== "streaming" && !showInputForm && (
-        <div className="border-t border-gray-200 bg-white p-4">
+        <div className="border-t border-gray-200 bg-white px-6 py-2">
           <div className="max-w-3xl mx-auto">
             <QueryInput onSubmit={submit} disabled={false} />
           </div>
