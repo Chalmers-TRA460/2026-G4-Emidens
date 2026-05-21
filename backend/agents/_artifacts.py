@@ -41,3 +41,24 @@ class DrugLabelArtifact(BaseModel):
     kind:      Literal["drug_label"] = "drug_label"
     drug_name: str
     sections:  dict[str, str]
+
+
+class PubMedAbstractSection(BaseModel):
+    label: str | None = None
+    text:  str
+
+
+class PubMedItem(BaseModel):
+    pmid:     str
+    title:    str
+    year:     int | None              = None
+    journal:  str | None              = None
+    authors:  list[str]               = []
+    abstract: list[PubMedAbstractSection] = []
+    url:      str
+
+
+class PubMedArtifact(BaseModel):
+    kind:    Literal["pubmed"] = "pubmed"
+    query:   str
+    results: list[PubMedItem]

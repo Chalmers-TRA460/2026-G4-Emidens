@@ -67,10 +67,26 @@ export interface FassChunk {
   score:          number;
 }
 
+export interface PubMedAbstractSection {
+  label: string | null;
+  text:  string;
+}
+
+export interface PubMedItem {
+  pmid:     string;
+  title:    string;
+  year:     number | null;
+  journal:  string | null;
+  authors:  string[];
+  abstract: PubMedAbstractSection[];
+  url:      string;
+}
+
 export type ToolArtifact =
   | { kind: "guidelines"; query: string; results: GuidelineChunk[] }
   | { kind: "fass";       query: string; results: FassChunk[] }
-  | { kind: "drug_label"; drug_name: string; sections: Record<string, string> };
+  | { kind: "drug_label"; drug_name: string; sections: Record<string, string> }
+  | { kind: "pubmed";     query: string; results: PubMedItem[] };
 
 export interface ToolCallPayload {
   tool: string;

@@ -1,5 +1,10 @@
-import { X, PanelRightClose } from 'lucide-react';
-import type { Citation, ToolArtifact, ToolResultPayload } from '../../api/events';
+import { X, PanelRightClose, ExternalLink } from 'lucide-react';
+import type {
+  Citation,
+  PubMedItem,
+  ToolArtifact,
+  ToolResultPayload,
+} from '../../api/events';
 import { formatConfidence, humanize } from '../../storage/format';
 import { DocumentPlaceholder } from './DocumentPlaceholder';
 import { Markdown } from './Markdown';
@@ -95,9 +100,73 @@ function ArtifactView({ artifact }: { artifact: ToolArtifact }) {
       );
     case 'drug_label':
       return <DrugLabelView drugName={artifact.drug_name} sections={artifact.sections} />;
+    case 'pubmed':
+      return <PubMedView query={artifact.query} results={artifact.results} />;
     default:
       return null;
   }
+}
+
+function PubMedView({ query, results }: { query: string; results: PubMedItem[] }) {
+  if (results.length === 0) {
+    return (
+      <div className="text-sm text-gray-500">
+        <span className="font-medium">PubMed:</span> {query} · no results
+      </div>
+    );
+  }
+  return (
+    <div className="space-y-4">
+      <div className="text-xs text-gray-500">
+        <span className="font-medium">PubMed:</span> {query} · {results.length} results
+      </div>
+      {results.map((item, i) => (
+        <article key={item.pmid} className="border border-gray-200 rounded-md overflow-hidden">
+          <header className="bg-gray-50 px-3 py-2 border-b border-gray-200">
+            <div className="flex items-start justify-between gap-2">
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-sm text-gray-900 hover:text-blue-600 inline-flex items-start gap-1 min-w-0"
+              >
+                <span>{item.title}</span>
+                <ExternalLink className="w-3 h-3 mt-1 shrink-0 opacity-60" />
+              </a>
+              <span className="text-xs text-gray-500 shrink-0">#{i + 1}</span>
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              PMID {item.pmid}
+              {item.year !== null && ` · ${item.year}`}
+              {item.journal && ` · ${item.journal}`}
+            </div>
+            {item.authors.length > 0 && (
+              <div className="text-xs text-gray-500 mt-0.5 truncate">
+                {item.authors.slice(0, 6).join(', ')}
+                {item.authors.length > 6 ? ', et al.' : ''}
+              </div>
+            )}
+          </header>
+          <div className="p-3 text-sm text-gray-800">
+            {item.abstract.length === 0 ? (
+              <span className="text-gray-400 italic">No abstract available.</span>
+            ) : (
+              <div className="space-y-2">
+                {item.abstract.map((s, j) => (
+                  <p key={j}>
+                    {s.label && (
+                      <span className="font-medium text-gray-900">{s.label}: </span>
+                    )}
+                    {s.text}
+                  </p>
+                ))}
+              </div>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  );
 }
 
 function RetrievalView({ query, chunks }: { query: string; chunks: MappedChunk[] }) {
