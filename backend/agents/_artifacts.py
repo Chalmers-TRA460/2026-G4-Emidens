@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class GuidelineChunk(BaseModel):
@@ -51,10 +51,10 @@ class PubMedAbstractSection(BaseModel):
 class PubMedItem(BaseModel):
     pmid:     str
     title:    str
-    year:     int | None              = None
-    journal:  str | None              = None
-    authors:  list[str]               = []
-    abstract: list[PubMedAbstractSection] = []
+    year:     int | None                  = None
+    journal:  str | None                  = None
+    authors:  list[str]                   = Field(default_factory=list)
+    abstract: list[PubMedAbstractSection] = Field(default_factory=list)
     url:      str
 
 

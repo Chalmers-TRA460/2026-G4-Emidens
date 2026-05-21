@@ -130,7 +130,7 @@ function PubMedView({ query, results }: { query: string; results: PubMedItem[] }
                 rel="noopener noreferrer"
                 className="font-medium text-sm text-gray-900 hover:text-blue-600 inline-flex items-start gap-1 min-w-0"
               >
-                <span>{item.title}</span>
+                {item.title}
                 <ExternalLink className="w-3 h-3 mt-1 shrink-0 opacity-60" />
               </a>
               <span className="text-xs text-gray-500 shrink-0">#{i + 1}</span>

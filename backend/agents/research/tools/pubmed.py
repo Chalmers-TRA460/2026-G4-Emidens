@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import time
 from collections import OrderedDict
 from typing import Any
@@ -15,15 +16,20 @@ from agents._artifacts import (
 )
 from settings import settings
 
+_log = logging.getLogger(__name__)
+
 _ESEARCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
 _EFETCH_URL  = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
 _PUBMED_URL  = "https://pubmed.ncbi.nlm.nih.gov"
 
-_TOP_K       = 5
-_TIMEOUT_S   = 15.0
-_CACHE_TTL_S = 86_400
-_CACHE_MAX   = 200
+_TOP_K            = 5
+_TIMEOUT_S        = 15.0
+_CACHE_TTL_S      = 86_400  # 24h for successful results
+_NEG_CACHE_TTL_S  = 60      # short reprieve so the LLM stops hammering after a 429
+_CACHE_MAX        = 200
 
+# Each entry is (expires_at, value). Per-entry TTL lets us cache successes for
+# 24h while caching transient failures (429s) for only a minute or two.
 _CACHE: OrderedDict[str, tuple[float, tuple[str, PubMedArtifact]]] = OrderedDict()
 
 
@@ -36,19 +42,23 @@ def _cache_get(query: str) -> tuple[str, PubMedArtifact] | None:
     entry = _CACHE.get(key)
     if entry is None:
         return None
-    ts, value = entry
-    if time.time() - ts > _CACHE_TTL_S:
+    expires_at, value = entry
+    if time.time() > expires_at:
         _CACHE.pop(key, None)
         return None
     _CACHE.move_to_end(key)
     return value
 
 
-def _cache_set(query: str, value: tuple[str, PubMedArtifact]) -> None:
+def _cache_set(
+    query: str,
+    value: tuple[str, PubMedArtifact],
+    ttl_s: float = _CACHE_TTL_S,
+) -> None:
     key = _cache_key(query)
-    _CACHE[key] = (time.time(), value)
+    _CACHE[key] = (time.time() + ttl_s, value)
     _CACHE.move_to_end(key)
-    while len(_CACHE) > _CACHE_MAX:
+    if len(_CACHE) > _CACHE_MAX:
         _CACHE.popitem(last=False)
 
 
@@ -233,13 +243,14 @@ def pubmed_tool(query: str) -> tuple[str, PubMedArtifact]:
     """Search PubMed for clinical evidence. Use short, focused queries of 2-4 key terms.
     Good: "metoprolol renal impairment", "beta blockers heart failure CKD"
     Bad:  "metoprolol heart failure renal impairment guidelines RCT systematic review"
-    Returns titles, abstracts (with Background/Methods/Results/Conclusions labels when present),
-    journals, authors, and publication years for the top 5 matches.
+    Returns titles, journals, authors, publication years, and abstracts (with
+    section labels preserved when the source provides them) for the top 5 matches.
     """
     cached = _cache_get(query)
     if cached is not None:
         return cached
 
+    empty = PubMedArtifact(query=query, results=[])
     api_key = settings.ncbi_api_key.get_secret_value()
     try:
         with httpx.Client(timeout=_TIMEOUT_S) as client:
@@ -250,18 +261,21 @@ def pubmed_tool(query: str) -> tuple[str, PubMedArtifact]:
                 return response
             xml_text = _efetch(client, pmids, api_key)
     except httpx.HTTPStatusError as e:
-        empty = PubMedArtifact(query=query, results=[])
         if e.response.status_code == 429:
-            return (
+            _log.warning("PubMed 429 for query %r; caching negative result for %ds", query, int(_NEG_CACHE_TTL_S))
+            result = (
                 f"PubMed rate-limit hit; skipping literature search for query: {query!r}.",
                 empty,
             )
+            _cache_set(query, result, ttl_s=_NEG_CACHE_TTL_S)
+            return result
+        _log.warning("PubMed HTTP %d for query %r", e.response.status_code, query)
         return (
             f"PubMed returned HTTP {e.response.status_code} for query: {query!r}.",
             empty,
         )
-    except (httpx.TimeoutException, httpx.RequestError):
-        empty = PubMedArtifact(query=query, results=[])
+    except (httpx.TimeoutException, httpx.RequestError) as e:
+        _log.warning("PubMed unavailable for query %r: %s", query, e.__class__.__name__)
         return (
             f"PubMed unavailable (timeout/connection error) for query: {query!r}.",
             empty,
