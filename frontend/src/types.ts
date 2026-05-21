@@ -13,7 +13,8 @@ export interface TimelineStep {
 export interface RunOverviewData {
   runId: string;
   started: string;
-  duration: string;
+  startedAt: number;
+  endedAt: number | null;
   agents: string[];
   timeline: TimelineStep[];
 }

@@ -9,7 +9,8 @@ export const mockRun: SessionRun = {
   overview: {
     runId: "run_47_card_2024",
     started: "April 23, 2:34 PM",
-    duration: "12 minutes",
+    startedAt: Date.parse("2024-04-23T14:34:00"),
+    endedAt: Date.parse("2024-04-23T14:46:00"),
     agents: ["Planner", "Evidence", "Analysis", "Summary"],
     timeline: [
       { label: "Query received", time: "2:34 PM", active: true },

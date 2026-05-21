@@ -1,6 +1,7 @@
 import type { ComponentType, ReactNode } from 'react';
 import { Calendar, Hash, Bot, Clock } from 'lucide-react';
 import type { RunOverviewData } from '../../types';
+import { LiveDuration } from './LiveDuration';
 
 interface RunOverviewProps {
   data: RunOverviewData;
@@ -38,7 +39,11 @@ export function RunOverview({ data }: RunOverviewProps) {
             <div className="text-xs text-gray-900">{data.started}</div>
           </MetaRow>
           <MetaRow icon={Clock} label="Duration">
-            <div className="text-xs text-gray-900">{data.duration}</div>
+            <LiveDuration
+              startedAt={data.startedAt}
+              endedAt={data.endedAt}
+              className="text-xs text-gray-900"
+            />
           </MetaRow>
           <MetaRow icon={Bot} label="Agents Used">
             <div className="flex flex-wrap gap-1">

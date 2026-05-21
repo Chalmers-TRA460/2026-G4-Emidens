@@ -6,6 +6,7 @@ import { RunOverview } from "./RunOverview";
 import { EventView } from "./live/EventView";
 import { DocumentPanel } from "./DocumentPanel";
 import { ResizableThreeColumns } from "./ResizableThreeColumns";
+import { WaitingPulse } from "./WaitingPulse";
 
 type TabId = "responses" | "conversation";
 
@@ -70,17 +71,16 @@ export function RichRunView({
 
           <div className="flex-1 overflow-y-auto p-4">
             {activeTab === "responses" ? (
-              agentCards.length === 0 ? (
-                <div className="py-8 text-center text-gray-400 text-sm">
-                  Waiting for expert responses…
-                </div>
-              ) : (
-                <AgentResponses
-                  agents={agentCards}
-                  selected={selected}
-                  onSelect={handleSelectCitation}
-                />
-              )
+              <>
+                {agentCards.length > 0 && (
+                  <AgentResponses
+                    agents={agentCards}
+                    selected={selected}
+                    onSelect={handleSelectCitation}
+                  />
+                )}
+                {!agentCards.some((c) => c.isFinal) && <WaitingPulse />}
+              </>
             ) : (
               <ConversationStream events={events} />
             )}

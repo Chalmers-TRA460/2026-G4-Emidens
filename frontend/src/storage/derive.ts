@@ -5,7 +5,7 @@ import {
   type ToolResultPayload,
 } from "../api/events";
 import type { AgentCardData, AgentColor, RunOverviewData, TimelineStep } from "../types";
-import { formatDuration, formatStarted, humanize } from "./format";
+import { formatStarted, humanize } from "./format";
 
 const AGENT_COLORS: AgentColor[] = ["blue", "green", "yellow", "purple"];
 
@@ -118,15 +118,11 @@ export function deriveSessionView(input: DeriveInput): DerivedSessionView {
   const agents = Array.from(new Set(expertEvents.map((e) => agentLabel(e.capability))));
   if (finalEvent) agents.push("Synthesis");
 
-  const duration =
-    input.status === "running"
-      ? `${formatDuration(input.startedAt, Date.now())} (running)`
-      : formatDuration(input.startedAt, input.finishedAt ?? Date.now());
-
   const runOverview: RunOverviewData = {
     runId: input.id,
     started: formatStarted(input.startedAt),
-    duration,
+    startedAt: input.startedAt,
+    endedAt: input.status === "running" ? null : input.finishedAt ?? Date.now(),
     agents,
     timeline,
   };

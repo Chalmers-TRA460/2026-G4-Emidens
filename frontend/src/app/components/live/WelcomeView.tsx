@@ -1,5 +1,6 @@
 import { useRef, useState, type FormEvent } from "react";
 import { ArrowUp } from "lucide-react";
+import { KonsultMark } from "../KonsultMark";
 
 const MAX_HEIGHT_PX = 240;
 
@@ -107,24 +108,3 @@ function timeOfDay(): string {
   return "evening";
 }
 
-function KonsultMark({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" className={className}>
-      <polyline
-        points="5,18 11,18 14,11 17,22 21,14 27,14"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        fill="none"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        opacity="0.55"
-      />
-      <circle cx="5"  cy="18" r="1.9" fill="currentColor" />
-      <circle cx="11" cy="18" r="1.9" fill="currentColor" />
-      <circle cx="14" cy="11" r="1.9" fill="currentColor" />
-      <circle cx="17" cy="22" r="1.9" fill="currentColor" />
-      <circle cx="21" cy="14" r="1.9" fill="currentColor" />
-      <circle cx="27" cy="14" r="1.9" fill="currentColor" />
-    </svg>
-  );
-}

@@ -128,6 +128,18 @@
   animation: fade-up 220ms ease-out both;
 }
 
+@keyframes ecg-sweep {
+  0%, 4%    { stroke-dashoffset: 50; }
+  40%       { stroke-dashoffset: 0; }
+  76%, 100% { stroke-dashoffset: -50; }
+}
+
+.ecg-trace {
+  stroke-dasharray: 50;
+  animation: ecg-sweep 1.8s cubic-bezier(.4, .0, .2, 1) infinite;
+  filter: drop-shadow(0 0 1.5px currentColor);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
