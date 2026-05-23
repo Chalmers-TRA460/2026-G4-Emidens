@@ -37,6 +37,7 @@ class SSEEvent(StrEnum):
 class QueryRequest(BaseModel):
     query:            str
     clinical_context: ClinicalContext | None = None
+    skipped_fields:   list[str] | None       = None
 
 
 def _emit(event: SSEEvent, data: Any) -> dict[str, str]:
@@ -123,5 +124,6 @@ async def query_stream(body: QueryRequest, request: Request) -> EventSourceRespo
     agent_request = AgentRequest(
         query=body.query,
         clinical_context=body.clinical_context or ClinicalContext(),
+        skipped_fields=body.skipped_fields or [],
     )
     return EventSourceResponse(_stream(request.app.state.graph, agent_request))

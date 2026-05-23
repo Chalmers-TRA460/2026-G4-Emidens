@@ -55,6 +55,7 @@ class AgentRequest(BaseModel):
     task:             str | None      = None
     clinical_context: ClinicalContext = Field(default_factory=ClinicalContext)
     constraints:      list[str]       = Field(default_factory=list)
+    skipped_fields:   list[str]       = Field(default_factory=list)
 
 
 class AgentResponse(BaseModel):

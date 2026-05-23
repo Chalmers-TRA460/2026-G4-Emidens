@@ -79,9 +79,9 @@ export function NewRunPage() {
   const showInputForm =
     requestedInputs.length > 0 && status !== "streaming" && query !== null;
 
-  const handleAnswerInputs = (ctx: ClinicalContext) => {
+  const handleAnswerInputs = (ctx: ClinicalContext, skippedFields?: string[]) => {
     if (!query) return;
-    submit(query, ctx);
+    submit(query, ctx, skippedFields);
   };
 
   return (

@@ -11,7 +11,7 @@ interface UseQueryStream {
   runId: string | null;
   query: string | null;
   startedAt: number | null;
-  submit: (query: string, clinicalContext?: ClinicalContext) => void;
+  submit: (query: string, clinicalContext?: ClinicalContext, skippedFields?: string[]) => void;
   reset: () => void;
 }
 
@@ -40,7 +40,7 @@ export function useQueryStream(path: string = "/query/stream"): UseQueryStream {
     setStartedAt(null);
   }, []);
 
-  const submit = useCallback((nextQuery: string, clinicalContext?: ClinicalContext) => {
+  const submit = useCallback((nextQuery: string, clinicalContext?: ClinicalContext, skippedFields?: string[]) => {
     controllerRef.current?.abort();
     const controller = new AbortController();
     controllerRef.current = controller;
@@ -54,7 +54,8 @@ export function useQueryStream(path: string = "/query/stream"): UseQueryStream {
 
     (async () => {
       try {
-        for await (const ev of streamQuery(nextQuery, controller.signal, path, clinicalContext)) {
+        for await (const ev of streamQuery(nextQuery, controller.signal, path, clinicalContext, skippedFields)) {
+          if (controller.signal.aborted) return;
           setEvents((prev) => [...prev, ev]);
           if (ev.type === SSE_EVENTS.DONE) break;
         }

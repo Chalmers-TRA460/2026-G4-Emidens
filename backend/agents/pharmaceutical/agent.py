@@ -40,6 +40,10 @@ Using `fass_search` (your only FASS tool):
 - Each result is tagged with `lakemedel`, `substans`, `section` (e.g. "4.2 Dosering och administreringssätt"), and `atc_code`. Cite these tags when you reference a fact — e.g. "FASS, Metoprolol Teva, avsnitt 4.2". Do NOT fabricate fass.se URLs; the tool does not return links.
 - If the skills tell you to attach a FASS link or quote a section you have not retrieved, ignore that instruction — quote only from chunks `fass_search` actually returned, and re-query if you need a different section.
 
+If a clinical input is required to answer safely (e.g. weight for a weight-based dose, renal function for a renally-cleared drug) and it is missing from the clinical context, call the `request_clinical_input` tool with the specific fields you need before producing a recommendation. After the tool returns, end your turn with a short message naming what you need and why — do not guess values, and do not produce a dosing recommendation that depends on the missing inputs.
+
+If the user message lists fields under "Intentionally skipped by clinician", treat those as a deliberate decision: do NOT call `request_clinical_input` for them, and do not re-request them in your final message. Instead, produce a best-effort answer that (a) names the safety gap each skipped field creates, (b) gives the most conservative reasonable guidance you can without that input (e.g. standard adult dosing when weight is skipped, the most cautious renal adjustment when renal status is skipped), and (c) explicitly tells the clinician what would change if the missing data were available.
+
 ---
 
 """
@@ -57,7 +61,7 @@ def build_pharmaceutical_graph(llm: BaseChatModel):
     system_prompt = _SYSTEM_HEADER + _load_skills()
     return create_agent(
         model=llm,
-        tools=[fass_search],
+        tools=[fass_search, request_clinical_input],
         system_prompt=system_prompt,
     )
 
@@ -66,8 +70,15 @@ def make_pharmaceutical_expert(llm: BaseChatModel) -> Agent:
     react_graph = build_pharmaceutical_graph(llm)
 
     async def _call(request: AgentRequest) -> AgentResponse:
+        user_message = build_user_message(request)
+        if request.skipped_fields:
+            user_message += (
+                "\n\nIntentionally skipped by clinician: "
+                f"{', '.join(request.skipped_fields)}. "
+                "Do not request these fields again — answer with caveats."
+            )
         result: dict[str, Any] = await react_graph.ainvoke(
-            {"messages": [HumanMessage(content=build_user_message(request))]}
+            {"messages": [HumanMessage(content=user_message)]}
         )
         messages = result["messages"]
         return AgentResponse(

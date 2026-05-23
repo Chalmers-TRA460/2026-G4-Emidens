@@ -3,7 +3,7 @@ import type { ClinicalContext } from "../../../api/stream";
 
 interface ClinicalInputFormProps {
   fields: string[];
-  onSubmit: (ctx: ClinicalContext) => void;
+  onSubmit: (ctx: ClinicalContext, skippedFields?: string[]) => void;
   disabled?: boolean;
 }
 
@@ -29,6 +29,21 @@ type FormState = {
   active_conditions?:   string;
   current_medications?: string;
 };
+
+const TEXT_OR_NUMBER_FIELDS = new Set([
+  "age_years",
+  "weight_kg",
+  "active_conditions",
+  "current_medications",
+]);
+
+function emptyFields(state: FormState, fields: string[]): string[] {
+  return fields.filter((f) => {
+    if (!TEXT_OR_NUMBER_FIELDS.has(f)) return false;
+    const v = state[f as keyof FormState];
+    return typeof v !== "string" || v.trim() === "";
+  });
+}
 
 function toContext(state: FormState, fields: string[]): ClinicalContext {
   const ctx: ClinicalContext = {};
@@ -60,15 +75,63 @@ function toContext(state: FormState, fields: string[]): ClinicalContext {
 
 export function ClinicalInputForm({ fields, onSubmit, disabled }: ClinicalInputFormProps) {
   const [state, setState] = useState<FormState>({});
+  const [pendingSkip, setPendingSkip] = useState<string[] | null>(null);
 
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
     setState((prev) => ({ ...prev, [key]: value }));
   };
 
+  const submitNow = (skipped: string[]) => {
+    onSubmit(toContext(state, fields), skipped.length > 0 ? skipped : undefined);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(toContext(state, fields));
+    const empty = emptyFields(state, fields);
+    if (empty.length > 0) {
+      setPendingSkip(empty);
+      return;
+    }
+    submitNow([]);
   };
+
+  const labelFor = (f: string) => FIELD_LABELS[f] ?? f;
+
+  if (pendingSkip) {
+    return (
+      <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-3">
+        <div className="text-sm font-medium text-amber-900">
+          Answer without this information?
+        </div>
+        <div className="text-xs text-amber-900">
+          The following fields are still empty:
+          <ul className="list-disc list-inside mt-1">
+            {pendingSkip.map((f) => <li key={f}>{labelFor(f)}</li>)}
+          </ul>
+          The agent will produce a best-effort answer with explicit safety caveats,
+          and confidence will be reduced.
+        </div>
+        <div className="flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={() => setPendingSkip(null)}
+            disabled={disabled}
+            className="text-xs font-medium px-3 py-1.5 rounded-md bg-white border border-amber-300 text-amber-900 hover:bg-amber-100 disabled:bg-gray-100 disabled:cursor-not-allowed"
+          >
+            Go back
+          </button>
+          <button
+            type="button"
+            onClick={() => submitNow(pendingSkip)}
+            disabled={disabled}
+            className="text-xs font-medium px-3 py-1.5 rounded-md bg-amber-600 text-white hover:bg-amber-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          >
+            Answer anyway
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form

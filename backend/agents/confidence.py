@@ -125,6 +125,7 @@ PHARM_NEEDS_INPUT_TOOL_NAME: str = "request_clinical_input"
 PHARM_MISSING_TOOL_PENALTY: float = 0.40
 PHARM_EMPTY_RESULTS_PENALTY: float = 0.30
 PHARM_NEEDS_INPUT_PENALTY: float = 0.25   # asked for patient data we don't have
+PHARM_SKIPPED_FIELDS_PENALTY: float = 0.25  # clinician declined to provide requested data
 
 PHARM_HIT_COUNT_WEIGHT: float = 0.20      # full credit at this many chunks
 PHARM_HIT_FULL_CREDIT_AT: int = 4
@@ -322,6 +323,8 @@ def pharmaceutical_confidence(messages: list[BaseMessage], request: AgentRequest
            query intent points at (e.g. 4.2 Dosering for a dose question)?
         5. Did the agent emit ``request_clinical_input``? Missing patient
            data lowers confidence in any dose recommendation.
+        6. Did the clinician explicitly skip requested fields? Same hit as
+           (5), since the agent answered without the data either way.
     """
     fass_calls = _tool_messages(messages, PHARM_TOOL_NAME)
     needs_input_calls = _tool_messages(messages, PHARM_NEEDS_INPUT_TOOL_NAME)
@@ -340,6 +343,9 @@ def pharmaceutical_confidence(messages: list[BaseMessage], request: AgentRequest
 
     if needs_input_calls:
         score -= PHARM_NEEDS_INPUT_PENALTY
+
+    if request.skipped_fields:
+        score -= PHARM_SKIPPED_FIELDS_PENALTY
 
     return _clip(score)
 

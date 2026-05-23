@@ -23,9 +23,11 @@ export async function* streamQuery(
   signal?: AbortSignal,
   path: string = "/query/stream",
   clinicalContext?: ClinicalContext,
+  skippedFields?: string[],
 ): AsyncGenerator<StreamEvent> {
   const body: Record<string, unknown> = { query };
   if (clinicalContext) body.clinical_context = clinicalContext;
+  if (skippedFields && skippedFields.length > 0) body.skipped_fields = skippedFields;
 
   const res = await fetch(`${getBaseUrl()}${path}`, {
     method: "POST",
