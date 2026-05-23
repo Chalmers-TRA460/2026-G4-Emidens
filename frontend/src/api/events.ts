@@ -86,7 +86,8 @@ export type ToolArtifact =
   | { kind: "guidelines"; query: string; results: GuidelineChunk[] }
   | { kind: "fass";       query: string; results: FassChunk[] }
   | { kind: "drug_label"; drug_name: string; sections: Record<string, string> }
-  | { kind: "pubmed";     query: string; results: PubMedItem[] };
+  | { kind: "pubmed";     query: string; results: PubMedItem[] }
+  | { kind: "dosage";     query: string; result: number | null };
 
 export interface ToolCallPayload {
   tool: string;

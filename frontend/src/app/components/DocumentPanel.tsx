@@ -102,9 +102,49 @@ function ArtifactView({ artifact }: { artifact: ToolArtifact }) {
       return <DrugLabelView drugName={artifact.drug_name} sections={artifact.sections} />;
     case 'pubmed':
       return <PubMedView query={artifact.query} results={artifact.results} />;
+    case 'dosage':
+      return <DosageView query={artifact.query} result={artifact.result} />;
     default:
       return null;
   }
+}
+
+function prettyExpression(raw: string): string {
+  return raw
+    .replace(/\*\*/g, '^')
+    .replace(/\*/g, '×')
+    .replace(/\//g, '÷');
+}
+
+function DosageView({ query, result }: { query: string; result: number | null }) {
+  return (
+    <div className="space-y-3">
+      <div className="text-xs text-gray-500">
+        <span className="font-medium">Dosage calculator</span>
+      </div>
+      <div className="border border-gray-200 rounded-md overflow-hidden">
+        <div className="bg-gray-50 px-3 py-2 border-b border-gray-200">
+          <div className="text-xs text-gray-500 mb-0.5">Expression</div>
+          <code className="text-sm text-gray-900 font-mono">{prettyExpression(query)}</code>
+        </div>
+        <div className="p-4 bg-white">
+          {result === null ? (
+            <div className="text-sm text-red-700">
+              <span className="font-medium">Invalid expression</span> — could not evaluate.
+            </div>
+          ) : (
+            <>
+              <div className="text-xs text-gray-500 mb-1">Result</div>
+              <div className="text-2xl font-semibold text-gray-900 font-mono">{result}</div>
+            </>
+          )}
+        </div>
+        <div className="px-3 py-2 border-t border-gray-100 bg-gray-50">
+          <div className="text-xs text-gray-500 italic">Deterministic calculation</div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function PubMedView({ query, results }: { query: string; results: PubMedItem[] }) {
