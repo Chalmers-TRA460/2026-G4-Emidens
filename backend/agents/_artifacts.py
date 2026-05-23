@@ -6,59 +6,65 @@ from pydantic import BaseModel, Field
 
 
 class GuidelineChunk(BaseModel):
-    chunk_id:     str
-    doc_id:       int
+    chunk_id: str
+    doc_id: int
     heading_path: str
-    text:         str
-    score:        float
+    text: str
+    score: float
 
 
 class GuidelinesArtifact(BaseModel):
-    kind:    Literal["guidelines"] = "guidelines"
-    query:   str
+    kind: Literal["guidelines"] = "guidelines"
+    query: str
     results: list[GuidelineChunk]
 
 
 class FassChunk(BaseModel):
-    chunk_id:       str
-    doc_folder:     str
-    lakemedel:      str
-    substans:       str | None = None
+    chunk_id: str
+    doc_folder: str
+    lakemedel: str
+    substans: str | None = None
     beredningsform: str
-    section:        str
-    atc_code:       str
-    content:        str
-    score:          float
+    section: str
+    atc_code: str
+    content: str
+    score: float
 
 
 class FassArtifact(BaseModel):
-    kind:    Literal["fass"] = "fass"
-    query:   str
+    kind: Literal["fass"] = "fass"
+    query: str
     results: list[FassChunk]
 
 
+class DosageCalculatorArtifact(BaseModel):
+    kind: Literal["dosage"] = "dosage"
+    query: str
+    result: float | int | None = None
+
+
 class DrugLabelArtifact(BaseModel):
-    kind:      Literal["drug_label"] = "drug_label"
+    kind: Literal["drug_label"] = "drug_label"
     drug_name: str
-    sections:  dict[str, str]
+    sections: dict[str, str]
 
 
 class PubMedAbstractSection(BaseModel):
     label: str | None = None
-    text:  str
+    text: str
 
 
 class PubMedItem(BaseModel):
-    pmid:     str
-    title:    str
-    year:     int | None                  = None
-    journal:  str | None                  = None
-    authors:  list[str]                   = Field(default_factory=list)
+    pmid: str
+    title: str
+    year: int | None = None
+    journal: str | None = None
+    authors: list[str] = Field(default_factory=list)
     abstract: list[PubMedAbstractSection] = Field(default_factory=list)
-    url:      str
+    url: str
 
 
 class PubMedArtifact(BaseModel):
-    kind:    Literal["pubmed"] = "pubmed"
-    query:   str
+    kind: Literal["pubmed"] = "pubmed"
+    query: str
     results: list[PubMedItem]

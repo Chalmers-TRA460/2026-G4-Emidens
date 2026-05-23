@@ -7,7 +7,6 @@ from langchain.agents import create_agent
 from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import HumanMessage
 
-from agents.base import Agent, AgentCapability, AgentRequest, AgentResponse
 from agents._react import (
     build_user_message,
     extract_citations,
@@ -15,9 +14,15 @@ from agents._react import (
     extract_trace,
     final_answer,
 )
+from agents.base import Agent, AgentCapability, AgentRequest, AgentResponse
 from agents.confidence import pharmaceutical_confidence
 
-from .tools import REQUEST_INPUT_TOOL_NAME, fass_search, request_clinical_input
+from .tools import (
+    REQUEST_INPUT_TOOL_NAME,
+    dosage_calculator,
+    fass_search,
+    request_clinical_input,
+)
 
 _AGENT_NAME = "pharmaceutical"
 _SKILLS_DIR = Path(__file__).parent / "skills"
@@ -50,7 +55,9 @@ If the user message lists fields under "Intentionally skipped by clinician", tre
 
 
 def _load_skills() -> str:
-    parts = [Path(p).read_text(encoding="utf-8") for p in sorted(_SKILLS_DIR.glob("*.md"))]
+    parts = [
+        Path(p).read_text(encoding="utf-8") for p in sorted(_SKILLS_DIR.glob("*.md"))
+    ]
     return "\n\n---\n\n".join(parts)
 
 
@@ -61,7 +68,7 @@ def build_pharmaceutical_graph(llm: BaseChatModel):
     system_prompt = _SYSTEM_HEADER + _load_skills()
     return create_agent(
         model=llm,
-        tools=[fass_search, request_clinical_input],
+        tools=[fass_search, request_clinical_input, dosage_calculator],
         system_prompt=system_prompt,
     )
 
@@ -87,7 +94,9 @@ def make_pharmaceutical_expert(llm: BaseChatModel) -> Agent:
             confidence=pharmaceutical_confidence(messages, request),
             reasoning_trace=extract_trace(messages, _AGENT_NAME),
             capability=_CAPABILITY,
-            requested_inputs=extract_requested_inputs(messages, REQUEST_INPUT_TOOL_NAME),
+            requested_inputs=extract_requested_inputs(
+                messages, REQUEST_INPUT_TOOL_NAME
+            ),
         )
 
     return _call  # type: ignore[return-value]
