@@ -4,13 +4,22 @@ import re
 
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, ToolMessage
 
+from ._artifacts import (
+    DosageCalculatorArtifact,
+    DrugLabelArtifact,
+    FassArtifact,
+    GuidelinesArtifact,
+    PubMedArtifact,
+)
 from .base import AgentRequest, Citation, TraceStep
-
-REACT_CONFIDENCE = 0.7  # TODO: replace with structured output confidence
 
 _CITATION_PREVIEW_LEN = 200
 _TRACE_CONTENT_LEN = 300
 _TRACE_RESULT_LEN = 200
+
+_PUBMED_WITH_ABSTRACT = 0.7   # item-level confidence when the abstract is present
+_PUBMED_STUB_ONLY     = 0.4   # item-level confidence when only metadata returned
+_DRUG_LABEL_HIT       = 0.8   # openFDA returned at least one section
 
 _NEEDS_INPUT_PATTERN = re.compile(r"<<NEEDS_INPUT:\s*([^>]+)>>")
 
@@ -34,13 +43,49 @@ def extract_requested_inputs(messages: list[BaseMessage], tool_name: str) -> lis
     return fields
 
 
+def _citation_confidence(m: ToolMessage) -> float:
+    """Per-citation confidence derived from the tool's structured artifact.
+
+    - DosageCalculator: deterministic; 1.0 on success, 0.0 on invalid input.
+    - Guidelines / FASS: clamped mean of similarity scores across returned chunks.
+    - PubMed: NCBI does not expose relevance; use abstract coverage as a proxy
+      (items with abstracts contribute 0.7, stub-only items 0.4, averaged).
+    - openFDA drug label: 0.8 if any sections returned, else 0.0.
+    - Anything without a recognized artifact (e.g. request_clinical_input): 0.0.
+    """
+    artifact = getattr(m, "artifact", None)
+
+    if isinstance(artifact, DosageCalculatorArtifact):
+        return 1.0 if artifact.result is not None else 0.0
+
+    if isinstance(artifact, (GuidelinesArtifact, FassArtifact)):
+        if not artifact.results:
+            return 0.0
+        mean = sum(r.score for r in artifact.results) / len(artifact.results)
+        return max(0.0, min(1.0, mean))
+
+    if isinstance(artifact, PubMedArtifact):
+        if not artifact.results:
+            return 0.0
+        per_item = [
+            _PUBMED_WITH_ABSTRACT if r.abstract else _PUBMED_STUB_ONLY
+            for r in artifact.results
+        ]
+        return sum(per_item) / len(per_item)
+
+    if isinstance(artifact, DrugLabelArtifact):
+        return _DRUG_LABEL_HIT if artifact.sections else 0.0
+
+    return 0.0
+
+
 def extract_citations(messages: list[BaseMessage]) -> list[Citation]:
     return [
         Citation(
             source=m.name or "tool",
             section=str(m.content)[:_CITATION_PREVIEW_LEN],
             tool_call_id=m.tool_call_id,
-            confidence=REACT_CONFIDENCE,
+            confidence=_citation_confidence(m),
         )
         for m in messages
         if isinstance(m, ToolMessage)

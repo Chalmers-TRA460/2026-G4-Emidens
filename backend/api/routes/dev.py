@@ -14,15 +14,27 @@ from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
 from agents._react import (
-    REACT_CONFIDENCE,
     build_user_message,
     extract_citations,
+    extract_requested_inputs,
     extract_trace,
     final_answer,
 )
 from agents.base import AgentCapability, AgentRequest
+from agents.confidence import (
+    cardiology_confidence,
+    pharmaceutical_confidence,
+    research_confidence,
+)
+from agents.pharmaceutical.tools import REQUEST_INPUT_TOOL_NAME
 
 router = APIRouter()
+
+_CONFIDENCE_FOR_CAPABILITY = {
+    AgentCapability.CARDIOLOGY:     cardiology_confidence,
+    AgentCapability.RESEARCH:       research_confidence,
+    AgentCapability.PHARMACEUTICAL: pharmaceutical_confidence,
+}
 
 
 class DevQueryRequest(BaseModel):
@@ -34,13 +46,16 @@ def _emit(event: str, data: Any) -> dict[str, str]:
     return {"event": event, "data": json.dumps(data)}
 
 
-def _final_payload(messages: list[Any], agent_name: str, capability: AgentCapability) -> dict[str, Any]:
-    from agents._react import extract_requested_inputs
-    from agents.pharmaceutical.tools import REQUEST_INPUT_TOOL_NAME
+def _final_payload(
+    messages: list[Any],
+    agent_name: str,
+    capability: AgentCapability,
+    request: AgentRequest,
+) -> dict[str, Any]:
     return {
         "capability": capability.value,
         "answer": final_answer(messages),
-        "confidence": REACT_CONFIDENCE,
+        "confidence": _CONFIDENCE_FOR_CAPABILITY[capability](messages, request),
         "escalate": False,
         "citations": [c.model_dump() for c in extract_citations(messages)],
         "trace": [
@@ -57,7 +72,8 @@ async def _stream_agent_graph(
     agent_name: str,
     capability: AgentCapability,
 ) -> AsyncIterator[dict[str, str]]:
-    user_text = build_user_message(AgentRequest(query=body.query, task=body.task))
+    agent_request = AgentRequest(query=body.query, task=body.task)
+    user_text = build_user_message(agent_request)
     seen = 0
     final_messages: list[Any] = []
 
@@ -81,7 +97,7 @@ async def _stream_agent_graph(
         final_messages = msgs
 
     if final_messages:
-        yield _emit("final", _final_payload(final_messages, agent_name, capability))
+        yield _emit("final", _final_payload(final_messages, agent_name, capability, agent_request))
     yield _emit("done", {})
 
 

@@ -203,8 +203,8 @@ def _parse_json_results(tool_message: ToolMessage) -> list[dict]:
 
 
 def _max_score(results: list[dict]) -> float:
-    scores = [r.get("score") for r in results if isinstance(r.get("score"), (int, float))]
-    return max(scores) if scores else 0.0
+    scores = [s for r in results if isinstance(s := r.get("score"), (int, float))]
+    return float(max(scores)) if scores else 0.0
 
 
 def _section_matches_intent(query: str, sections: list[str]) -> bool:
