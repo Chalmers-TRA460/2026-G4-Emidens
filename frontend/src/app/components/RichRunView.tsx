@@ -6,6 +6,7 @@ import { RunOverview } from "./RunOverview";
 import { EventView } from "./live/EventView";
 import { DocumentPanel } from "./DocumentPanel";
 import { ResizableThreeColumns } from "./ResizableThreeColumns";
+import { RunFailed } from "./RunFailed";
 import { WaitingPulse } from "./WaitingPulse";
 
 type TabId = "responses" | "conversation";
@@ -79,7 +80,13 @@ export function RichRunView({
                     onSelect={handleSelectCitation}
                   />
                 )}
-                {!agentCards.some((c) => c.isFinal) && <WaitingPulse />}
+                {!agentCards.some((c) => c.isFinal) && (
+                  runOverview.status === "failed"
+                    ? <RunFailed />
+                    : runOverview.status === "running"
+                      ? <WaitingPulse />
+                      : null
+                )}
               </>
             ) : (
               <ConversationStream events={events} />

@@ -123,6 +123,7 @@ export function deriveSessionView(input: DeriveInput): DerivedSessionView {
     started: formatStarted(input.startedAt),
     startedAt: input.startedAt,
     endedAt: input.status === "running" ? null : input.finishedAt ?? Date.now(),
+    status: input.status,
     agents,
     timeline,
   };

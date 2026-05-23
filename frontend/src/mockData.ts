@@ -11,6 +11,7 @@ export const mockRun: SessionRun = {
     started: "April 23, 2:34 PM",
     startedAt: Date.parse("2024-04-23T14:34:00"),
     endedAt: Date.parse("2024-04-23T14:46:00"),
+    status: "completed",
     agents: ["Planner", "Evidence", "Analysis", "Summary"],
     timeline: [
       { label: "Query received", time: "2:34 PM", active: true },

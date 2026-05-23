@@ -15,6 +15,7 @@ export interface RunOverviewData {
   started: string;
   startedAt: number;
   endedAt: number | null;
+  status: RunStatus;
   agents: string[];
   timeline: TimelineStep[];
 }
