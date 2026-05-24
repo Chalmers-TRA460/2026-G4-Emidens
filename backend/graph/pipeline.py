@@ -15,6 +15,7 @@ from .state import GraphState
 NODE_ORCHESTRATOR = "orchestrator"
 _NODE_HUMAN_REVIEW = "human_review"
 _NEEDS_INPUT_AGENT = "orchestrator"
+_GATE_CAPABILITY = AgentCapability.PHARMACEUTICAL
 
 
 def _needs_input_response(responses: list[AgentResponse]) -> AgentResponse | None:
@@ -80,10 +81,29 @@ def build_graph(
 
         if not responses:
             decision = await orchestrator.route(request)
+            gate, rest = [], []
+            for a in decision.assignments:
+                (gate if a.capability == _GATE_CAPABILITY else rest).append(a)
+            if gate:
+                return {
+                    "routing":           decision,
+                    "pending_dispatch":  gate,
+                    "deferred_dispatch": rest,
+                }
             return {"routing": decision, "pending_dispatch": decision.assignments}
 
         if (needs_input := _needs_input_response(responses)) is not None:
-            return {"final_response": needs_input, "pending_dispatch": []}
+            return {
+                "final_response":    needs_input,
+                "pending_dispatch":  [],
+                "deferred_dispatch": [],
+            }
+
+        if state["deferred_dispatch"]:
+            return {
+                "pending_dispatch":  state["deferred_dispatch"],
+                "deferred_dispatch": [],
+            }
 
         async def _synthesize() -> dict[str, Any]:
             assert state["routing"] is not None

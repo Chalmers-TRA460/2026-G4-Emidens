@@ -15,22 +15,24 @@ KEY_RESPONSES      = "responses"
 
 
 class GraphState(TypedDict):
-    request:          AgentRequest
-    responses:        Annotated[list[AgentResponse], operator.add]
-    routing:          RoutingDecision | None
-    final_response:   AgentResponse | None
-    iteration:        int
-    pending_dispatch: list[ExpertAssignment]
-    current_task:     str | None
+    request:           AgentRequest
+    responses:         Annotated[list[AgentResponse], operator.add]
+    routing:           RoutingDecision | None
+    final_response:    AgentResponse | None
+    iteration:         int
+    pending_dispatch:  list[ExpertAssignment]
+    deferred_dispatch: list[ExpertAssignment]
+    current_task:      str | None
 
 
 def initial_state(request: AgentRequest) -> GraphState:
     return {
-        "request":          request,
-        "responses":        [],
-        "routing":          None,
-        "final_response":   None,
-        "iteration":        0,
-        "pending_dispatch": [],
-        "current_task":     None,
+        "request":           request,
+        "responses":         [],
+        "routing":           None,
+        "final_response":    None,
+        "iteration":         0,
+        "pending_dispatch":  [],
+        "deferred_dispatch": [],
+        "current_task":      None,
     }

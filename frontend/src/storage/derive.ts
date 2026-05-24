@@ -42,7 +42,8 @@ function agentLabel(capability: string): string {
 }
 
 export function deriveSessionView(input: DeriveInput): DerivedSessionView {
-  const expertEvents: { capability: string; payload: ResponsePayload }[] = [];
+  const latestByCapability = new Map<string, ResponsePayload>();
+  const orderedCapabilities: string[] = [];
   const toolResults = new Map<string, ToolResultPayload>();
   let finalEvent: ResponsePayload | undefined;
   let routingPresent = false;
@@ -51,13 +52,20 @@ export function deriveSessionView(input: DeriveInput): DerivedSessionView {
     if (ev.type === SSE_EVENTS.ROUTING) {
       routingPresent = true;
     } else if (ev.type === SSE_EVENTS.EXPERT_RESPONSE) {
-      expertEvents.push({ capability: ev.data.capability, payload: ev.data });
+      const cap = ev.data.capability;
+      if (!latestByCapability.has(cap)) orderedCapabilities.push(cap);
+      latestByCapability.set(cap, ev.data);
     } else if (ev.type === SSE_EVENTS.FINAL) {
       finalEvent = ev.data;
     } else if (ev.type === SSE_EVENTS.TOOL_RESULT && ev.data.tool_call_id) {
       toolResults.set(ev.data.tool_call_id, ev.data);
     }
   }
+
+  const expertEvents = orderedCapabilities.map((cap) => ({
+    capability: cap,
+    payload: latestByCapability.get(cap)!,
+  }));
 
   const agentCards: AgentCardData[] = expertEvents.map((e, i) => ({
     agentName: agentLabel(e.capability),
