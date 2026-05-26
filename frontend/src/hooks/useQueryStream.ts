@@ -4,14 +4,19 @@ import { SSE_EVENTS, type StreamEvent } from "../api/events";
 
 export type StreamStatus = "idle" | "streaming" | "done" | "error";
 
-interface UseQueryStream {
+export interface UseQueryStream {
   events: StreamEvent[];
   status: StreamStatus;
   error: Error | null;
   runId: string | null;
   query: string | null;
   startedAt: number | null;
-  submit: (query: string, clinicalContext?: ClinicalContext, skippedFields?: string[]) => void;
+  submit: (
+    query: string,
+    clinicalContext?: ClinicalContext,
+    skippedFields?: string[],
+    reuseRunId?: string,
+  ) => string;
   reset: () => void;
 }
 
@@ -40,15 +45,21 @@ export function useQueryStream(path: string = "/query/stream"): UseQueryStream {
     setStartedAt(null);
   }, []);
 
-  const submit = useCallback((nextQuery: string, clinicalContext?: ClinicalContext, skippedFields?: string[]) => {
+  const submit = useCallback((
+    nextQuery: string,
+    clinicalContext?: ClinicalContext,
+    skippedFields?: string[],
+    reuseRunId?: string,
+  ): string => {
     controllerRef.current?.abort();
     const controller = new AbortController();
     controllerRef.current = controller;
 
+    const id = reuseRunId ?? newRunId();
     setEvents([]);
     setError(null);
     setStatus("streaming");
-    setRunId(newRunId());
+    setRunId(id);
     setQuery(nextQuery);
     setStartedAt(Date.now());
 
@@ -66,6 +77,8 @@ export function useQueryStream(path: string = "/query/stream"): UseQueryStream {
         setStatus("error");
       }
     })();
+
+    return id;
   }, [path]);
 
   useEffect(() => () => controllerRef.current?.abort(), []);
