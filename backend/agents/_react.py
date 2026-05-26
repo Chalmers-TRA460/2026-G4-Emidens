@@ -128,10 +128,43 @@ def extract_trace(messages: list[BaseMessage], agent_name: str) -> list[TraceSte
     return steps
 
 
+def _format_clinical_context(request: AgentRequest) -> str:
+    ctx = request.clinical_context
+    lines: list[str] = []
+    if ctx.age_years is not None:
+        lines.append(f"- age: {ctx.age_years} years")
+    if ctx.weight_kg is not None:
+        lines.append(f"- weight: {ctx.weight_kg} kg")
+    if ctx.active_conditions:
+        lines.append(f"- active conditions: {', '.join(ctx.active_conditions)}")
+    if ctx.current_medications:
+        lines.append(f"- current medications: {', '.join(ctx.current_medications)}")
+    if ctx.renal_impairment:
+        lines.append("- renal impairment: yes")
+    if ctx.hepatic_impairment:
+        lines.append("- hepatic impairment: yes")
+    return "\n".join(lines)
+
+
 def build_user_message(request: AgentRequest) -> str:
+    parts: list[str] = []
     if request.task:
-        return f"Original query: {request.query}\n\nYour task: {request.task}"
-    return request.query
+        parts.append(f"Original query: {request.query}\n\nYour task: {request.task}")
+    else:
+        parts.append(request.query)
+
+    context_block = _format_clinical_context(request)
+    if context_block:
+        parts.append(f"Clinical context:\n{context_block}")
+
+    if request.skipped_fields:
+        parts.append(
+            "Intentionally skipped by clinician: "
+            f"{', '.join(request.skipped_fields)}. "
+            "Do not request these fields again — answer with caveats."
+        )
+
+    return "\n\n".join(parts)
 
 
 def final_answer(messages: list[BaseMessage]) -> str:

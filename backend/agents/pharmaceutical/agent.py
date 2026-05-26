@@ -105,15 +105,8 @@ def make_pharmaceutical_expert(llm: BaseChatModel) -> Agent:
     react_graph = build_pharmaceutical_graph(llm)
 
     async def _call(request: AgentRequest) -> AgentResponse:
-        user_message = build_user_message(request)
-        if request.skipped_fields:
-            user_message += (
-                "\n\nIntentionally skipped by clinician: "
-                f"{', '.join(request.skipped_fields)}. "
-                "Do not request these fields again — answer with caveats."
-            )
         result: dict[str, Any] = await react_graph.ainvoke(
-            {"messages": [HumanMessage(content=user_message)]}
+            {"messages": [HumanMessage(content=build_user_message(request))]}
         )
         messages = result["messages"]
         return AgentResponse(
