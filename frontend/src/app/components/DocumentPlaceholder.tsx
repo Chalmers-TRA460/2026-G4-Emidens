@@ -21,10 +21,7 @@ export function DocumentPlaceholder({ onCollapse }: DocumentPlaceholderProps) {
       </div>
       <div className="flex-1 flex flex-col items-center justify-center text-gray-400 px-6 text-center">
         <FileText className="w-8 h-8 mb-2 text-gray-300" />
-        <div className="text-sm font-medium text-gray-500">Placeholder</div>
-        <div className="text-xs mt-1">
-          Source document preview will appear here once attached.
-        </div>
+        <div className="text-sm font-medium text-gray-500">Source document preview will appear here once attached.</div>
       </div>
     </div>
   );

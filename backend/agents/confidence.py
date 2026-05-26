@@ -82,7 +82,6 @@ RESEARCH — ``pubmed_tool`` (LangChain ``PubmedQueryRun`` wrapping NCBI E-utili
 
 from __future__ import annotations
 
-import json
 import re
 from datetime import datetime, timezone
 from typing import Iterable
@@ -173,6 +172,33 @@ def _clip(x: float) -> float:
     return max(MIN_CONFIDENCE, min(MAX_CONFIDENCE, x))
 
 
+def _log_breakdown(
+    agent: str,
+    request: AgentRequest,
+    deltas: list[tuple[str, float]],
+    final: float,
+) -> None:
+    """Print a transparent breakdown of how the confidence score was assembled.
+
+    ``deltas`` is the ordered list of (label, delta) pairs applied after the
+    baseline. The unclipped running sum is shown in the rightmost column so
+    you can see when/where the score hits the [MIN, MAX] bound.
+    """
+    query = (request.query or "").strip().replace("\n", " ")
+    if len(query) > 80:
+        query = query[:77] + "..."
+    label_w = 38
+    running = BASELINE_CONFIDENCE
+    print(f"[confidence] {agent}  q=\"{query}\"")
+    print(f"  {'baseline':<{label_w}}        = {running:6.3f}")
+    for label, delta in deltas:
+        running += delta
+        print(f"  {label:<{label_w}} {delta:+6.3f}  → {running:6.3f}")
+    print(f"  {'─' * (label_w + 20)}")
+    note = "" if abs(final - running) < 1e-9 else f"  (clipped from {running:.3f})"
+    print(f"  {'final':<{label_w}}        = {final:6.3f}{note}")
+
+
 def _tool_messages(messages: Iterable[BaseMessage], tool_name: str) -> list[ToolMessage]:
     return [m for m in messages if isinstance(m, ToolMessage) and m.name == tool_name]
 
@@ -188,18 +214,20 @@ def _final_text(messages: Iterable[BaseMessage]) -> str:
 
 
 def _parse_json_results(tool_message: ToolMessage) -> list[dict]:
-    """Parse a Konsulten tool message whose body is a JSON ``{"results": [...]}``.
-    Returns ``[]`` if parsing fails — confidence functions then treat the call
-    as an empty-result hit, which is the safe default.
+    """Extract structured result rows from a Konsulten tool message.
+
+    These tools use ``response_format="content_and_artifact"``: ``content`` is
+    a Markdown preview for the LLM, while the typed rows (with ``score``) live
+    on ``tool_message.artifact``. We pull from the artifact so the scores
+    survive — parsing the Markdown back into JSON would always fail.
+    Returns ``[]`` if no artifact is present, which the confidence functions
+    treat as an empty-result hit.
     """
-    try:
-        data = json.loads(str(tool_message.content))
-    except (ValueError, TypeError):
+    artifact = getattr(tool_message, "artifact", None)
+    results = getattr(artifact, "results", None) if artifact is not None else None
+    if not results:
         return []
-    if isinstance(data, dict):
-        results = data.get("results")
-        return results if isinstance(results, list) else []
-    return []
+    return [r.model_dump() if hasattr(r, "model_dump") else dict(r) for r in results]
 
 
 def _max_score(results: list[dict]) -> float:
@@ -289,27 +317,41 @@ def cardiology_confidence(messages: list[BaseMessage], request: AgentRequest) ->
         4. How many strong (≥ floor) hits were returned across all searches?
         5. Did the final answer explicitly abstain ("corpus is silent")?
     """
-    del request  # unused for now — kept in signature for future tuning
     tool_calls = _tool_messages(messages, CARD_TOOL_NAME)
     score = BASELINE_CONFIDENCE
+    deltas: list[tuple[str, float]] = []
 
     if not tool_calls:
-        return _clip(score - CARD_MISSING_TOOL_PENALTY)
+        deltas.append(("no guideline_search call", -CARD_MISSING_TOOL_PENALTY))
+        final = _clip(score - CARD_MISSING_TOOL_PENALTY)
+        _log_breakdown("cardiology", request, deltas, final)
+        return final
 
     all_results = [r for tc in tool_calls for r in _parse_json_results(tc)]
     if not all_results:
-        return _clip(score - CARD_EMPTY_RESULTS_PENALTY)
+        deltas.append(("empty guideline results", -CARD_EMPTY_RESULTS_PENALTY))
+        final = _clip(score - CARD_EMPTY_RESULTS_PENALTY)
+        _log_breakdown("cardiology", request, deltas, final)
+        return final
 
     top = _max_score(all_results)
     strong_hits = sum(1 for r in all_results if (r.get("score") or 0) >= CARD_STRONG_HIT_SCORE_FLOOR)
+    strong_credit = min(1.0, strong_hits / CARD_STRONG_HIT_FULL_CREDIT_AT)
 
-    score += CARD_TOP_SCORE_WEIGHT * top
-    score += CARD_STRONG_HITS_WEIGHT * min(1.0, strong_hits / CARD_STRONG_HIT_FULL_CREDIT_AT)
+    top_delta = CARD_TOP_SCORE_WEIGHT * top
+    strong_delta = CARD_STRONG_HITS_WEIGHT * strong_credit
+    score += top_delta
+    score += strong_delta
+    deltas.append((f"top BM25 score (top={top:.2f})", top_delta))
+    deltas.append((f"strong hits ({strong_hits}/{CARD_STRONG_HIT_FULL_CREDIT_AT} ≥{CARD_STRONG_HIT_SCORE_FLOOR})", strong_delta))
 
     if _looks_like_abstention(_final_text(messages)):
         score -= CARD_ABSTENTION_PENALTY
+        deltas.append(("abstention detected in answer", -CARD_ABSTENTION_PENALTY))
 
-    return _clip(score)
+    final = _clip(score)
+    _log_breakdown("cardiology", request, deltas, final)
+    return final
 
 
 def pharmaceutical_confidence(messages: list[BaseMessage], request: AgentRequest) -> float:
@@ -329,25 +371,36 @@ def pharmaceutical_confidence(messages: list[BaseMessage], request: AgentRequest
     fass_calls = _tool_messages(messages, PHARM_TOOL_NAME)
     needs_input_calls = _tool_messages(messages, PHARM_NEEDS_INPUT_TOOL_NAME)
     score = BASELINE_CONFIDENCE
+    deltas: list[tuple[str, float]] = []
 
     if not fass_calls:
         score -= PHARM_MISSING_TOOL_PENALTY
+        deltas.append(("no fass_search call", -PHARM_MISSING_TOOL_PENALTY))
     else:
         sections = [s for tc in fass_calls for s in _parse_fass_chunks(str(tc.content))]
         if not sections:
             score -= PHARM_EMPTY_RESULTS_PENALTY
+            deltas.append(("empty FASS results", -PHARM_EMPTY_RESULTS_PENALTY))
         else:
-            score += PHARM_HIT_COUNT_WEIGHT * min(1.0, len(sections) / PHARM_HIT_FULL_CREDIT_AT)
+            hit_credit = min(1.0, len(sections) / PHARM_HIT_FULL_CREDIT_AT)
+            hit_delta = PHARM_HIT_COUNT_WEIGHT * hit_credit
+            score += hit_delta
+            deltas.append((f"FASS hit count ({len(sections)}/{PHARM_HIT_FULL_CREDIT_AT})", hit_delta))
             if _section_matches_intent(request.query, sections):
                 score += PHARM_SECTION_MATCH_BONUS
+                deltas.append(("intent section match", PHARM_SECTION_MATCH_BONUS))
 
     if needs_input_calls:
         score -= PHARM_NEEDS_INPUT_PENALTY
+        deltas.append(("requested clinical input", -PHARM_NEEDS_INPUT_PENALTY))
 
     if request.skipped_fields:
         score -= PHARM_SKIPPED_FIELDS_PENALTY
+        deltas.append((f"clinician skipped fields ({len(request.skipped_fields)})", -PHARM_SKIPPED_FIELDS_PENALTY))
 
-    return _clip(score)
+    final = _clip(score)
+    _log_breakdown("pharmaceutical", request, deltas, final)
+    return final
 
 
 def research_confidence(messages: list[BaseMessage], request: AgentRequest) -> float:
@@ -359,20 +412,35 @@ def research_confidence(messages: list[BaseMessage], request: AgentRequest) -> f
         3. How many articles did it find, across all queries?
         4. How recent is the newest article?
     """
-    del request
     pubmed_calls = _tool_messages(messages, RES_TOOL_NAME)
     score = BASELINE_CONFIDENCE
+    deltas: list[tuple[str, float]] = []
 
     if not pubmed_calls:
-        return _clip(score - RES_MISSING_TOOL_PENALTY)
+        deltas.append(("no pubmed_tool call", -RES_MISSING_TOOL_PENALTY))
+        final = _clip(score - RES_MISSING_TOOL_PENALTY)
+        _log_breakdown("research", request, deltas, final)
+        return final
 
     joined = "\n\n".join(str(m.content) for m in pubmed_calls)
 
     if _pubmed_says_no_results(joined) and _pubmed_article_count(joined) == 0:
-        return _clip(score - RES_NO_RESULTS_PENALTY)
+        deltas.append(("no PubMed results", -RES_NO_RESULTS_PENALTY))
+        final = _clip(score - RES_NO_RESULTS_PENALTY)
+        _log_breakdown("research", request, deltas, final)
+        return final
 
     article_count = _pubmed_article_count(joined)
-    score += RES_ARTICLE_COUNT_WEIGHT * min(1.0, article_count / RES_ARTICLE_FULL_CREDIT_AT)
-    score += RES_RECENCY_WEIGHT * _pubmed_recency_credit(joined)
+    article_credit = min(1.0, article_count / RES_ARTICLE_FULL_CREDIT_AT)
+    article_delta = RES_ARTICLE_COUNT_WEIGHT * article_credit
+    recency_credit = _pubmed_recency_credit(joined)
+    recency_delta = RES_RECENCY_WEIGHT * recency_credit
 
-    return _clip(score)
+    score += article_delta
+    score += recency_delta
+    deltas.append((f"article count ({article_count}/{RES_ARTICLE_FULL_CREDIT_AT})", article_delta))
+    deltas.append((f"recency credit ({recency_credit:.2f})", recency_delta))
+
+    final = _clip(score)
+    _log_breakdown("research", request, deltas, final)
+    return final
