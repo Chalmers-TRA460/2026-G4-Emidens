@@ -5,6 +5,7 @@ from .request_input import (
     REQUEST_INPUT_TOOL_NAME,
     REQUESTABLE_FIELDS,
     request_clinical_input,
+    set_skipped_fields,
 )
 
 __all__ = [
@@ -14,4 +15,5 @@ __all__ = [
     "dosage_calculator",
     "REQUEST_INPUT_TOOL_NAME",
     "REQUESTABLE_FIELDS",
+    "set_skipped_fields",
 ]

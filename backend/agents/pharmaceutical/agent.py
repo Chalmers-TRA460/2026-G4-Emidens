@@ -22,6 +22,7 @@ from .tools import (
     dosage_calculator,
     fass_search,
     request_clinical_input,
+    set_skipped_fields,
 )
 
 _AGENT_NAME = "pharmaceutical"
@@ -59,11 +60,13 @@ If the user message lists fields under "Intentionally skipped by clinician", tre
 - No all-caps section headers, no bracketed taxonomy tags ([ADR: …], [INTERACTION: …]) in prose.
 - Flag conflicts: "FASS säger A, Strama säger B — följer Strama eftersom …"
 
-The skills below describe what to look up, what to flag, and the clinical structure of a complete answer. Use the example as your shape anchor; skill content is welcome to influence prose.
+The skills below describe what to look up, what to flag, and the clinical structure of a complete answer. Use the examples as your shape anchors; skill content is welcome to influence prose.
+
+If the clinical context is empty or missing fields a safe dose depends on (age, weight, renal function, current meds, active conditions), your FIRST action is `request_clinical_input` followed by a one-line message — not a dosing recommendation. Do not "answer with caveats" instead of asking; only do that when the clinician has explicitly skipped the field (see Skipped fields).
 
 ---
 
-# Example
+# Example 1 — full context provided
 
 Query: Starta metoprolol hos 78-årig kvinna med hjärtsvikt, eGFR 42, redan på verapamil.
 
@@ -76,6 +79,30 @@ Answer:
 - **Övrigt att kolla:** övriga AV-blockerande läkemedel (digoxin, diltiazem), diabetesläkemedel (maskerade hypoglykemisymtom).
 
 *Sources: [FASS Metoprolol Teva, §4.5 Interaktioner], [FASS Metoprolol Teva, §4.2 Dosering], [janusmed metoprolol+verapamil].*
+
+---
+
+# Example 2 — context missing, must ask before answering
+
+Query: Starta metoprolol.
+Clinical context: (empty)
+
+First action: call `request_clinical_input` with fields = ["age_years", "renal_impairment", "active_conditions", "current_medications"].
+
+Final message (this is the entire turn — do NOT produce a dose):
+Behöver patientdata innan jag kan rekommendera dos: ålder (startdos sänks ≥75), njurfunktion (påverkar titreringstakt), aktiva diagnoser (hjärtsvikt vs hypertoni ger olika måldos), och aktuell medicinering (AV-blockerande kombinationer är kontraindicerade).
+
+Why this is correct: weight is not requested — metoprolol is not weight-dosed. Hepatic impairment is not requested — metoprolol clearance is not the rate-limiter here. Ask only for what changes the recommendation.
+
+---
+
+# Example 3 — context partial, clinician skipped the rest
+
+Query: Starta metoprolol.
+Clinical context: age 78, heart failure.
+Intentionally skipped by clinician: renal_impairment, current_medications.
+
+Do NOT call `request_clinical_input` — give a best-effort answer with explicit safety caveats. Lead with the dose, then flag what each skipped field would have changed.
 
 ---
 
@@ -105,6 +132,7 @@ def make_pharmaceutical_expert(llm: BaseChatModel) -> Agent:
     react_graph = build_pharmaceutical_graph(llm)
 
     async def _call(request: AgentRequest) -> AgentResponse:
+        set_skipped_fields(request.skipped_fields)
         result: dict[str, Any] = await react_graph.ainvoke(
             {"messages": [HumanMessage(content=build_user_message(request))]}
         )
