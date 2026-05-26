@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 
 const navItems = [
   { icon: MessageSquarePlus, label: 'New Chat', to: '/new' },
-  { icon: Clock, label: 'Sessions', to: '/' },
+  { icon: Clock, label: 'Sessions', to: '/sessions' },
   { icon: Bot, label: 'Agents', to: '/agents' },
   { icon: Database, label: 'Knowledge', to: '/knowledge' },
   { icon: Settings, label: 'Settings', to: '/settings' },

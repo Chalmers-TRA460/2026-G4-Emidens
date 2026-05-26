@@ -44,7 +44,7 @@ export function SessionDetailPage() {
   }
 
   if (!storedLoaded) return null;
-  return <Navigate to="/" replace />;
+  return <Navigate to="/sessions" replace />;
 }
 
 function StoredSessionView({ session }: { session: StoredSession }) {

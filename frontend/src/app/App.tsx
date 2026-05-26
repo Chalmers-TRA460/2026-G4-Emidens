@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { Sidebar } from './components/Sidebar';
 import { SessionsPage } from './pages/SessionsPage';
 import { SessionDetailPage } from './pages/SessionDetailPage';
@@ -27,9 +27,10 @@ export default function App() {
       />
 
       <Routes>
-        <Route path="/" element={<SessionsPage />} />
-        <Route path="/sessions/:id" element={<SessionDetailPage />} />
+        <Route path="/" element={<Navigate to="/new" replace />} />
         <Route path="/new" element={<NewRunPage />} />
+        <Route path="/sessions" element={<SessionsPage />} />
+        <Route path="/sessions/:id" element={<SessionDetailPage />} />
         <Route path="/agents" element={<AgentsPage />} />
         <Route path="/knowledge" element={<PlaceholderPage title="Knowledge" />} />
         <Route path="/settings" element={<SettingsPage />} />
