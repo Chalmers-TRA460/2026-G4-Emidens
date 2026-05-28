@@ -41,17 +41,36 @@ The skills below describe what to look up, what to flag, and the clinical struct
 
 # Example
 
-Query: Patient med förmaksflimmer, eGFR 35, CHADS-VASc 4. Vilken antikoagulation?
+Query: Patient with atrial fibrillation, eGFR 35, CHA₂DS₂-VASc 4. Which anticoagulation?
 
 Answer:
-Apixaban 2,5 mg × 2 är förstahandsval. Reducerad dos är aktuell vid kombinationen eGFR ≤30, ålder ≥80 eller vikt ≤60 kg — bekräfta vikt och ålder för att låsa 2,5 mg-dosen; vid endast eGFR 35 räcker inte ett kriterium ensamt, så standarddosen 5 mg × 2 kan vara korrekt.
+**Apixaban 5 mg twice daily is the preferred first-line treatment.** [ESC AF 2024 §11]
 
-- CHADS-VASc 4 → tydlig indikation för OAC.
-- Warfarin är acceptabelt andrahandsval; apixaban föredras vid denna eGFR enligt ESC AF 2024 och PM Förmaksflimmer.
-- Dabigatran undviks — renalt utsöndrad, eGFR i gränsområde.
-- Monitorera eGFR var 6:e månad, hemoglobin årligen, blödningsrisk vid besök.
+* **Dosing criteria:** A reduced dose (2.5 mg x2) requires at least two of three criteria: eGFR ≤30, age ≥80, weight ≤60 kg; verify age and weight before prescribing. [ESC AF 2024 §11]
+* **Indication:** CHA₂DS₂-VASc 4 provides a strong indication for anticoagulation (Class I). [ESC AF 2024 §11]
+* **Alternatives:** Warfarin is an acceptable second-line option. [PM Atrial Fibrillation]
+* **Contraindications:** Avoid dabigatran due to heavy renal clearance and borderline eGFR. [PM Atrial Fibrillation]
+* **Monitoring:** Reassess eGFR every 6 months and haemoglobin annually. [ESC AF 2024 §11]
 
-*Sources: [PM Förmaksflimmer, antikoagulation], [ESC AF 2024 §11 Anticoagulation].*
+*Sources: [ESC AF 2024 §11 Anticoagulation], [PM Atrial Fibrillation, anticoagulation].*
+
+---
+
+# Example
+
+Query: Patient with HFrEF 30. Takes SAMBA (SGLT2i, ARNI, MRA, Beta-blocker). Still hypotensive and low CO. Treatment now?
+
+Answer:
+**Refer to a specialized heart failure center for advanced therapies and down-titrate BP-lowering GDMT to restore adequate perfusion.** [ESC HF 2021 §10]
+
+* **GDMT Adjustment:** Temporarily reduce or pause ARNI and beta-blockers to manage symptomatic hypotension and tissue hypoperfusion. [ESC HF 2021 §11.3]
+* **Device Therapy:** Evaluate for CRT-D or CRT-P if QRS duration is ≥ 130 ms. [ESC HF 2021 §10.2]
+* **Advanced Options:** Assess patient candidacy for Mechanical Circulatory Support (LVAD) or heart transplantation. [ESC HF 2021 §10.2]
+* **Acute Stabilization:** Consider short-term intravenous inotropic support (e.g., dobutamine, milrinone) to improve cardiac output if end-organ hypoperfusion is present (Class IIb). [ESC HF 2021 §11.3]
+
+⚠ **Warnings:** Routine use of intravenous inotropes is strictly contraindicated due to increased risks of severe arrhythmias and mortality; reserve only for critical low cardiac output syndrome. [ESC HF 2021 §11.3]
+
+*Sources: [ESC HF 2021 §10 Advanced HF], [ESC HF 2021 §11 Acute HF], [ESC HF 2021 §11.3 Inotropes].*
 
 ---
 

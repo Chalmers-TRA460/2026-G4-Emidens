@@ -66,23 +66,78 @@ If the clinical context is empty or missing fields a safe dose depends on (age, 
 
 ---
 
-# Example 1 — full context provided
+# Example 1 — full context, dose adjustment for renal impairment
 
-Query: Starta metoprolol hos 78-årig kvinna med hjärtsvikt, eGFR 42, redan på verapamil.
+Query: Patient med eGFR 39. Diabetes typ 2. Metformin behandling förändring?
 
 Answer:
-**Starta inte metoprolol så länge patienten står på verapamil.** Kombinationen non-DHP CCB + betablockerare ger hög risk för bradykardi, AV-block och akut dekompensation — byt verapamil till amlodipin först, därefter starta metoprolol.
+**Maximal dygnsdos av metformin ska sänkas till 1000 mg på grund av måttligt nedsatt njurfunktion (eGFR 30–44 ml/min).** [FASS metformin §4.2]
 
-- **Efter byte:** metoprololsuccinat 12,5 mg × 1, titrera var 2:a vecka mot måldos 200 mg/dygn eller maximalt tolererat. Låg startdos motiveras av ålder 78 och hjärtsvikt (start low, go slow).
-- **Monitorera:** puls (håll vid <50), blodtryck, vikt, trötthet. eGFR 42 → ingen dosjustering för metoprolol.
-- **Vanliga biverkningar att informera om:** trötthet, kalla extremiteter, yrsel vid uppstigande. Allvarlig men ovanlig: bronkospasm hos astmatiker.
-- **Övrigt att kolla:** övriga AV-blockerande läkemedel (digoxin, diltiazem), diabetesläkemedel (maskerade hypoglykemisymtom).
+* **Dosering:** Nuvarande dos måste justeras till max 1000 mg/dag, uppdelat på 2 doseringstillfällen för att minimera gastrointestinala biverkningar (mycket vanliga, >10 %). [FASS metformin §4.2, §4.8]
+* **Utsättning:** Metformin är kontraindicerat och måste sättas ut helt om eGFR sjunker under 30 ml/min. [FASS metformin §4.3]
+* **Monitorering:** Njurfunktionen (eGFR) ska kontrolleras var 3–6 månad vid eGFR i detta intervall. [FASS metformin §4.4]
 
-*Sources: [FASS Metoprolol Teva, §4.5 Interaktioner], [FASS Metoprolol Teva, §4.2 Dosering], [janusmed metoprolol+verapamil].*
+⚠ **Varningar:** Förhöjd risk för laktatacidos (sällsynt men allvarlig) vid nedsatt njurfunktion. Metformin måste pausas omedelbart vid tillstånd som kan påverka njurfunktionen negativt, såsom dehydrering (kräkningar, diarré), svår infektion, eller vid intravaskulär administrering av jodkontrastmedel. [FASS metformin §4.4, §4.5]
+
+*Sources: [FASS metformin §4.2], [FASS metformin §4.3], [FASS metformin §4.4], [FASS metformin §4.5], [FASS metformin §4.8].*
 
 ---
 
-# Example 2 — context missing, must ask before answering
+# Example 2 — full context, partial inputs flagged in-line
+
+Query: Patient with atrial fibrillation, eGFR 35, CHA₂DS₂-VASc 4. Which anticoagulation?
+
+Answer:
+**Apixaban 5 mg twice daily is the standard dose, but confirm patient age and weight before prescribing.** [FASS apixaban §4.2]
+
+* **Missing inputs:** Cannot finalize dose safety without age and weight. [FASS apixaban §4.2]
+* **Dosing:** Reduce dose to 2.5 mg twice daily if at least two criteria are met: creatinine ≥133 µmol/L, age ≥80 years, or weight ≤60 kg. [FASS apixaban §4.2]
+* **Alternative:** Rivaroxaban 15 mg once daily (specifically adjusted for eGFR 15–49). [FASS rivaroxaban §4.2]
+* **Monitor:** Renal function every 6 months due to moderate impairment. [FASS apixaban §4.4]
+
+⚠ **Warnings:** Increased bleeding risk. [FASS apixaban §4.8] Concomitant use with strong CYP3A4/P-gp inhibitors (e.g., systemic ketoconazole) or NSAIDs significantly increases bleeding risk. [FASS apixaban §4.5]
+
+*Sources: [FASS apixaban §4.2], [FASS apixaban §4.4], [FASS apixaban §4.5], [FASS apixaban §4.8], [FASS rivaroxaban §4.2].*
+
+---
+
+# Example 3 — full context, contraindicated polypharmacy
+
+Query: Patient på årskontroll. Diabetes typ 1. Hypertoni. CKD grad 4. Står på metoprolol, candesartan, enalapril, hydrochlortiazid, insulin.
+
+Answer:
+**Sätt omedelbart ut antingen candesartan eller enalapril.** [FASS candesartan §4.3] Dubbel RAAS-blockad är kontraindicerad. [FASS enalapril §4.5]
+
+* **Dubbel RAAS-blockad:** Kombinationen av ACE-hämmare och ARB ger kraftigt ökad risk för hyperkalemi, hypotoni och akut njursvikt, särskilt vid CKD 4. [FASS candesartan §4.5]
+* **Hydroklortiazid:** Ineffektivt vid eGFR < 30 ml/min och kan försämra njurfunktionen; sätt ut eller byt till loop-diuretika. [FASS hydroklortiazid §4.4]
+* **Insulindosering:** Insulinbehovet minskar ofta drastiskt vid CKD 4 på grund av minskad renal utsöndring; övervaka blodglukos tätt. [FASS insulin aspart §4.2]
+* **Metoprolol:** Ingen njurdosanpassning krävs, men preparatet kan maskera adrenerga symtom på hypoglykemi. [FASS metoprolol §4.4]
+
+⚠ **Varningar:** Samtidig användning av ACE-hämmare och ARB hos patienter med diabetesnefropati är absolut kontraindicerad. [FASS candesartan §4.3] Extrem risk för livshotande hyperkalemi vid CKD 4. [FASS enalapril §4.4]
+
+*Sources: [FASS candesartan §4.3], [FASS candesartan §4.5], [FASS enalapril §4.4], [FASS enalapril §4.5], [FASS hydroklortiazid §4.4], [FASS insulin aspart §4.2], [FASS metoprolol §4.4].*
+
+---
+
+# Example 4 — full context, GDMT initiation in advanced CKD
+
+Query: Patient med hjärtsvikt EF 34. eGFR 30. Behandling?
+
+Answer:
+**Sätt in GDMT (Guideline-Directed Medical Therapy) med mycket låga startdoser för RAAS-blockad på grund av eGFR 30.** [FASS enalapril §4.2]
+
+* **Betablockerare:** T.ex. metoprolol eller bisoprolol; kräver ingen njurdosanpassning. [FASS metoprolol §4.2]
+* **SGLT2-hämmare:** T.ex. dapagliflozin 10 mg x 1; godkänt vid HFrEF ned till eGFR 20 ml/min. [FASS dapagliflozin §4.2]
+* **ACE-hämmare/ARNI & MRA:** Starta med lägsta möjliga dos (t.ex. enalapril 2,5 mg, spironolakton 12,5 mg) för att undvika akut njursvikt. [FASS spironolakton §4.2, FASS enalapril §4.2]
+* **Saknade parametrar:** Aktuellt kaliumvärde och blodtryck saknas och måste kontrolleras före insättning. [FASS spironolakton §4.4]
+
+⚠ **Varningar:** Hög risk för hyperkalemi vid insättning av MRA och ACE-hämmare vid eGFR 30. [FASS spironolakton §4.4] Kontrollera kalium och kreatinin inom 1–2 veckor efter start; pausa behandling om kalium överstiger 5,0 mmol/L. [FASS enalapril §4.4]
+
+*Sources: [FASS metoprolol §4.2], [FASS dapagliflozin §4.2], [FASS enalapril §4.2], [FASS enalapril §4.4], [FASS spironolakton §4.2], [FASS spironolakton §4.4].*
+
+---
+
+# Example 5 — context missing, must ask before answering
 
 Query: Starta metoprolol.
 Clinical context: (empty)
@@ -96,7 +151,7 @@ Why this is correct: weight is not requested — metoprolol is not weight-dosed.
 
 ---
 
-# Example 3 — context partial, clinician skipped the rest
+# Example 6 — context partial, clinician skipped the rest
 
 Query: Starta metoprolol.
 Clinical context: age 78, heart failure.

@@ -40,15 +40,50 @@ The skills below describe what to look up, what to flag, and how to grade eviden
 Query: Evidence for SGLT2 inhibitors in HFrEF without diabetes?
 
 Answer:
-Strong evidence — two large RCTs (DAPA-HF, EMPEROR-Reduced) show clear benefit in HFrEF regardless of diabetes status. Combined HR for CV death or HF hospitalization is ~0.75 (95% CI 0.65–0.86), with the effect consistent in pre-specified non-diabetic subgroups (interaction p > 0.2).
+**Strong evidence from two large RCTs demonstrates that SGLT2 inhibitors significantly reduce cardiovascular death and heart failure hospitalization in HFrEF, regardless of diabetes status.** [ESC HF 2023]
 
-- **DAPA-HF** (n=4744, dapagliflozin 10 mg vs placebo, 18-month follow-up): HR 0.74 for primary composite; benefit in both diabetic and non-diabetic cohorts.
-- **EMPEROR-Reduced** (n=3730, empagliflozin 10 mg vs placebo): HR 0.75 for primary composite; consistent across NYHA class.
-- **Quality**: high — two well-powered RCTs, consistent direction, plausible mechanism (natriuresis + cardiac efficiency).
-- **Caveats**: DAPA-HF excluded eGFR <30, EMPEROR-Reduced <20. Long-term renal-decline data still maturing.
-- **Guideline status**: Class I recommendation in ESC HF 2023 for NYHA II–IV HFrEF, independent of diabetes.
+* **Efficacy:** Dapagliflozin (DAPA-HF) and empagliflozin (EMPEROR-Reduced) show a combined hazard ratio of ~0.75 for primary composite outcomes. [PMID 31535829, PMID 32865377]
+* **Consistency:** Benefit remains robust in pre-specified non-diabetic cohorts (interaction p > 0.2). [PMID 31535829]
+* **Guideline Status:** Class I recommendation for all HFrEF patients to reduce HF hospitalization and CV death. [ESC HF 2023]
+* **Caveats:** Trials excluded severe renal impairment (eGFR <30 for DAPA-HF, <20 for EMPEROR-Reduced). [PMID 31535829, PMID 32865377]
 
-*Sources: [PMID 31535829 DAPA-HF], [PMID 32865377 EMPEROR-Reduced], [ESC HF 2023, §5 SGLT2i].*
+⚠ **Warnings:** Increased risk of genital mycotic infections. Euglycemic diabetic ketoacidosis is a rare but serious risk, though primarily observed in patients with concurrent diabetes. [PMID 31535829]
+
+*Sources: [PMID 31535829 DAPA-HF], [PMID 32865377 EMPEROR-Reduced], [ESC HF 2023 §5 SGLT2i].*
+
+---
+
+# Example
+
+Query: Best first-line treatment for patient with ankle edema and hypertension on calcium channel blockers?
+
+Answer:
+**Add an ACE inhibitor or ARB to the current regimen, or reduce the calcium channel blocker (CCB) dose.** [ESC Hypertension 2024 §8]
+
+* **Mechanism:** CCB-induced edema is driven by precapillary vasodilation; adding an ACEi/ARB induces post-capillary vasodilation, normalizing capillary pressure and resolving the edema. [ESC Hypertension 2024 §8]
+* **Ineffective therapies:** Loop diuretics (e.g., furosemide) are generally ineffective for CCB-induced peripheral edema because it is a hydrostatic pressure issue, not systemic volume overload. [AHA Hypertension Management]
+* **Alternatives:** If an ACEi/ARB is contraindicated or ineffective, switch the CCB to a thiazide-like diuretic or a non-dihydropyridine CCB (e.g., diltiazem), provided there is no heart failure. [ESC Hypertension 2024 §8.3]
+
+⚠ **Warnings:** Angioedema risk with ACE inhibitors (rare but life-threatening). [FASS ramipril §4.4] Never combine an ACE inhibitor with an ARB due to significantly increased risks of hyperkalemia and acute renal failure. [FASS ramipril §4.5]
+
+*Sources: [ESC Hypertension 2024 §8], [ESC Hypertension 2024 §8.3], [AHA Hypertension Management], [FASS ramipril §4.4], [FASS ramipril §4.5].*
+
+---
+
+# Example
+
+Query: Evidence for cardioversion for patients with monomorphic ventricular tachycardia?
+
+Answer:
+**Synchronized electrical cardioversion is the first-line treatment for monomorphic ventricular tachycardia (VT) and is mandatory if the patient is hemodynamically unstable.** [ESC VA 2022 §6.1]
+
+* **Unstable VT:** Immediate synchronized direct current (DC) cardioversion is recommended to restore sinus rhythm (Class I). [ESC VA 2022 §6.1]
+* **Stable VT:** Electrical cardioversion remains a Class I recommendation, though pharmacological cardioversion (e.g., intravenous procainamide) can be attempted first. [ESC VA 2022 §6.1, PMID 27402230]
+* **Pre-treatment:** Adequate sedation or general anesthesia must be administered prior to the shock if the patient is conscious. [ESC VA 2022 §6.1]
+
+⚠ **Warnings:** The defibrillator must be explicitly set to synchronized mode; delivering an unsynchronized shock during the vulnerable period of the T-wave can induce ventricular fibrillation. [AHA ACLS Guidelines]
+
+*Sources: [ESC VA 2022 §6.1], [PMID 27402230 PROCAMIO], [AHA ACLS Guidelines].*
 
 ---
 
