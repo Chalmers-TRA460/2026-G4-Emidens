@@ -67,17 +67,19 @@ PHARMACEUTICAL — ``fass_search`` (semantic search over Swedish FASS labels)
     dosing question), and whether ``request_clinical_input`` was
     triggered (missing patient data → less confident dose claims).
 
-RESEARCH — ``pubmed_tool`` (LangChain ``PubmedQueryRun`` wrapping NCBI E-utilities)
-    Returns a *plain string* (not JSON). One block per article, separated
-    by blank lines, looking like:
-        Published: 2026-05-04
-        Title: …
-        Copyright Information: …
-        Summary::
-        BACKGROUND: …
-    On a miss it returns ``"No good PubMed Result was found"``.
-    Useful signals: number of "Title:" blocks (≈ number of articles),
-    recency of "Published:" dates, presence of the no-result sentinel.
+RESEARCH — ``pubmed_tool`` (custom NCBI E-utilities client, see
+    agents/research/tools/pubmed.py)
+    Uses ``response_format="content_and_artifact"``: ``content`` is a
+    human-readable block per article (``[1] PMID 12345 (2026) — title…``)
+    for the LLM, while the typed rows live on ``tool_message.artifact``
+    as a :class:`PubMedArtifact` (``.results`` is a list of
+    :class:`PubMedItem`, each with ``year``). On a miss the artifact's
+    ``results`` is empty and ``content`` is a sentinel like
+    ``"No PubMed results for query: …"``.
+    We read the artifact (not the prose) so article count and recency
+    survive — mirroring how the cardiology confidence reads its artifact.
+    Useful signals: number of result rows (≈ number of articles),
+    recency of the newest ``year``, whether any results came back at all.
 """
 
 from __future__ import annotations
@@ -156,12 +158,6 @@ RES_ARTICLE_COUNT_WEIGHT: float = 0.20
 RES_ARTICLE_FULL_CREDIT_AT: int = 5        # full count credit at ≥ this many
 RES_RECENCY_WEIGHT: float = 0.15
 RES_RECENT_WINDOW_YEARS: int = 5           # newer than this → full recency credit
-
-# Sentinel strings emitted by langchain's PubmedQueryRun on empty results.
-RES_NO_RESULT_SENTINELS: tuple[str, ...] = (
-    "No good PubMed Result was found",
-    "No good Pubmed Result was found",
-)
 
 
 # ================================================================================
@@ -277,18 +273,19 @@ def _looks_like_abstention(text: str) -> bool:
     return bool(_ABSTENTION_RE.search(text))
 
 
-# PubMed text-output parsing
-_PUBMED_TITLE_RE = re.compile(r"^Title:", re.MULTILINE)
-_PUBMED_PUB_RE = re.compile(r"^Published:\s*(\d{4})-\d{2}-\d{2}", re.MULTILINE)
+# PubMed artifact parsing. The custom pubmed_tool returns its rows on the
+# ToolMessage artifact (PubMedArtifact.results), not in the prose content, so
+# we read those structured rows rather than regex-parsing the LLM-facing text.
+def _pubmed_results(messages: Iterable[BaseMessage]) -> list[dict]:
+    rows: list[dict] = []
+    for m in _tool_messages(messages, RES_TOOL_NAME):
+        rows.extend(_parse_json_results(m))
+    return rows
 
 
-def _pubmed_article_count(text: str) -> int:
-    return len(_PUBMED_TITLE_RE.findall(text))
-
-
-def _pubmed_recency_credit(text: str) -> float:
+def _pubmed_recency_credit(results: list[dict]) -> float:
     """Return 0.0–1.0 based on how recent the newest article is."""
-    years = [int(m.group(1)) for m in _PUBMED_PUB_RE.finditer(text)]
+    years = [int(y) for r in results if isinstance(y := r.get("year"), (int, float))]
     if not years:
         return 0.0
     newest = max(years)
@@ -297,10 +294,6 @@ def _pubmed_recency_credit(text: str) -> float:
     if age >= RES_RECENT_WINDOW_YEARS:
         return 0.0
     return 1.0 - (age / RES_RECENT_WINDOW_YEARS)
-
-
-def _pubmed_says_no_results(text: str) -> bool:
-    return any(s in text for s in RES_NO_RESULT_SENTINELS)
 
 
 # ================================================================================
@@ -422,18 +415,18 @@ def research_confidence(messages: list[BaseMessage], request: AgentRequest) -> f
         _log_breakdown("research", request, deltas, final)
         return final
 
-    joined = "\n\n".join(str(m.content) for m in pubmed_calls)
+    results = _pubmed_results(messages)
 
-    if _pubmed_says_no_results(joined) and _pubmed_article_count(joined) == 0:
+    if not results:
         deltas.append(("no PubMed results", -RES_NO_RESULTS_PENALTY))
         final = _clip(score - RES_NO_RESULTS_PENALTY)
         _log_breakdown("research", request, deltas, final)
         return final
 
-    article_count = _pubmed_article_count(joined)
+    article_count = len(results)
     article_credit = min(1.0, article_count / RES_ARTICLE_FULL_CREDIT_AT)
     article_delta = RES_ARTICLE_COUNT_WEIGHT * article_credit
-    recency_credit = _pubmed_recency_credit(joined)
+    recency_credit = _pubmed_recency_credit(results)
     recency_delta = RES_RECENCY_WEIGHT * recency_credit
 
     score += article_delta
