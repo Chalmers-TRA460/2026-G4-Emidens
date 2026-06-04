@@ -17,7 +17,7 @@
 | Field               | Value                                      |
 |---------------------|--------------------------------------------|
 | **Group**           | TRA460_Group_4                             |
-| **Version**         | 1.1                                        |
+| **Version**         | 1.2                                        |
 | **Date**            | 2026-04-15                                 |
 | **Clinical Mentor** | [Araz Rawshani, Dr. , University of Gothenburg/ Sahlgrenska]|
 | **Group Members**   | [Andrej Kocijan (MPALG), Viggo Trobäck (MPCAS), Ida Thorburn (MPQOM), Victor Zexi He (MD)]      |
@@ -206,7 +206,7 @@ Success would be a system that aids the clinician and improves the care for the 
 
 **Could Have** — *Nice-to-have if time and resources allow*
 
-- Google glasses interface or text to voice/voice to text.
+- Smart glasses interface or voice-to-text/text-to-voice. *(Nice-to-have: research shows very few wearables currently support display output, making seamless integration premature.)*
 - Feedback loops for efficient guidline writing of future material.
 - Feedback for ongoing system improvement.
 
@@ -271,4 +271,5 @@ There are alot of privacy aspects that need to be considered. We will expand upo
 | Version | Date       | Summary of Changes                                  |
 |---------|------------|-----------------------------------------------------|
 | 1.0     | 2026-04-15 | Initial draft after first clinical mentor meeting   |
-| 1.1     | 2026-06-04 | Updated the technical direction section             |
+| 1.1     | 2026-06-03 | Updated the technical direction section             |
+| 1.2     | 2026-06-04 | Minor updates to the requirements section           |
