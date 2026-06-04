@@ -1,6 +1,4 @@
-<img src="frontend/public/logo-blue.svg" alt="Emidens logo" width="48">
-
-# Emidens
+<h1><img src="frontend/public/logo-blue.svg" alt="" width="32" valign="middle"> Konsult</h1>
 
 A clinical decision support system for on-call clinicians. Emidens routes
 clinical queries to expert AI agents (pharmaceutical, cardiology, and research)
