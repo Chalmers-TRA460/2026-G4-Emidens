@@ -4,11 +4,13 @@
 
 > **TRA460: Digital Health Implementation** | Chalmers University of Technology
 
+<!--
 > **v1.0 Section Guide:**
 >
 > - **[Required]** — Must be substantive for this submission to pass.
 > - **[Recommended]** — Optional for v1.0, but strengthens your foundation.
 > - **[Expand Later]** — Scaffolding for future iterations. Initial thoughts welcome.
+-->
 
 ---
 
@@ -17,7 +19,7 @@
 | Field               | Value                                      |
 |---------------------|--------------------------------------------|
 | **Group**           | TRA460_Group_4                             |
-| **Version**         | 1.2                                        |
+| **Version**         | 1.3                                        |
 | **Date**            | 2026-04-15                                 |
 | **Clinical Mentor** | [Araz Rawshani, Dr. , University of Gothenburg/ Sahlgrenska]|
 | **Group Members**   | [Andrej Kocijan (MPALG), Viggo Trobäck (MPCAS), Ida Thorburn (MPQOM), Victor Zexi He (MD)]      |
@@ -47,6 +49,7 @@
 
 From Spezi tool:
 "A way to prevent knowledge-based errors at the point of care - including those from unrecognized knowledge gaps - in clinicians making direct patient care decisions, especially in time-critical situations, in order to reduce serious adverse events and preventable deaths."
+
 ---
 
 ### 1.1 Clinical Context & Background [Required]
@@ -85,7 +88,7 @@ The effect of knowledge based errors are trifold.
   examples are more valuable than generalizations.
 -->
 
-One big take away from our mentor meetings is that the amount of knowledge you are expected to know as a health care professional. From what we can observe and what our clinical mentor has obsereved, it is clear that nobody knows everything so consults and checking information is an integral part of the work. What somewhat surprised us is how this information is currently collected using non specialized language models in addition to traditional sources as they might be to inconvinient or a human consult is unavailable at that given moment. This is both insufficient as supporting medical information and introduces unnecessary risks.
+One big take away from our mentor meetings is that the amount of knowledge you are expected to know as a health care professional. From what we can observe and what our clinical mentor has obsereved, it is clear that nobody knows everything so consults and checking information is an integral part of the work. What somewhat surprised us is how this information is currently collected using non specialized language models in addition to traditional sources as they might be too inconvinient or a human consult is unavailable at that given moment. This is both insufficient as supporting medical information and introduces unnecessary risks.
 
 The current workflow as described by our mentor involves some kind of problem (could be a medicine that needs to be administered but the dose is not given), a query (how much of medicine x should be administrerd to treat condition y) and finally an action (Administring dose). The query part is the point of friction today and might even be rushed if the conditions don't allow the necessary searching for information. Leading to incorrect decisions or the use of non-ideal information systems.
 
@@ -121,6 +124,8 @@ Beyond model capabilities, the Konsult project also focuses on model–clinician
 Depending on design choices, alternative success metrics may be considered. One such metric is the volume of prompts processed, which can serve as a proxy for usability and adoption.
 
 Another key metric is the frequency of corrections relative to clinicians’ recommendations. This provides a direct measure of alignment with medical judgment and may indicate the system’s potential to reduce erroneous clinical decisions and their associated consequences. Another metric can be how well the Konsult tool corrects unnecessary ordering of redundant tests, referrals, consults and treatment making the hospital run more efficiently.
+
+Other than that a qualitative assessment based on clinician surveys is our most reliable indicator of adoption and satisfaction.
 
 ---
 
@@ -160,6 +165,11 @@ Clinical Leadership (e.g., verksamhetschef or ledningsläkare): A key stakeholde
   A simple narrative walkthrough is fine, e.g.:
   "The patient wakes up, measures their..., calls the clinic to..."
 -->
+**Case 1**  
+A clinician encounters uncertainty about a drug dosing question mid-shift. The clinician briefly pauses the patient encounter to query Konsult. Both the pharmaceutical expert and the orchestrator answer with high confidence. The clinician verifies the FASS sources and administers the dosing.
+
+**Case 2**  
+A clinician encounters uncertainty about a drug dosing question mid-shift. The clinician briefly pauses the patient encounter to query Konsult. Both the pharmaceutical expert and the orchestrator answer with low confidence. The clinician consults a pharmacist or specialist and administers the dosing.
 
 ---
 
@@ -178,6 +188,7 @@ Clinical Leadership (e.g., verksamhetschef or ledningsläkare): A key stakeholde
 A solution for clinicians to seamlessly access knowledge that are lacking at that specific moment without disrupting their workflow. This would help prevent knowledge-based erros at the point of care.
 
 Success would be a system that aids the clinician and improves the care for the patient. Thus without decreasing patient trust in their doctor, impairing the doctors own ability or introducing additional friction points in the treatment process
+
 ---
 
 ## 4. Requirements
@@ -229,6 +240,7 @@ Success would be a system that aids the clinician and improves the care for the 
 -->
 
 There are alot of privacy aspects that need to be considered. We will expand upon these when we get further into what our intended solution requires
+
 ---
 
 ## 5. Technical Direction [Expand Later]
@@ -273,3 +285,4 @@ There are alot of privacy aspects that need to be considered. We will expand upo
 | 1.0     | 2026-04-15 | Initial draft after first clinical mentor meeting   |
 | 1.1     | 2026-06-03 | Updated the technical direction section             |
 | 1.2     | 2026-06-04 | Minor updates to the requirements section           |
+| 1.3     | 2026-06-04 | User journey                                        |
