@@ -19,7 +19,7 @@
 | Field               | Value                                      |
 |---------------------|--------------------------------------------|
 | **Group**           | TRA460_Group_4                             |
-| **Version**         | 1.3                                        |
+| **Version**         | 1.4                                        |
 | **Date**            | 2026-04-15                                 |
 | **Clinical Mentor** | [Araz Rawshani, Dr. , University of Gothenburg/ Sahlgrenska]|
 | **Group Members**   | [Andrej Kocijan (MPALG), Viggo Trobäck (MPCAS), Ida Thorburn (MPQOM), Victor Zexi He (MD)]      |
@@ -239,7 +239,7 @@ Success would be a system that aids the clinician and improves the care for the 
   - Performance, offline capability
 -->
 
-There are alot of privacy aspects that need to be considered. We will expand upon these when we get further into what our intended solution requires
+Privacy and regulatory compliance are the most significant non-functional constraints for this system. Key considerations include GDPR compliance and regional healthcare data processing agreements, which prohibit routing patient data through third-party cloud inference services. Depending on the scope of clinical advice provided, the system may fall under the medical device regulation, requiring formal clinical validation and other mandatory regulatory processes.
 
 ---
 
@@ -286,3 +286,4 @@ There are alot of privacy aspects that need to be considered. We will expand upo
 | 1.1     | 2026-06-03 | Updated the technical direction section             |
 | 1.2     | 2026-06-04 | Minor updates to the requirements section           |
 | 1.3     | 2026-06-04 | User journey                                        |
+| 1.4     | 2026-06-04 | Non-functional requirement refinement               |
