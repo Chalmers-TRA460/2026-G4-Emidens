@@ -17,7 +17,7 @@
 | Field               | Value                                      |
 |---------------------|--------------------------------------------|
 | **Group**           | TRA460_Group_4                             |
-| **Version**         | 1.0                                        |
+| **Version**         | 1.1                                        |
 | **Date**            | 2026-04-15                                 |
 | **Clinical Mentor** | [Araz Rawshani, Dr. , University of Gothenburg/ Sahlgrenska]|
 | **Group Members**   | [Andrej Kocijan (MPALG), Viggo Trobäck (MPCAS), Ida Thorburn (MPQOM), Victor Zexi He (MD)]      |
@@ -271,4 +271,4 @@ There are alot of privacy aspects that need to be considered. We will expand upo
 | Version | Date       | Summary of Changes                                  |
 |---------|------------|-----------------------------------------------------|
 | 1.0     | 2026-04-15 | Initial draft after first clinical mentor meeting   |
-|         |            |                                                     |
+| 1.1     | 2026-06-04 | Updated the technical direction section             |
