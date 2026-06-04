@@ -272,9 +272,15 @@ Privacy and regulatory compliance are the most significant non-functional constr
   - What do you need to ask your clinical mentor next?
 -->
 
-- **Which part of medical staff should this be for exactly?:** We plan to clarify this by visiting our mentor and shadowing him for a day, capturing which groups of medical staff struggle with the issue the most. Additionally we will attempt to clarify this by talking to as many members of the medical staff as possible.
-- **How do we avoid threthening the medical professionals' agency? We do not want to make them feel as if they are being challenged / questioned about their professional ability.:** A big part of resolving this issue will be better understanding our users, which will be easier once the above issue is resolved and we know our exact user group. Additionally the above mentioned shadowing and interviews will help us gain deeper understanding of our user group. Finally, to minimize this issue iterative development will be required, constantly adapting the solution to the feedback.
-- **We are assuming, that in time critical scenarios where standard protocols such as a consult are not an option, there is time and resources to use a technical solution.** We are unlikely to completely resolve this issue and have to instead work around it. It will be a major consideration when designing our UI/UX and planning exactly how users interact with our solution.
+- **Which part of medical staff should this be for exactly?:**  
+Version 1.0: We plan to clarify this by visiting our mentor and shadowing him for a day, capturing which groups of medical staff struggle with the issue the most. Additionally we will attempt to clarify this by talking to as many members of the medical staff as possible.  
+Version 1.5: Based on study visit observations and questionnaire findings, the primary target group is junior physicians and medical students, who reported the highest frequency of uncertainty-driven information seeking. Senior clinicians remain a secondary audience, primarily for unfamiliar edge cases outside their specialty.
+- **How do we avoid threthening the medical professionals' agency? We do not want to make them feel as if they are being challenged / questioned about their professional ability.:**  
+Version 1.0: A big part of resolving this issue will be better understanding our users, which will be easier once the above issue is resolved and we know our exact user group. Additionally the above mentioned shadowing and interviews will help us gain deeper understanding of our user group. Finally, to minimize this issue iterative development will be required, constantly adapting the solution to the feedback.  
+Version 1.5: User feedback confirmed that framing the tool as a reference resource rather than a decision-maker was well received. Clinicians responded positively when the system surfaced sources and reasoning transparently, leaving the final judgment explicitly with them. The confidence score and escalation prompts reinforce this framing by signalling when human judgment is especially needed.
+- **We are assuming, that in time critical scenarios where standard protocols such as a consult are not an option, there is time and resources to use a technical solution.**  
+Version 1.0: We are unlikely to completely resolve this issue and have to instead work around it. It will be a major consideration when designing our UI/UX and planning exactly how users interact with our solution.  
+Version 1.5: This remains a live constraint. Feedback consistently flagged response latency as a concern, confirming that even modest delays are felt in clinical settings. The multi-agent architecture is inherently slower than a single query. Possible direction for solving these issues in the future include using smaller models for faster token outputs and further limiting the scope of individual tasks to produce faster, more streamlined outputs
 
 ---
 
@@ -287,3 +293,4 @@ Privacy and regulatory compliance are the most significant non-functional constr
 | 1.2     | 2026-06-04 | Minor updates to the requirements section           |
 | 1.3     | 2026-06-04 | User journey                                        |
 | 1.4     | 2026-06-04 | Non-functional requirement refinement               |
+| 1.5     | 2026-06-04 | Open questions and risks at the end of the project  |
