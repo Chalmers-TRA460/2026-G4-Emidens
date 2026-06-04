@@ -177,7 +177,7 @@ Clinical Leadership (e.g., verksamhetschef or ledningsläkare): A key stakeholde
 -->
 A solution for clinicians to seamlessly access knowledge that are lacking at that specific moment without disrupting their workflow. This would help prevent knowledge-based erros at the point of care.
 
-Success would be a system that aids the clinician and improves the care for the patient. Thus without decreasing patient trust in their doctor, impairing the doctors own ability or introducing additional friction points in the treatment process. 
+Success would be a system that aids the clinician and improves the care for the patient. Thus without decreasing patient trust in their doctor, impairing the doctors own ability or introducing additional friction points in the treatment process
 ---
 
 ## 4. Requirements
@@ -196,19 +196,18 @@ Success would be a system that aids the clinician and improves the care for the 
 **Must Have** — *Non-negotiable for a functioning MVP*
 
 - An easy to use interface that doesn't require additional training to use and understand. (SBAR framework should work)
-- Visible reasoning ability behind generated answer. 
+- Visible reasoning ability behind generated answer.
 - Anonymity.
-
 
 **Should Have** — *High value, but the MVP could technically function without these*
 
 - Fast or instant display of original source material where it on its own answers the prompted question.
-- Ability to process documents. 
+- Ability to process documents.
 
 **Could Have** — *Nice-to-have if time and resources allow*
 
 - Google glasses interface or text to voice/voice to text.
-- Feedback loops for efficient guidline writing of future material. 
+- Feedback loops for efficient guidline writing of future material.
 - Feedback for ongoing system improvement.
 
 **Won't Have** — *Explicitly out of scope for this project*
@@ -229,7 +228,7 @@ Success would be a system that aids the clinician and improves the care for the 
   - Performance, offline capability
 -->
 
-There are alot of privacy aspects that need to be considered. We will expand upon these when we get further into what our intended solution requires.
+There are alot of privacy aspects that need to be considered. We will expand upon these when we get further into what our intended solution requires
 ---
 
 ## 5. Technical Direction [Expand Later]
@@ -242,10 +241,10 @@ There are alot of privacy aspects that need to be considered. We will expand upo
   Claude Code) understand the technical landscape you are considering.
 -->
 
-- **Platform:** [iOS / Android / Web / Cross-platform / TBD]
-- **Key Integrations:** [EHR systems, wearables, sensors, APIs, etc.]
-- **Candidate Tech Stack:** [SpeziVibe, Swift/Kotlin, React, etc. / TBD]
-- **Infrastructure:** [Cloud provider, on-premise, hybrid / TBD]
+- **Platform:** Web
+- **Key Integrations:** External data srouces including: Konsulten APIs, PubMed...
+- **Candidate Tech Stack:** Frontend: React, Vite, Tailwind CSS | Backend: Python, FastAPI, LangGraph & LangChain
+- **Infrastructure:** Demo Deployment: Cloudflare, Hetzner
 
 ---
 
