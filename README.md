@@ -1,3 +1,5 @@
+<img src="frontend/public/logo-blue.svg" alt="Emidens logo" width="48">
+
 # Emidens
 
 A clinical decision support system for on-call clinicians. Emidens routes
