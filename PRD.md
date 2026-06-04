@@ -19,7 +19,7 @@
 | Field               | Value                                      |
 |---------------------|--------------------------------------------|
 | **Group**           | TRA460_Group_4                             |
-| **Version**         | 1.4                                        |
+| **Version**         | 1.5.1                                      |
 | **Date**            | 2026-04-15                                 |
 | **Clinical Mentor** | [Araz Rawshani, Dr. , University of Gothenburg/ Sahlgrenska]|
 | **Group Members**   | [Andrej Kocijan (MPALG), Viggo Trobäck (MPCAS), Ida Thorburn (MPQOM), Victor Zexi He (MD)]      |
